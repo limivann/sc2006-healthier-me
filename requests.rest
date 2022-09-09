@@ -5,6 +5,6 @@ x-remote-user-id: 0
 Content-Type: application/json
 
 {
-    "query":"chicken rice",
+    "query":"2 teaspoon of salt",
     "timezone": "US/Eastern"
 }
