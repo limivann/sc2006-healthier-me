@@ -70,6 +70,7 @@ export const sendVerificationEmail = async () => {
 
 export const sendPasswordResetEmail = async email => {
 	try {
+		// TODO: check if user is verified or not
 		const passwordReset = await sendPasswordResetEmail(auth, email);
 		// password reset email sent
 		return { success: true };
