@@ -80,7 +80,7 @@ export const sendPasswordResetEmail = async email => {
 	}
 };
 
-export const logoutUser = async () => {
+export const signOutUser = async () => {
 	//  assume user is logged in
 	try {
 		await signOut(auth);
