@@ -21,7 +21,7 @@ const LoginScreen = () => {
 				<View style={{}}>
 					<Text
 						style={{
-							fontWeight: FONTS.bold,
+							fontFamily: FONTS.bold,
 							fontSize: SIZES.extraLarge,
 							paddingVertical: SIZES.extraLarge,
 						}}
@@ -30,7 +30,7 @@ const LoginScreen = () => {
 					</Text>
 					<Text
 						style={{
-							fontWeight: FONTS.regular,
+							fontFamily: FONTS.regular,
 							fontSize: SIZES.regular,
 							paddingVertical: SIZES.regular,
 							color: COLORS.gray,

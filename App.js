@@ -1,11 +1,20 @@
-import { createContext, useState, useMemo } from "react";
+import {
+	createContext,
+	useState,
+	useMemo,
+	useEffect,
+	useCallback,
+} from "react";
 import { app } from "./firebase/firebase-config";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 
-// SCREENS
+// screens
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
+
+// setup fonts
+import { useFonts } from "expo-font";
 
 const AppContext = createContext();
 
@@ -28,6 +37,19 @@ const App = () => {
 		}),
 		[isSignedIn]
 	);
+
+	const [fontsLoaded] = useFonts({
+		InterBold: require("./assets/fonts/Inter-Bold.ttf"),
+		InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
+		InterMedium: require("./assets/fonts/Inter-Medium.ttf"),
+		InterRegular: require("./assets/fonts/Inter-Regular.ttf"),
+		InterLight: require("./assets/fonts/Inter-Light.ttf"),
+	});
+
+	if (!fontsLoaded) {
+		return null;
+	}
+
 	return (
 		<AppContext.Provider value={appContextValue}>
 			<NavigationContainer theme={theme}>
