@@ -1,27 +1,16 @@
-import {
-	createContext,
-	useState,
-	useMemo,
-	useEffect,
-	useCallback,
-} from "react";
+import { createContext, useState, useMemo } from "react";
 import { app } from "./firebase/firebase-config";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import * as eva from "@eva-design/eva";
-import {
-	ApplicationProvider,
-	IconRegistry,
-	Divider,
-} from "@ui-kitten/components";
+import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 
 // screens
-import HomeScreen from "./screens/HomeScreen";
-import LoginScreen from "./screens/LoginScreen";
 
 // setup fonts
 import { useFonts } from "expo-font";
+import { MainScreen, LoginScreen, HomeScreen } from "./screens";
 
 const AppContext = createContext();
 
@@ -62,12 +51,20 @@ const App = () => {
 			<IconRegistry icons={EvaIconsPack} />
 			<ApplicationProvider {...eva} theme={eva.light}>
 				<NavigationContainer theme={theme}>
-					<Stack.Navigator screenOptions={{ headerShown: false }}>
+					<Stack.Navigator
+						screenOptions={{ headerShown: false }}
+						initialRouteName="HomePage"
+					>
 						{!isSignedIn ? (
-							<Stack.Screen name="Login" component={LoginScreen} />
+							<Stack.Group>
+								<Stack.Screen name="MainPage" component={MainScreen} />
+								<Stack.Screen name="LoginPage" component={LoginScreen} />
+							</Stack.Group>
 						) : (
 							// whatever screens if user is logged in
-							<Stack.Screen name="Home" component={HomeScreen} />
+							<Stack.Group>
+								<Stack.Screen name="HomePage" component={HomeScreen} />
+							</Stack.Group>
 						)}
 					</Stack.Navigator>
 				</NavigationContainer>
