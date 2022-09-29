@@ -8,6 +8,13 @@ import {
 import { app } from "./firebase/firebase-config";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import * as eva from "@eva-design/eva";
+import {
+	ApplicationProvider,
+	IconRegistry,
+	Divider,
+} from "@ui-kitten/components";
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
 
 // screens
 import HomeScreen from "./screens/HomeScreen";
@@ -52,16 +59,19 @@ const App = () => {
 
 	return (
 		<AppContext.Provider value={appContextValue}>
-			<NavigationContainer theme={theme}>
-				<Stack.Navigator screenOptions={{ headerShown: false }}>
-					{!isSignedIn ? (
-						<Stack.Screen name="Login" component={LoginScreen} />
-					) : (
-						// whatever screens if user is logged in
-						<Stack.Screen name="Home" component={HomeScreen} />
-					)}
-				</Stack.Navigator>
-			</NavigationContainer>
+			<IconRegistry icons={EvaIconsPack} />
+			<ApplicationProvider {...eva} theme={eva.light}>
+				<NavigationContainer theme={theme}>
+					<Stack.Navigator screenOptions={{ headerShown: false }}>
+						{!isSignedIn ? (
+							<Stack.Screen name="Login" component={LoginScreen} />
+						) : (
+							// whatever screens if user is logged in
+							<Stack.Screen name="Home" component={HomeScreen} />
+						)}
+					</Stack.Navigator>
+				</NavigationContainer>
+			</ApplicationProvider>
 		</AppContext.Provider>
 	);
 };

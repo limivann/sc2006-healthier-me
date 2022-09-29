@@ -1,2 +1,4 @@
 import { COLORS, SHADOWS, SIZES, FONTS } from "./theme";
-export { COLORS, SHADOWS, SIZES, FONTS };
+import assets from "./assets";
+import { loginSchema } from "./validationSchemas";
+export { COLORS, SHADOWS, SIZES, FONTS, loginSchema, assets };
