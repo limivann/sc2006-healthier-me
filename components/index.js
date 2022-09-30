@@ -1,2 +1,3 @@
 import FocusedStatusBar from "./FocusedStatusBar";
-export { FocusedStatusBar };
+import CircularDots from "./CircularDots";
+export { FocusedStatusBar, CircularDots };

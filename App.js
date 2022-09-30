@@ -7,10 +7,17 @@ import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 
 // screens
+import {
+	MainScreen,
+	LoginScreen,
+	HomeScreen,
+	SignupScreen1,
+	SignupScreen2,
+	SignupScreen3,
+} from "./screens";
 
 // setup fonts
 import { useFonts } from "expo-font";
-import { MainScreen, LoginScreen, HomeScreen } from "./screens";
 
 const AppContext = createContext();
 
@@ -57,8 +64,11 @@ const App = () => {
 					>
 						{!isSignedIn ? (
 							<Stack.Group>
-								<Stack.Screen name="MainPage" component={MainScreen} />
+								<Stack.Screen name="SignupPage2" component={SignupScreen2} />
+								<Stack.Screen name="SignupPage1" component={SignupScreen1} />
+								<Stack.Screen name="SignupPage3" component={SignupScreen3} />
 								<Stack.Screen name="LoginPage" component={LoginScreen} />
+								<Stack.Screen name="MainPage" component={MainScreen} />
 							</Stack.Group>
 						) : (
 							// whatever screens if user is logged in
