@@ -3,8 +3,10 @@ import { Text, Button, Layout } from "@ui-kitten/components";
 import React from "react";
 import { FocusedStatusBar, CircularDots } from "../../components";
 import { assets, COLORS, FONTS, SIZES } from "../../constants";
+import { useNavigation } from "@react-navigation/native";
 
 const SignupScreen1 = () => {
+	const navigation = useNavigation();
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -12,8 +14,22 @@ const SignupScreen1 = () => {
 				backgroundColor="transparent"
 				translucent={true}
 			/>
-			<Layout style={{ flex: 1, width: "100%", alignItems: "center" }}>
-				<Layout style={{ width: "100%", paddingVertical: 90 }}>
+			<Layout
+				style={{
+					flex: 1,
+					width: "100%",
+					alignItems: "center",
+					justifyContent: "center",
+					height: "100%",
+				}}
+			>
+				<Layout
+					style={{
+						width: "100%",
+						paddingTop: "0%",
+						paddingBottom: "5%",
+					}}
+				>
 					<Text
 						style={{
 							textAlign: "center",
@@ -69,9 +85,6 @@ const SignupScreen1 = () => {
 						width: "100%",
 						justifyContent: "center",
 						alignItems: "center",
-						position: "absolute",
-						bottom: 0,
-						paddingBottom: 70,
 					}}
 				>
 					<Layout style={{ paddingTop: 50, width: "80%" }}>
@@ -82,6 +95,7 @@ const SignupScreen1 = () => {
 								backgroundColor: COLORS.primary,
 								borderRadius: SIZES.font,
 							}}
+							onPress={() => navigation.navigate("SignupPage2")}
 						>
 							Login
 						</Button>

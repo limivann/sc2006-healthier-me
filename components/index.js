@@ -1,3 +1,5 @@
 import FocusedStatusBar from "./FocusedStatusBar";
 import CircularDots from "./CircularDots";
-export { FocusedStatusBar, CircularDots };
+import TickIcon from "./TickIcon";
+import ActivityLevelButton from "./ActivityLevelButton";
+export { FocusedStatusBar, ActivityLevelButton, CircularDots, TickIcon };
