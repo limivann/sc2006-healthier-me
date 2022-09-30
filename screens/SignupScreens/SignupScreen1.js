@@ -71,7 +71,7 @@ const SignupScreen1 = () => {
 						alignItems: "center",
 						position: "absolute",
 						bottom: 0,
-						paddingBottom: 70,
+						paddingBottom: "10%",
 					}}
 				>
 					<Layout style={{ paddingTop: 50, width: "80%" }}>

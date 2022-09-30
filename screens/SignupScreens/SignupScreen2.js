@@ -1,10 +1,16 @@
-import { SafeAreaView, Image } from "react-native";
-import { Text, Button, Layout } from "@ui-kitten/components";
-import React from "react";
-import { FocusedStatusBar, CircularDots } from "../../components";
+import { SafeAreaView, Image, TouchableOpacity } from "react-native";
+import { Text, Button, Layout, Icon, Divider } from "@ui-kitten/components";
+import React, { useState } from "react";
+import {
+	FocusedStatusBar,
+	CircularDots,
+	TickIcon,
+	ActivityLevelButton,
+} from "../../components";
 import { COLORS, FONTS, SIZES } from "../../constants";
 
 const SignupScreen2 = () => {
+	const [selectedActivity, setSelectedActivity] = useState(0);
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -28,6 +34,7 @@ const SignupScreen2 = () => {
 				<Layout
 					style={{
 						width: "100%",
+						marginBottom: 36,
 					}}
 				>
 					<Text
@@ -40,6 +47,73 @@ const SignupScreen2 = () => {
 						Select your activity level
 					</Text>
 				</Layout>
+				<Layout
+					style={{
+						width: "85%",
+					}}
+				>
+					<ActivityLevelButton
+						title={"Not Very Active"}
+						description={"Spend most of the day sitting (e.g. desk job)."}
+						index={0}
+						selectedActivity={selectedActivity}
+						onPress={() => setSelectedActivity(0)}
+					/>
+					<Divider
+						style={{
+							height: 2,
+							backgroundColor: COLORS.lightgray,
+							width: "95%",
+							alignSelf: "center",
+							marginVertical: SIZES.base,
+						}}
+					/>
+					<ActivityLevelButton
+						title={"Lightly Active"}
+						description={
+							"Spend a good part of the day on your feet (e.g. teacher)"
+						}
+						index={1}
+						selectedActivity={selectedActivity}
+						onPress={() => setSelectedActivity(1)}
+					/>
+					<Divider
+						style={{
+							height: 2,
+							backgroundColor: COLORS.lightgray,
+							width: "95%",
+							alignSelf: "center",
+							marginVertical: SIZES.base,
+						}}
+					/>
+					<ActivityLevelButton
+						title={"Active"}
+						description={
+							"Spend a good part of the day doing some physical activity (e.g. waiter)"
+						}
+						index={2}
+						selectedActivity={selectedActivity}
+						onPress={() => setSelectedActivity(2)}
+					/>
+					<Divider
+						style={{
+							height: 2,
+							backgroundColor: COLORS.lightgray,
+							width: "95%",
+							alignSelf: "center",
+							marginVertical: SIZES.base,
+						}}
+					/>
+					<ActivityLevelButton
+						title={"Very Active"}
+						description={
+							"Spend a good part of the day doing heavy physical activity (e.g. carpenter)"
+						}
+						index={3}
+						selectedActivity={selectedActivity}
+						onPress={() => setSelectedActivity(3)}
+					/>
+				</Layout>
 
 				<Layout
 					style={{
@@ -48,7 +122,7 @@ const SignupScreen2 = () => {
 						alignItems: "center",
 						position: "absolute",
 						bottom: 0,
-						paddingBottom: 70,
+						paddingBottom: "10%",
 					}}
 				>
 					<Layout style={{ paddingTop: 50, width: "80%" }}>
@@ -70,8 +144,8 @@ const SignupScreen2 = () => {
 							alignItems: "center",
 						}}
 					>
-						<CircularDots bgColor={COLORS.primary} />
 						<CircularDots bgColor={COLORS.gray} />
+						<CircularDots bgColor={COLORS.primary} />
 						<CircularDots bgColor={COLORS.gray} />
 					</Layout>
 				</Layout>
