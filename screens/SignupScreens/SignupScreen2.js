@@ -8,6 +8,7 @@ import {
 	ActivityLevelButton,
 } from "../../components";
 import { COLORS, FONTS, SIZES } from "../../constants";
+import { useNavigation } from "@react-navigation/native";
 
 const SignupScreen2 = () => {
 	const [selectedActivity, setSelectedActivity] = useState(0);
@@ -18,8 +19,22 @@ const SignupScreen2 = () => {
 				backgroundColor="transparent"
 				translucent={true}
 			/>
-			<Layout style={{ flex: 1, width: "100%", alignItems: "center" }}>
-				<Layout style={{ width: "100%", paddingTop: 90, paddingBottom: 30 }}>
+			<Layout
+				style={{
+					flex: 1,
+					width: "100%",
+					alignItems: "center",
+					justifyContent: "center",
+					height: "100%",
+				}}
+			>
+				<Layout
+					style={{
+						width: "100%",
+						paddingTop: "0%",
+						paddingBottom: "5%",
+					}}
+				>
 					<Text
 						style={{
 							textAlign: "center",
@@ -50,6 +65,8 @@ const SignupScreen2 = () => {
 				<Layout
 					style={{
 						width: "85%",
+						justifyContent: "center",
+						alignItems: "center",
 					}}
 				>
 					<ActivityLevelButton
@@ -120,9 +137,6 @@ const SignupScreen2 = () => {
 						width: "100%",
 						justifyContent: "center",
 						alignItems: "center",
-						position: "absolute",
-						bottom: 0,
-						paddingBottom: "10%",
 					}}
 				>
 					<Layout style={{ paddingTop: 50, width: "80%" }}>

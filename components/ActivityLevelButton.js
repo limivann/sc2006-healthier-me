@@ -15,7 +15,7 @@ const ActivityLevelButton = ({
 		<TouchableOpacity
 			style={{
 				flexDirection: "row",
-				justifyContent: "center",
+				justifyContent: "space-between",
 				alignItems: "center",
 			}}
 			onPress={onPress}
@@ -41,7 +41,7 @@ const ActivityLevelButton = ({
 					{description}
 				</Text>
 			</Layout>
-			<Layout style={{ width: "15%" }}>
+			<Layout style={{ width: "10%" }}>
 				{selectedActivity === index ? <TickIcon /> : <></>}
 			</Layout>
 		</TouchableOpacity>
