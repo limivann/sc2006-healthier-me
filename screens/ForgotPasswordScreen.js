@@ -2,21 +2,14 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
-  Image,
   Platform,
 } from "react-native";
 import { FocusedStatusBar } from "../components";
-import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
-import {
-  Layout,
-  Text,
-  Icon,
-  Input,
-  Button,
-  Divider,
-} from "@ui-kitten/components";
+import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
+import { Layout, Text, Input, Button } from "@ui-kitten/components";
 import { useState } from "react";
-export default function ForgotPasswordScreen() {
+
+const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState("");
   return (
     <KeyboardAvoidingView
@@ -40,6 +33,8 @@ export default function ForgotPasswordScreen() {
         <Layout
           style={{
             flex: 1,
+            width: "100%",
+            height: "100%",
           }}
         >
           <Layout
@@ -62,8 +57,7 @@ export default function ForgotPasswordScreen() {
           </Layout>
           <Layout
             style={{
-              marginLeft: "5%",
-              marginRight: "5%",
+              paddingHorizontal: "5%",
             }}
           >
             <Text
@@ -91,30 +85,33 @@ export default function ForgotPasswordScreen() {
             />
             <Layout
               style={{
+                width: "100%",
+                justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Button
+              <Layout
                 style={{
-                  fontFamily: FONTS.regular,
-                  backgroundColor: "#72BE79",
-                  borderRadius: 50,
-                  position: "absolute",
-                  marginTop: "50%",
-                  marginBottom: "5%",
-                  width: "90%",
-                  height: "10%",
-                  fontSize: SIZES.font
+                  paddingTop: 50,
+                  width: "80%",
                 }}
               >
-                Continue
-              </Button>
+                <Button
+                  status="success"
+                  style={{
+                    marginBottom: SIZES.extraLarge,
+                    backgroundColor: COLORS.primary,
+                    borderRadius: SIZES.font,
+                  }}
+                >
+                  Continue
+                </Button>
+              </Layout>
               <Text
                 style={{
                   color: COLORS.gray,
                   fontSize: SIZES.font,
                   fontFamily: FONTS.regular,
-                  paddingTop: "65%"
                 }}
               >
                 Already have an account? Login
@@ -125,4 +122,6 @@ export default function ForgotPasswordScreen() {
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
-}
+};
+
+export default ForgotPasswordScreen;
