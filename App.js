@@ -14,7 +14,7 @@ import {
 	SignupScreen1,
 	SignupScreen2,
 	SignupScreen3,
-	ForgotPasswordScreen
+	ForgotPasswordScreen,
 } from "./screens";
 
 // setup fonts
@@ -70,7 +70,10 @@ const App = () => {
 								<Stack.Screen name="SignupPage3" component={SignupScreen3} />
 								<Stack.Screen name="LoginPage" component={LoginScreen} />
 								<Stack.Screen name="MainPage" component={MainScreen} />
-								<Stack.Screen name="ForgotPasswordPage" component={ForgotPasswordScreen} />
+								<Stack.Screen
+									name="ForgotPasswordPage"
+									component={ForgotPasswordScreen}
+								/>
 							</Stack.Group>
 						) : (
 							// whatever screens if user is logged in

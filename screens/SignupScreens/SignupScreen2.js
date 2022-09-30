@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const SignupScreen2 = () => {
 	const [selectedActivity, setSelectedActivity] = useState(0);
+	const navigation = useNavigation();
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -147,6 +148,7 @@ const SignupScreen2 = () => {
 								backgroundColor: COLORS.primary,
 								borderRadius: SIZES.font,
 							}}
+							onPress={() => navigation.navigate("SignupPage3")}
 						>
 							Login
 						</Button>
