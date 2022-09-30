@@ -188,7 +188,7 @@ const LoginScreen = () => {
 							</Text>
 						</Layout>
 					</Layout>
-					<Layout style={{ paddingTop: 70, width: "85%" }}>
+					<Layout style={{ paddingTop: 70, width: "80%" }}>
 						<Button
 							status="success"
 							style={{
