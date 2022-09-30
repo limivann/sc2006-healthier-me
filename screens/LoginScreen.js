@@ -13,7 +13,7 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	Platform,
-} from "react-native";
+} from "react-native";	
 import { FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 
