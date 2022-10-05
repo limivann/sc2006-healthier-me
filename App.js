@@ -67,8 +67,9 @@ const App = () => {
 					>
 						{!isSignedIn ? (
 							<Stack.Group>
-								<Stack.Screen name="ProfilePage" component={ProfileScreen} />
+								
 								<Stack.Screen name="MainPage" component={MainScreen} />
+								<Stack.Screen name="ProfilePage" component={ProfileScreen} />
 								
 								<Stack.Screen name="LoginPage" component={LoginScreen} />
 								<Stack.Screen name="SignupPage1" component={SignupScreen1} />
