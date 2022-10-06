@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
 	Layout,
 	Text,
@@ -13,7 +13,7 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	Platform,
-} from "react-native";	
+} from "react-native";
 import { FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 
@@ -33,12 +33,15 @@ const LoginScreen = () => {
 		</TouchableWithoutFeedback>
 	);
 
-	const GoogleIcon = () => (
-		<Image
-			source={assets.googleIcon}
-			resizeMode="contain"
-			style={{ height: 20, width: 36 }}
-		></Image>
+	const GoogleIcon = useMemo(
+		() => (
+			<Image
+				source={assets.googleIcon}
+				resizeMode="contain"
+				style={{ height: 20, width: 36 }}
+			></Image>
+		),
+		[]
 	);
 
 	return (
@@ -64,8 +67,8 @@ const LoginScreen = () => {
 					style={{
 						flex: 1,
 						alignItems: "center",
-						justifyContent: "flex-end",
-						marginBottom: "20%",
+						justifyContent: "center",
+						height: "100%",
 					}}
 				>
 					<Layout style={{ width: "85%" }}>
@@ -188,7 +191,7 @@ const LoginScreen = () => {
 							</Text>
 						</Layout>
 					</Layout>
-					<Layout style={{ paddingTop: 70, width: "80%" }}>
+					<Layout style={{ paddingTop: 50, width: "85%" }}>
 						<Button
 							status="success"
 							style={{

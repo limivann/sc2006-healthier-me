@@ -1,10 +1,9 @@
-import { SafeAreaView, Image, TouchableOpacity } from "react-native";
-import { Text, Button, Layout, Icon, Divider } from "@ui-kitten/components";
+import { SafeAreaView } from "react-native";
+import { Text, Button, Layout, Divider } from "@ui-kitten/components";
 import React, { useState } from "react";
 import {
 	FocusedStatusBar,
 	CircularDots,
-	TickIcon,
 	ActivityLevelButton,
 } from "../../components";
 import { COLORS, FONTS, SIZES } from "../../constants";
