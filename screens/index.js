@@ -8,6 +8,7 @@ import ForgotPasswordScreen from "./ForgotPasswordScreen";
 import SettingsScreen from "./SettingsScreen";
 import ProfileScreen from "./ProfileScreen";
 import SignupScreen from "./SignupScreens/SignupScreen";
+import VerificationCodeScreen from "./VerificationCodeScreen";
 export {
 	HomeScreen,
 	LoginScreen,
@@ -19,4 +20,5 @@ export {
 	SettingsScreen,
 	ForgotPasswordScreen,
 	ProfileScreen,
+	VerificationCodeScreen,
 };
