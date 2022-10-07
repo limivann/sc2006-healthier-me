@@ -6,7 +6,7 @@ import {
 	Input,
 	Button,
 	Divider,
-} from "@ui-kitten/components";
+} from "@ui-kitten/components";	
 import {
 	Keyboard,
 	TouchableWithoutFeedback,

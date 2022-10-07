@@ -7,10 +7,12 @@ import SignupScreen3 from "./SignupScreens/SignupScreen3";
 import ForgotPasswordScreen from "./ForgotPasswordScreen";
 import SettingsScreen from "./SettingsScreen";
 import ProfileScreen from "./ProfileScreen";
+import SignupScreen from "./SignupScreens/SignupScreen";
 export {
 	HomeScreen,
 	LoginScreen,
 	MainScreen,
+	SignupScreen,
 	SignupScreen1,
 	SignupScreen2,
 	SignupScreen3,

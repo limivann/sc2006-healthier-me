@@ -11,6 +11,7 @@ import {
 	MainScreen,
 	LoginScreen,
 	HomeScreen,
+	SignupScreen,
 	SignupScreen1,
 	SignupScreen2,
 	SignupScreen3,
@@ -67,8 +68,9 @@ const App = () => {
 					>
 						{!isSignedIn ? (
 							<Stack.Group>
-								<Stack.Screen name="MainPage" component={MainScreen} />
+								<Stack.Screen name="SignupPage" component={SignupScreen} />
 								<Stack.Screen name="LoginPage" component={LoginScreen} />
+								<Stack.Screen name="MainPage" component={MainScreen} />
 								<Stack.Screen name="SettingsPage" component={SettingsScreen} />
 
 								<Stack.Screen name="ProfilePage" component={ProfileScreen} />
