@@ -19,6 +19,7 @@ import {
 	SettingsScreen,
 	ProfileScreen,
 	VerificationCodeScreen,
+	TermsAndConditionsScreen,
 } from "./screens";
 
 // setup fonts
@@ -72,10 +73,11 @@ const App = () => {
 								<Stack.Screen name="LoginPage" component={LoginScreen} />
 								<Stack.Screen name="MainPage" component={MainScreen} />
 								<Stack.Screen name="VerificationCodePage" component={VerificationCodeScreen} />
+								<Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
+
+
 								<Stack.Screen name="SettingsPage" component={SettingsScreen} />
-
 								<Stack.Screen name="ProfilePage" component={ProfileScreen} />
-
 								<Stack.Screen name="SignupPage" component={SignupScreen} />
 								<Stack.Screen name="SignupPage1" component={SignupScreen1} />
 								<Stack.Screen name="SignupPage2" component={SignupScreen2} />
