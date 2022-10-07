@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native";
 
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
-const TermsAndConditionsScreen = () => {
+const PrivacyPolicyScreen = () => {
     return (
         <Layout style={{ flex: 1 }}>
             <FocusedStatusBar
@@ -37,7 +37,7 @@ const TermsAndConditionsScreen = () => {
                             fontSize: SIZES.large,
                         }}
                     >
-                        Terms And Conditions
+                        Privacy Policy
                     </Text>
                 </Layout>
                 <Layout
@@ -104,4 +104,4 @@ const TermsAndConditionsScreen = () => {
     );
 };
 
-export default TermsAndConditionsScreen;
+export default PrivacyPolicyScreen;
