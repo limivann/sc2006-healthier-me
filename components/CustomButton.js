@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { FONTS, SIZES } from "../constants";
 
-const CustomButton = ({ handlePress, text, children, ...props }) => {
+const CustomButton = ({ onPress, text, children, ...props }) => {
 	return (
 		<TouchableOpacity
 			style={{
@@ -14,6 +14,7 @@ const CustomButton = ({ handlePress, text, children, ...props }) => {
 				paddingVertical: 12,
 				...props,
 			}}
+			onPress={onPress}
 		>
 			{children}
 			<Text

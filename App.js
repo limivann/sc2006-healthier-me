@@ -1,5 +1,4 @@
 import { createContext, useState, useMemo } from "react";
-import { app } from "./firebase/firebase-config";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import * as eva from "@eva-design/eva";
@@ -26,8 +25,6 @@ import {
 // setup fonts
 import { useFonts } from "expo-font";
 
-const AppContext = createContext();
-
 const Stack = createStackNavigator();
 
 const theme = {
@@ -39,15 +36,6 @@ const theme = {
 };
 
 const App = () => {
-	const [isSignedIn, setIsSignedIn] = useState(false);
-	const appContextValue = useMemo(
-		() => ({
-			isSignedIn,
-			setIsSignedIn,
-		}),
-		[isSignedIn]
-	);
-
 	const [fontsLoaded] = useFonts({
 		InterBold: require("./assets/fonts/Inter-Bold.ttf"),
 		InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
@@ -61,45 +49,49 @@ const App = () => {
 	}
 
 	return (
-		<AppContext.Provider value={appContextValue}>
+		<ApplicationProvider {...eva} theme={eva.light}>
 			<IconRegistry icons={EvaIconsPack} />
-			<ApplicationProvider {...eva} theme={eva.light}>
-				<NavigationContainer theme={theme}>
-					<Stack.Navigator
-						screenOptions={{ headerShown: false }}
-						initialRouteName="HomePage"
-					>
-						{!isSignedIn ? (
-							<Stack.Group>
-								<Stack.Screen name="LoginPage" component={LoginScreen} />
-								<Stack.Screen name="MainPage" component={MainScreen} />
-								<Stack.Screen name="VerificationCodePage" component={VerificationCodeScreen} />
+			<NavigationContainer theme={theme}>
+				<Stack.Navigator
+					screenOptions={{ headerShown: false }}
+					initialRouteName="LoginPage"
+				>
+					<Stack.Group>
+						<Stack.Screen name="LoginPage" component={LoginScreen} />
+						<Stack.Screen name="MainPage" component={MainScreen} />
+						<Stack.Screen
+							name="VerificationCodePage"
+							component={VerificationCodeScreen}
+						/>
 
-								<Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
-								<Stack.Screen name="PrivacyPolicyScreen" component={PrivacyPolicyScreen} />
+						<Stack.Screen
+							name="TermsAndConditions"
+							component={TermsAndConditionsScreen}
+						/>
+						<Stack.Screen
+							name="PrivacyPolicyScreen"
+							component={PrivacyPolicyScreen}
+						/>
 
-								<Stack.Screen name="SettingsPage" component={SettingsScreen} />
-								<Stack.Screen name="ProfilePage" component={ProfileScreen} />
-								<Stack.Screen name="SignupPage" component={SignupScreen} />
-								<Stack.Screen name="SignupPage1" component={SignupScreen1} />
-								<Stack.Screen name="SignupPage2" component={SignupScreen2} />
-								<Stack.Screen name="SignupPage3" component={SignupScreen3} />
+						<Stack.Screen name="SettingsPage" component={SettingsScreen} />
+						<Stack.Screen name="ProfilePage" component={ProfileScreen} />
+						<Stack.Screen name="SignupPage" component={SignupScreen} />
+						<Stack.Screen name="SignupPage1" component={SignupScreen1} />
+						<Stack.Screen name="SignupPage2" component={SignupScreen2} />
+						<Stack.Screen name="SignupPage3" component={SignupScreen3} />
 
-								<Stack.Screen
-									name="ForgotPasswordPage"
-									component={ForgotPasswordScreen}
-								/>
-							</Stack.Group>
-						) : (
-							// whatever screens if user is logged in
-							<Stack.Group>
-								<Stack.Screen name="HomePage" component={HomeScreen} />
-							</Stack.Group>
-						)}
-					</Stack.Navigator>
-				</NavigationContainer>
-			</ApplicationProvider>
-		</AppContext.Provider>
+						<Stack.Screen
+							name="ForgotPasswordPage"
+							component={ForgotPasswordScreen}
+						/>
+					</Stack.Group>
+
+					<Stack.Group>
+						<Stack.Screen name="HomePage" component={HomeScreen} />
+					</Stack.Group>
+				</Stack.Navigator>
+			</NavigationContainer>
+		</ApplicationProvider>
 	);
 };
 

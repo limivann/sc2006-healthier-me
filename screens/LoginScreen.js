@@ -1,28 +1,23 @@
-import { memo, useMemo, useState } from "react";
-import {
-	Layout,
-	Text,
-	Icon,
-	Input,
-	Button,
-	Divider,
-} from "@ui-kitten/components";
+import { memo, useContext, useState } from "react";
+import { Layout, Text, Icon, Input, Divider } from "@ui-kitten/components";
 import {
 	Keyboard,
 	TouchableWithoutFeedback,
 	KeyboardAvoidingView,
 	Image,
 	Platform,
-	TouchableOpacity,
 } from "react-native";
 import { CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
+import { signInUser } from "../firebase/auth/emailProvider";
+import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
 	const [loginError, setLoginError] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [secureTextEntry, setSecureTextEntry] = useState(true);
+	const navigation = useNavigation();
 
 	const toggleSecureEntry = () => {
 		setSecureTextEntry(!secureTextEntry);
@@ -44,6 +39,31 @@ const LoginScreen = () => {
 		),
 		[]
 	);
+
+	const handleLogin = async () => {
+		try {
+			console.log("pressed");
+			navigation.navigate("HomePage");
+			return;
+			const res = await signInUser(email, password);
+			if (res.error) {
+				switch (res.error) {
+					case "auth/wrong-password":
+						setLoginError("Wrong password");
+						break;
+					case "auth/user-not-found":
+						setLoginError("User not found");
+						break;
+					default:
+						setLoginError("Something went wrong");
+						break;
+				}
+			} else {
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<KeyboardAvoidingView
@@ -186,7 +206,11 @@ const LoginScreen = () => {
 						</Layout>
 					</Layout>
 					<Layout style={{ paddingTop: 50, width: "85%" }}>
-						<CustomButton text={"Login"} backgroundColor={COLORS.primary} />
+						<CustomButton
+							text={"Login"}
+							backgroundColor={COLORS.primary}
+							onPress={() => handleLogin()}
+						/>
 						<Text
 							style={{
 								alignSelf: "center",

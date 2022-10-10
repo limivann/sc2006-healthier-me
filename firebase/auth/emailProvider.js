@@ -58,7 +58,7 @@ export const updateUserName = async newName => {
 	}
 };
 
-export const sendVerificationEmail = async () => {
+export const verifyEmail = async () => {
 	try {
 		const verificationEmail = await sendEmailVerification(auth.currentUser);
 		return { success: true };
@@ -68,7 +68,7 @@ export const sendVerificationEmail = async () => {
 	}
 };
 
-export const sendPasswordResetEmail = async email => {
+export const resetPasswordEmail = async email => {
 	try {
 		// TODO: check if user is verified or not
 		const passwordReset = await sendPasswordResetEmail(auth, email);

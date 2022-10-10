@@ -5,13 +5,15 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-	apiKey: process.env.FIREBASE_API_KEY,
-	authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-	projectId: process.env.FIREBASE_PROJECT_ID,
-	storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-	messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-	appId: process.env.FIREBASE_APP_ID,
+	apiKey: "AIzaSyAy_LiuKIhlV2kvTp2NoyCbzj354r_qPacY",
+	authDomain: "healthier-dev-10a1c.firebaseapp.com",
+	projectId: "healthier-dev-10a1c",
+	storageBucket: "healthier-dev-10a1c.appspot.com",
+	messagingSenderId: "229003826641",
+	appId: "1:229003826641:web:076151dea249ca8427fcf0",
 };
+
+// TODO init firebase app once only
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
