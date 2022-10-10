@@ -7,14 +7,22 @@ import SignupScreen3 from "./SignupScreens/SignupScreen3";
 import ForgotPasswordScreen from "./ForgotPasswordScreen";
 import SettingsScreen from "./SettingsScreen";
 import ProfileScreen from "./ProfileScreen";
+import SignupScreen from "./SignupScreens/SignupScreen";
+import VerificationCodeScreen from "./VerificationCodeScreen";
+import TermsAndConditionsScreen from "./TermsAndConditionsScreen";
+import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
 export {
 	HomeScreen,
 	LoginScreen,
 	MainScreen,
+	SignupScreen,
 	SignupScreen1,
 	SignupScreen2,
 	SignupScreen3,
 	SettingsScreen,
 	ForgotPasswordScreen,
 	ProfileScreen,
+	VerificationCodeScreen,
+	TermsAndConditionsScreen,
+	PrivacyPolicyScreen,
 };

@@ -11,12 +11,16 @@ import {
 	MainScreen,
 	LoginScreen,
 	HomeScreen,
+	SignupScreen,
 	SignupScreen1,
 	SignupScreen2,
 	SignupScreen3,
 	ForgotPasswordScreen,
 	SettingsScreen,
 	ProfileScreen,
+	VerificationCodeScreen,
+	TermsAndConditionsScreen,
+	PrivacyPolicyScreen,
 } from "./screens";
 
 // setup fonts
@@ -67,12 +71,16 @@ const App = () => {
 					>
 						{!isSignedIn ? (
 							<Stack.Group>
-								<Stack.Screen name="MainPage" component={MainScreen} />
 								<Stack.Screen name="LoginPage" component={LoginScreen} />
+								<Stack.Screen name="MainPage" component={MainScreen} />
+								<Stack.Screen name="VerificationCodePage" component={VerificationCodeScreen} />
+
+								<Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
+								<Stack.Screen name="PrivacyPolicyScreen" component={PrivacyPolicyScreen} />
+
 								<Stack.Screen name="SettingsPage" component={SettingsScreen} />
-
 								<Stack.Screen name="ProfilePage" component={ProfileScreen} />
-
+								<Stack.Screen name="SignupPage" component={SignupScreen} />
 								<Stack.Screen name="SignupPage1" component={SignupScreen1} />
 								<Stack.Screen name="SignupPage2" component={SignupScreen2} />
 								<Stack.Screen name="SignupPage3" component={SignupScreen3} />

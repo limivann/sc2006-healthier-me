@@ -5,6 +5,8 @@ import ActivityLevelButton from "./ActivityLevelButton";
 import GenderSwitchButton from "./GenderSwitchButton";
 import Navbar from "./Navbar/Navbar";
 import BackButton from "./BackButton";
+import CodeInputField from "./CodeInputField";
+import CustomButton from "./CustomButton";
 
 export {
 	FocusedStatusBar,
@@ -14,4 +16,6 @@ export {
 	GenderSwitchButton,
 	TickIcon,
 	BackButton,
+	CodeInputField,
+	CustomButton,
 };

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import {
 	Layout,
 	Text,
@@ -13,8 +13,9 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	Platform,
+	TouchableOpacity,
 } from "react-native";
-import { FocusedStatusBar } from "../components";
+import { CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 
 const LoginScreen = () => {
@@ -33,12 +34,12 @@ const LoginScreen = () => {
 		</TouchableWithoutFeedback>
 	);
 
-	const GoogleIcon = useMemo(
+	const GoogleIcon = memo(
 		() => (
 			<Image
 				source={assets.googleIcon}
 				resizeMode="contain"
-				style={{ height: 20, width: 36 }}
+				style={{ height: 20, width: 36, marginRight: 10 }}
 			></Image>
 		),
 		[]
@@ -165,19 +166,12 @@ const LoginScreen = () => {
 							</Text>
 						</Layout>
 						<Layout>
-							<Button
-								style={{
-									marginBottom: SIZES.medium,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-									...SHADOWS.medium,
-									backgroundColor: "black",
-									borderRadius: SIZES.font,
-								}}
-								accessoryLeft={GoogleIcon}
+							<CustomButton
+								backgroundColor="black"
+								text={"Sign in with Google"}
 							>
-								Sign in with Google
-							</Button>
+								<GoogleIcon />
+							</CustomButton>
 							<Text
 								style={{
 									alignSelf: "center",
@@ -192,16 +186,7 @@ const LoginScreen = () => {
 						</Layout>
 					</Layout>
 					<Layout style={{ paddingTop: 50, width: "85%" }}>
-						<Button
-							status="success"
-							style={{
-								marginBottom: SIZES.extraLarge,
-								backgroundColor: "#72BE79",
-								borderRadius: SIZES.font,
-							}}
-						>
-							Login
-						</Button>
+						<CustomButton text={"Login"} backgroundColor={COLORS.primary} />
 						<Text
 							style={{
 								alignSelf: "center",
