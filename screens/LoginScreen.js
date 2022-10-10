@@ -10,14 +10,12 @@ import {
 import { CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 import { signInUser } from "../firebase/auth/emailProvider";
-import { useNavigation } from "@react-navigation/native";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
 	const [loginError, setLoginError] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [secureTextEntry, setSecureTextEntry] = useState(true);
-	const navigation = useNavigation();
 
 	const toggleSecureEntry = () => {
 		setSecureTextEntry(!secureTextEntry);
