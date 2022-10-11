@@ -1,4 +1,4 @@
-import { memo, useContext, useState } from "react";
+import { memo, useState } from "react";
 import { Layout, Text, Icon, Input, Divider } from "@ui-kitten/components";
 import {
 	Keyboard,
@@ -10,12 +10,15 @@ import {
 import { CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 import { signInUser } from "../firebase/auth/emailProvider";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const LoginScreen = ({ navigation }) => {
 	const [loginError, setLoginError] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+	const [loginLoading, setLoginLoading] = useState(false);
 
 	const toggleSecureEntry = () => {
 		setSecureTextEntry(!secureTextEntry);
@@ -167,6 +170,20 @@ const LoginScreen = ({ navigation }) => {
 								/>
 							</Layout>
 						</Layout>
+						{loginError && (
+							<Layout>
+								<Text
+									style={{
+										fontFamily: FONTS.medium,
+										fontSize: SIZES.small,
+										color: "#FF9494",
+										paddingTop: SIZES.base,
+									}}
+								>
+									{loginError}
+								</Text>
+							</Layout>
+						)}
 						<Layout>
 							<Divider style={{ marginVertical: 36 }} />
 							<Text
@@ -209,17 +226,21 @@ const LoginScreen = ({ navigation }) => {
 							backgroundColor={COLORS.primary}
 							onPress={() => handleLogin()}
 						/>
-						<Text
-							style={{
-								alignSelf: "center",
-								color: COLORS.gray,
-								textDecorationLine: "underline",
-								fontFamily: FONTS.regular,
-								fontSize: SIZES.font,
-							}}
+						<TouchableOpacity
+							onPress={() => !loginLoading && navigation.navigate("SignupPage")}
 						>
-							I'm a new user. Registration
-						</Text>
+							<Text
+								style={{
+									alignSelf: "center",
+									color: COLORS.gray,
+									textDecorationLine: "underline",
+									fontFamily: FONTS.regular,
+									fontSize: SIZES.font,
+								}}
+							>
+								I'm a new user. Registration
+							</Text>
+						</TouchableOpacity>
 					</Layout>
 				</Layout>
 			</TouchableWithoutFeedback>

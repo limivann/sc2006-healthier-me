@@ -6,6 +6,7 @@ import {
 	Input,
 	Divider,
 	CheckBox,
+	Spinner,
 } from "@ui-kitten/components";
 import {
 	Keyboard,
@@ -13,9 +14,13 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	Platform,
+	TouchableOpacity,
 } from "react-native";
 import { CustomButton, FocusedStatusBar } from "../../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../../constants";
+import { createUser } from "../../firebase/auth/emailProvider";
+import { db } from "../../firebase/firebase-config";
+import { setDoc, serverTimestamp, doc } from "firebase/firestore";
 
 const SignupScreen = ({ navigation }) => {
 	const [username, setUsername] = useState("");
@@ -24,6 +29,9 @@ const SignupScreen = ({ navigation }) => {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [checked, setChecked] = useState(false);
 	const [secureTextEntry, setSecureTextEntry] = useState(true);
+	const [signupError, setSignupError] = useState("");
+
+	const [signupLoading, setSignupLoading] = useState(false);
 
 	const toggleSecureEntry = () => {
 		setSecureTextEntry(!secureTextEntry);
@@ -48,8 +56,47 @@ const SignupScreen = ({ navigation }) => {
 
 	const handleSignup = async () => {
 		try {
-			console.log("pressed");
-			navigation.navigate("HomePage");
+			setSignupLoading(true);
+			// check if any of the fields are empty
+			if (!username || !email || !password || !confirmPassword || !checked) {
+				setSignupError("Please enter all fields");
+				setSignupLoading(false);
+				return;
+			}
+			// TODO: check if password has at least one alphabet, at least one number and more than 12
+
+			// check if password and confirmPassword is the same
+			if (password && password !== confirmPassword) {
+				setSignupError("Passwords does not match");
+				// clear passwords
+				setPassword("");
+				setConfirmPassword("");
+				setChecked(false);
+				setSignupLoading(false);
+				return;
+			}
+
+			const { user, error } = await createUser(email, password);
+			if (error) {
+				setSignupError(error);
+				// clear passwords
+				setPassword("");
+				setConfirmPassword("");
+				setChecked(false);
+				setSignupLoading(false);
+				return;
+			}
+
+			// no errors, create user details and update to firestore
+			const userDocRef = doc(db, "users", user.uid);
+			await setDoc(userDocRef, {
+				displayName: username,
+				email: email,
+				joinedDate: serverTimestamp(),
+				finishedSetup: false,
+			});
+			navigation.navigate("SignupPage1");
+			setSignupLoading(false);
 			return;
 		} catch (error) {
 			console.log(error);
@@ -84,12 +131,12 @@ const SignupScreen = ({ navigation }) => {
 					}}
 				>
 					<Layout style={{ width: "85%" }}>
-						<Layout style={{ marginBottom: 30 }}>
+						<Layout style={{ marginBottom: 20 }}>
 							<Text
 								style={{
 									fontFamily: FONTS.bold,
 									fontSize: SIZES.extraLarge,
-									paddingVertical: SIZES.extraLarge,
+									paddingVertical: SIZES.large,
 								}}
 							>
 								Sign up
@@ -114,7 +161,9 @@ const SignupScreen = ({ navigation }) => {
 										color: COLORS.gray,
 										fontFamily: FONTS.regular,
 										fontSize: SIZES.font,
+										marginBottom: SIZES.base,
 									}}
+									autoCorrect={false}
 								>
 									Username
 								</Text>
@@ -124,6 +173,7 @@ const SignupScreen = ({ navigation }) => {
 									autoCompleteType="username-new"
 									value={username}
 									onChangeText={nextValue => setUsername(nextValue)}
+									autoCorrect={false}
 									style={{
 										borderRadius: SIZES.base,
 										...SHADOWS.light,
@@ -140,6 +190,7 @@ const SignupScreen = ({ navigation }) => {
 										color: COLORS.gray,
 										fontFamily: FONTS.regular,
 										fontSize: SIZES.font,
+										marginBottom: SIZES.base,
 									}}
 								>
 									Email address
@@ -165,6 +216,7 @@ const SignupScreen = ({ navigation }) => {
 										color: COLORS.gray,
 										fontFamily: FONTS.regular,
 										fontSize: SIZES.font,
+										marginBottom: SIZES.base,
 									}}
 								>
 									Password
@@ -192,6 +244,7 @@ const SignupScreen = ({ navigation }) => {
 										color: COLORS.gray,
 										fontFamily: FONTS.regular,
 										fontSize: SIZES.font,
+										marginBottom: SIZES.base,
 									}}
 								>
 									Confirm Password
@@ -233,13 +286,27 @@ const SignupScreen = ({ navigation }) => {
 									I agree with the Privacy Policy
 								</Text>
 							</Layout>
+							{signupError && (
+								<Layout>
+									<Text
+										style={{
+											fontFamily: FONTS.medium,
+											fontSize: SIZES.small,
+											color: "#FF9494",
+											paddingTop: SIZES.base,
+										}}
+									>
+										{signupError}
+									</Text>
+								</Layout>
+							)}
 							<Layout>
-								<Divider style={{ marginVertical: 36 }} />
+								<Divider style={{ marginVertical: 26 }} />
 								<Text
 									style={{
 										position: "absolute",
 										alignSelf: "center",
-										marginVertical: 25,
+										marginVertical: 15,
 										paddingHorizontal: SIZES.medium,
 										backgroundColor: COLORS.white,
 										fontFamily: FONTS.regular,
@@ -257,22 +324,34 @@ const SignupScreen = ({ navigation }) => {
 									<GoogleIcon />
 								</CustomButton>
 								<Layout>
-									<CustomButton
-										text={"Sign up"}
-										backgroundColor={COLORS.primary}
-										onPress={() => handleSignup()}
-									/>
-									<Text
-										style={{
-											alignSelf: "center",
-											fontFamily: FONTS.regular,
-											fontSize: SIZES.font,
-											color: COLORS.gray,
-											textDecorationLine: "underline",
-										}}
+									{!signupLoading ? (
+										<CustomButton
+											text={"Sign up"}
+											backgroundColor={COLORS.primary}
+											onPress={() => handleSignup()}
+										/>
+									) : (
+										<CustomButton backgroundColor={COLORS.lightPrimary}>
+											<Spinner status="basic" size="small" />
+										</CustomButton>
+									)}
+									<TouchableOpacity
+										onPress={() =>
+											!signupLoading && navigation.navigate("LoginPage")
+										}
 									>
-										Already have an account? Login
-									</Text>
+										<Text
+											style={{
+												alignSelf: "center",
+												fontFamily: FONTS.regular,
+												fontSize: SIZES.font,
+												color: COLORS.gray,
+												textDecorationLine: "underline",
+											}}
+										>
+											Already have an account? Login
+										</Text>
+									</TouchableOpacity>
 								</Layout>
 							</Layout>
 						</Layout>

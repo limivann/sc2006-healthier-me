@@ -22,7 +22,7 @@ const MainScreen = ({ navigation }) => {
 							backgroundColor: COLORS.primary,
 							borderRadius: SIZES.font,
 						}}
-						onPress={() => navigation.navigate("SignupPage1")}
+						onPress={() => navigation.navigate("SignupPage")}
 					>
 						Sign Up
 					</Button>

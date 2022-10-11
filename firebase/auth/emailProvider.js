@@ -7,9 +7,8 @@ import {
 	sendPasswordResetEmail,
 	signOut,
 } from "firebase/auth";
-import { app } from "../firebase-config";
+import { app, auth } from "../firebase-config";
 
-const auth = getAuth(app);
 export const createUser = async (email, password) => {
 	try {
 		const userCredential = await createUserWithEmailAndPassword(
@@ -22,6 +21,15 @@ export const createUser = async (email, password) => {
 	} catch (error) {
 		const errorCode = error.code;
 		// const errorMessage = error.message;
+		let errorMessage;
+		switch (error) {
+			case "auth/email-already-in-use":
+				errorMessage = "Email already in use";
+				break;
+			default:
+				errorMessage = "Something went wrong";
+				break;
+		}
 		return { error: errorCode };
 	}
 };
