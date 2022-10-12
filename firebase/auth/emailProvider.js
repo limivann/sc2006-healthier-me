@@ -7,7 +7,7 @@ import {
 	sendPasswordResetEmail,
 	signOut,
 } from "firebase/auth";
-import { app, auth } from "../firebase-config";
+import { auth } from "../firebase-config";
 
 export const createUser = async (email, password) => {
 	try {
@@ -20,17 +20,20 @@ export const createUser = async (email, password) => {
 		return { user, error: null };
 	} catch (error) {
 		const errorCode = error.code;
-		// const errorMessage = error.message;
 		let errorMessage;
-		switch (error) {
+		switch (errorCode) {
 			case "auth/email-already-in-use":
 				errorMessage = "Email already in use";
+				break;
+			case "auth/weak-password":
+				errorMessage =
+					"Password must have minimum of eight characters, at least one letter and one number";
 				break;
 			default:
 				errorMessage = "Something went wrong";
 				break;
 		}
-		return { error: errorCode };
+		return { error: errorMessage };
 	}
 };
 
@@ -45,7 +48,18 @@ export const signInUser = async (email, password) => {
 		return { user, error: null };
 	} catch (error) {
 		const errorCode = error.code;
-		// const errorMessage = error.message;
+		let errorMessage;
+		switch (error) {
+			case "auth/wrong-password":
+				errorMessage = "Wrong password";
+				break;
+			case "auth/user-not-found":
+				errorMessage = "User not found";
+				break;
+			default:
+				errorMessage = "Something went wrong";
+				break;
+		}
 		return { error: errorCode };
 	}
 };

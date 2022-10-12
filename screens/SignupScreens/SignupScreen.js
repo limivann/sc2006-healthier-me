@@ -163,7 +163,6 @@ const SignupScreen = ({ navigation }) => {
 										fontSize: SIZES.font,
 										marginBottom: SIZES.base,
 									}}
-									autoCorrect={false}
 								>
 									Username
 								</Text>
@@ -292,7 +291,7 @@ const SignupScreen = ({ navigation }) => {
 										style={{
 											fontFamily: FONTS.medium,
 											fontSize: SIZES.small,
-											color: "#FF9494",
+											color: COLORS.error,
 											paddingTop: SIZES.base,
 										}}
 									>

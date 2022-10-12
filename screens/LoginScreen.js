@@ -1,5 +1,12 @@
 import { memo, useState } from "react";
-import { Layout, Text, Icon, Input, Divider } from "@ui-kitten/components";
+import {
+	Layout,
+	Text,
+	Icon,
+	Input,
+	Divider,
+	Spinner,
+} from "@ui-kitten/components";
 import {
 	Keyboard,
 	TouchableWithoutFeedback,
@@ -11,6 +18,7 @@ import { CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 import { signInUser } from "../firebase/auth/emailProvider";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { auth } from "../firebase/firebase-config";
 
 const LoginScreen = ({ navigation }) => {
 	const [loginError, setLoginError] = useState("");
@@ -43,24 +51,29 @@ const LoginScreen = ({ navigation }) => {
 
 	const handleLogin = async () => {
 		try {
-			console.log("pressed");
-			navigation.navigate("HomePage");
-			return;
-			const res = await signInUser(email, password);
-			if (res.error) {
-				switch (res.error) {
-					case "auth/wrong-password":
-						setLoginError("Wrong password");
-						break;
-					case "auth/user-not-found":
-						setLoginError("User not found");
-						break;
-					default:
-						setLoginError("Something went wrong");
-						break;
-				}
-			} else {
+			console.log("before");
+			console.log(auth.currentUser);
+			console.log("after");
+			setLoginLoading(true);
+			// check if any of the fields are empty
+			if (!email || !password) {
+				setLoginError("Please enter all fields");
+				setLoginLoading(false);
+				return;
 			}
+			const { user, error } = await signInUser(email, password);
+			if (error) {
+				setLoginError(error);
+				// clear password
+				setPassword("");
+				setLoginLoading(false);
+				return;
+			}
+			console.log(auth.currentUser);
+			// no errors navigate to home page
+			navigation.navigate("HomePage");
+			setLoginLoading(false);
+			return;
 		} catch (error) {
 			console.log(error);
 		}
@@ -124,6 +137,7 @@ const LoginScreen = ({ navigation }) => {
 										color: COLORS.gray,
 										fontFamily: FONTS.regular,
 										fontSize: SIZES.font,
+										marginBottom: SIZES.base,
 									}}
 								>
 									Email
@@ -150,6 +164,7 @@ const LoginScreen = ({ navigation }) => {
 										color: COLORS.gray,
 										fontFamily: FONTS.regular,
 										fontSize: SIZES.font,
+										marginBottom: SIZES.base,
 									}}
 								>
 									Password
@@ -176,7 +191,7 @@ const LoginScreen = ({ navigation }) => {
 									style={{
 										fontFamily: FONTS.medium,
 										fontSize: SIZES.small,
-										color: "#FF9494",
+										color: COLORS.error,
 										paddingTop: SIZES.base,
 									}}
 								>
@@ -221,11 +236,17 @@ const LoginScreen = ({ navigation }) => {
 						</Layout>
 					</Layout>
 					<Layout style={{ paddingTop: 50, width: "85%" }}>
-						<CustomButton
-							text={"Login"}
-							backgroundColor={COLORS.primary}
-							onPress={() => handleLogin()}
-						/>
+						{!loginLoading ? (
+							<CustomButton
+								text={"Sign up"}
+								backgroundColor={COLORS.primary}
+								onPress={() => handleLogin()}
+							/>
+						) : (
+							<CustomButton backgroundColor={COLORS.lightPrimary}>
+								<Spinner status="basic" size="small" />
+							</CustomButton>
+						)}
 						<TouchableOpacity
 							onPress={() => !loginLoading && navigation.navigate("SignupPage")}
 						>

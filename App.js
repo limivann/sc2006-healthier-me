@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import * as eva from "@eva-design/eva";
@@ -26,6 +26,7 @@ import {
 import { useFonts } from "expo-font";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase-config";
+import customTheme from "./constants/custom-theme.json";
 
 const Stack = createStackNavigator();
 
@@ -58,14 +59,14 @@ const App = () => {
 	}
 
 	return (
-		<ApplicationProvider {...eva} theme={eva.light}>
+		<ApplicationProvider {...eva} theme={{ ...eva.light, ...customTheme }}>
 			<IconRegistry icons={EvaIconsPack} />
 			<NavigationContainer theme={theme}>
 				<Stack.Navigator
 					screenOptions={{ headerShown: false }}
 					initialRouteName="MainPage"
 				>
-					{isSignedIn ? (
+					{!isSignedIn ? (
 						<Stack.Group>
 							<Stack.Screen name="MainPage" component={MainScreen} />
 							<Stack.Screen name="LoginPage" component={LoginScreen} />
@@ -79,25 +80,23 @@ const App = () => {
 							/>
 
 							<Stack.Screen
-								name="TermsAndConditions"
-								component={TermsAndConditionsScreen}
-							/>
-							<Stack.Screen
-								name="PrivacyPolicyScreen"
-								component={PrivacyPolicyScreen}
-							/>
-
-							<Stack.Screen name="SettingsPage" component={SettingsScreen} />
-
-							<Stack.Screen
 								name="ForgotPasswordPage"
 								component={ForgotPasswordScreen}
 							/>
 						</Stack.Group>
 					) : (
 						<Stack.Group>
+							<Stack.Screen name="SettingsPage" component={SettingsScreen} />
 							<Stack.Screen name="HomePage" component={HomeScreen} />
 							<Stack.Screen name="ProfilePage" component={ProfileScreen} />
+							<Stack.Screen
+								name="TermsAndConditionsPage"
+								component={TermsAndConditionsScreen}
+							/>
+							<Stack.Screen
+								name="PrivacyPolicyPage"
+								component={PrivacyPolicyScreen}
+							/>
 						</Stack.Group>
 					)}
 				</Stack.Navigator>
