@@ -106,6 +106,7 @@ export const signOutUser = async () => {
 	//  assume user is logged in
 	try {
 		await signOut(auth);
+		return { success: true };
 	} catch (error) {
 		const errorCode = error.code;
 		return { error: errorCode, success: false };

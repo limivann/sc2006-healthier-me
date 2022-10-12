@@ -51,8 +51,11 @@ const App = () => {
 	useEffect(() => {
 		onAuthStateChanged(auth, user => {
 			if (user) setIsSignedIn(true);
+			else {
+				setIsSignedIn(false);
+			}
 		});
-	}, [auth]);
+	}, [auth.currentUser]);
 
 	if (!fontsLoaded) {
 		return null;

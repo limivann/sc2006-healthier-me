@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
-import { Divider, Icon, Layout, Text, Toggle } from "@ui-kitten/components";
-import { FocusedStatusBar, Navbar } from "../components";
+import {
+	Divider,
+	Icon,
+	Layout,
+	Text,
+	Toggle,
+	Modal,
+	Card,
+} from "@ui-kitten/components";
+import { CustomButton, FocusedStatusBar, Navbar } from "../components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { signOutUser } from "../firebase/auth/emailProvider";
+import { auth } from "../firebase/firebase-config";
 
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
@@ -17,10 +27,20 @@ const SettingsScreen = ({ navigation }) => {
 	const onLocationsCheckedChanged = isChecked => {
 		setLocationsChecked(isChecked);
 	};
+	const [logoutPanelVisible, setLogoutPanelVisible] = useState(false);
 
 	useEffect(() => {
 		// TODO: initialize notifications and location checked?
 	}, []);
+
+	const handleLogout = async () => {
+		const { success } = await signOutUser();
+		if (success) {
+			setLogoutPanelVisible(false);
+			navigation.navigate("MainPage");
+		}
+	};
+
 	return (
 		<Layout style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -61,7 +81,6 @@ const SettingsScreen = ({ navigation }) => {
 							<Text style={styles.iconText}>Notifcations</Text>
 						</Layout>
 						<Toggle
-							style={styles.toggle}
 							status="basic"
 							checked={notificationsChecked}
 							onChange={onNotificationsCheckedChanged}
@@ -74,7 +93,6 @@ const SettingsScreen = ({ navigation }) => {
 							<Text style={styles.iconText}>Locations</Text>
 						</Layout>
 						<Toggle
-							style={styles.toggle}
 							status="basic"
 							checked={locationsChecked}
 							onChange={onLocationsCheckedChanged}
@@ -146,7 +164,10 @@ const SettingsScreen = ({ navigation }) => {
 					</Layout>
 					<Divider style={styles.divider} />
 					<Layout style={styles.settingsItem}>
-						<TouchableOpacity style={styles.iconTitle}>
+						<TouchableOpacity
+							style={styles.iconTitle}
+							onPress={() => setLogoutPanelVisible(true)}
+						>
 							<Icon
 								name="log-out-outline"
 								fill={COLORS.error}
@@ -159,6 +180,60 @@ const SettingsScreen = ({ navigation }) => {
 					</Layout>
 				</Layout>
 				<Navbar />
+				<Modal
+					visible={logoutPanelVisible}
+					backdropStyle={styles.backdrop}
+					onBackdropPress={() => setLogoutPanelVisible(false)}
+					style={styles.modal}
+				>
+					<Card disabled={true} style={styles.modalContent}>
+						<Layout style={styles.modalTitle}>
+							<Text
+								style={{
+									...styles.iconText,
+									color: COLORS.error,
+									fontFamily: FONTS.semiBold,
+								}}
+							>
+								Logout
+							</Text>
+						</Layout>
+						<Divider />
+						<Layout
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								paddingVertical: SIZES.font,
+							}}
+						>
+							<Text
+								style={{
+									...styles.iconText,
+									textAlign: "center",
+									fontSize: SIZES.medium,
+									marginBottom: SIZES.large,
+								}}
+							>
+								Are you sure you want to log out?
+							</Text>
+						</Layout>
+						<Layout style={styles.logoutButtonContainer}>
+							<CustomButton
+								text={"Cancel"}
+								backgroundColor={COLORS.secondary}
+								flex={1}
+								onPress={() => setLogoutPanelVisible(false)}
+							/>
+							<Layout style={{ width: "5%" }} />
+							<CustomButton
+								text={"Logout"}
+								backgroundColor={COLORS.primary}
+								flex={1}
+								onPress={() => handleLogout()}
+							/>
+						</Layout>
+					</Card>
+				</Modal>
 			</SafeAreaView>
 		</Layout>
 	);
@@ -197,7 +272,29 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},
-	toggle: {},
+	backdrop: {
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	modal: {
+		width: "85%",
+	},
+	modalContent: {
+		flex: 1,
+		display: "flex",
+		justifyContent: "center",
+		alignContent: "center",
+	},
+	logoutButtonContainer: {
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+	},
+	modalTitle: {
+		justifyContent: "center",
+		alignItems: "center",
+		paddingBottom: SIZES.font,
+	},
 });
 
 export default SettingsScreen;

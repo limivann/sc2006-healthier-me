@@ -51,9 +51,6 @@ const LoginScreen = ({ navigation }) => {
 
 	const handleLogin = async () => {
 		try {
-			console.log("before");
-			console.log(auth.currentUser);
-			console.log("after");
 			setLoginLoading(true);
 			// check if any of the fields are empty
 			if (!email || !password) {
@@ -69,7 +66,6 @@ const LoginScreen = ({ navigation }) => {
 				setLoginLoading(false);
 				return;
 			}
-			console.log(auth.currentUser);
 			// no errors navigate to home page
 			navigation.navigate("HomePage");
 			setLoginLoading(false);
