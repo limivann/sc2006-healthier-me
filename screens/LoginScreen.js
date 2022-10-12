@@ -140,7 +140,7 @@ const LoginScreen = ({ navigation }) => {
 								</Text>
 
 								<Input
-									placeholder="Email"
+									placeholder="johndoe@example.com"
 									autoCompleteType="email"
 									value={email}
 									onChangeText={nextValue => setEmail(nextValue)}
@@ -218,17 +218,23 @@ const LoginScreen = ({ navigation }) => {
 							>
 								<GoogleIcon />
 							</CustomButton>
-							<Text
-								style={{
-									alignSelf: "center",
-									color: COLORS.gray,
-									textDecorationLine: "underline",
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
+							<TouchableOpacity
+								onPress={() =>
+									!loginLoading && navigation.navigate("ForgotPasswordPage")
+								}
 							>
-								Forgot password?
-							</Text>
+								<Text
+									style={{
+										alignSelf: "center",
+										color: COLORS.gray,
+										textDecorationLine: "underline",
+										fontFamily: FONTS.regular,
+										fontSize: SIZES.font,
+									}}
+								>
+									Forgot password?
+								</Text>
+							</TouchableOpacity>
 						</Layout>
 					</Layout>
 					<Layout style={{ paddingTop: 50, width: "85%" }}>
