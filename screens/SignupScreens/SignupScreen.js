@@ -54,12 +54,19 @@ const SignupScreen = ({ navigation }) => {
 		[]
 	);
 
+	const clearInputs = () => {
+		setPassword("");
+		setConfirmPassword("");
+		setChecked(false);
+	};
+
 	const handleSignup = async () => {
 		try {
 			setSignupLoading(true);
 			// check if any of the fields are empty
 			if (!username || !email || !password || !confirmPassword || !checked) {
 				setSignupError("Please enter all fields");
+				clearInputs();
 				setSignupLoading(false);
 				return;
 			}
@@ -69,9 +76,6 @@ const SignupScreen = ({ navigation }) => {
 			if (password && password !== confirmPassword) {
 				setSignupError("Passwords does not match");
 				// clear passwords
-				setPassword("");
-				setConfirmPassword("");
-				setChecked(false);
 				setSignupLoading(false);
 				return;
 			}
@@ -80,9 +84,7 @@ const SignupScreen = ({ navigation }) => {
 			if (error) {
 				setSignupError(error);
 				// clear passwords
-				setPassword("");
-				setConfirmPassword("");
-				setChecked(false);
+				clearInputs();
 				setSignupLoading(false);
 				return;
 			}
@@ -268,6 +270,7 @@ const SignupScreen = ({ navigation }) => {
 									flexDirection: "row",
 									paddingLeft: SIZES.large,
 									paddingTop: SIZES.base,
+									alignItems: "center",
 								}}
 							>
 								<CheckBox
@@ -276,13 +279,22 @@ const SignupScreen = ({ navigation }) => {
 								></CheckBox>
 								<Text
 									style={{
-										fontFamily: FONTS.regular,
-										fontSize: SIZES.font,
+										fontFamily: FONTS.semiBold,
+										fontSize: SIZES.small,
 										color: COLORS.gray,
-										paddingLeft: SIZES.medium,
+										paddingLeft: SIZES.small,
 									}}
 								>
-									I agree with the Privacy Policy
+									I agree to the{" "}
+									<Text
+										style={{
+											fontFamily: FONTS.semiBold,
+											fontSize: SIZES.small,
+											color: COLORS.primary,
+										}}
+									>
+										Terms and Conditions
+									</Text>
 								</Text>
 							</Layout>
 							{signupError && (
