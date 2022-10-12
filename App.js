@@ -15,7 +15,9 @@ import {
 	SignupScreen2,
 	SignupScreen3,
 	ForgotPasswordScreen,
-	ProfileScreen
+	ProfileScreen,
+	ChangePasswordScreen,
+	SupportScreen
 
 } from "./screens";
 
@@ -67,9 +69,12 @@ const App = () => {
 					>
 						{!isSignedIn ? (
 							<Stack.Group>
+
 								
 								<Stack.Screen name="MainPage" component={MainScreen} />
 								<Stack.Screen name="ProfilePage" component={ProfileScreen} />
+								<Stack.Screen name = "SupportPage" component={SupportScreen}/>
+								<Stack.Screen name = "ChangePasswordPage" component={ChangePasswordScreen}/>
 								
 								<Stack.Screen name="LoginPage" component={LoginScreen} />
 								<Stack.Screen name="SignupPage1" component={SignupScreen1} />
