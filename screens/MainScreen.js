@@ -1,8 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, Button, Layout } from "@ui-kitten/components";
+import { Layout } from "@ui-kitten/components";
 import React from "react";
 import { StyleSheet, View, Image } from "react-native";
-import { assets, COLORS, FONTS, SIZES } from "../constants";
+import { COLORS } from "../constants";
+import { CustomButton } from "../components";
 
 const MainScreen = ({ navigation }) => {
 	return (
@@ -15,31 +16,19 @@ const MainScreen = ({ navigation }) => {
 
 			<Layout style={{ width: "80%" }}>
 				<Layout style={{ width: "100%" }}>
-					<Button
-						status="success"
-						style={{
-							marginBottom: 10,
-							backgroundColor: COLORS.primary,
-							borderRadius: SIZES.font,
-						}}
-						onPress={() => navigation.navigate("SignupPage1")}
-					>
-						Sign Up
-					</Button>
+					<CustomButton
+						text={"Sign up"}
+						backgroundColor={COLORS.primary}
+						onPress={() => navigation.navigate("SignupPage")}
+					/>
 				</Layout>
 
 				<Layout style={{ paddingTop: 0, width: "100%" }}>
-					<Button
-						status="success"
-						style={{
-							marginBottom: SIZES.extraLarge,
-							backgroundColor: COLORS.primary,
-							borderRadius: SIZES.font,
-						}}
+					<CustomButton
+						text={"Login"}
+						backgroundColor={COLORS.primary}
 						onPress={() => navigation.navigate("LoginPage")}
-					>
-						Login
-					</Button>
+					/>
 				</Layout>
 			</Layout>
 		</View>

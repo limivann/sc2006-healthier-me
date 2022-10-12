@@ -1,11 +1,11 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useState } from "react";
 import {
 	Layout,
 	Text,
 	Icon,
 	Input,
-	Button,
 	Divider,
+	Spinner,
 } from "@ui-kitten/components";
 import {
 	Keyboard,
@@ -13,16 +13,20 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	Platform,
-	TouchableOpacity,
 } from "react-native";
 import { CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
+import { signInUser } from "../firebase/auth/emailProvider";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { auth } from "../firebase/firebase-config";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
 	const [loginError, setLoginError] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+	const [loginLoading, setLoginLoading] = useState(false);
 
 	const toggleSecureEntry = () => {
 		setSecureTextEntry(!secureTextEntry);
@@ -44,6 +48,32 @@ const LoginScreen = () => {
 		),
 		[]
 	);
+
+	const handleLogin = async () => {
+		try {
+			setLoginLoading(true);
+			// check if any of the fields are empty
+			if (!email || !password) {
+				setLoginError("Please enter all fields");
+				setLoginLoading(false);
+				return;
+			}
+			const { user, error } = await signInUser(email, password);
+			if (error) {
+				setLoginError(error);
+				// clear password
+				setPassword("");
+				setLoginLoading(false);
+				return;
+			}
+			// no errors navigate to home page
+			navigation.navigate("HomePage");
+			setLoginLoading(false);
+			return;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<KeyboardAvoidingView
@@ -103,13 +133,14 @@ const LoginScreen = () => {
 										color: COLORS.gray,
 										fontFamily: FONTS.regular,
 										fontSize: SIZES.font,
+										marginBottom: SIZES.base,
 									}}
 								>
 									Email
 								</Text>
 
 								<Input
-									placeholder="Email"
+									placeholder="johndoe@example.com"
 									autoCompleteType="email"
 									value={email}
 									onChangeText={nextValue => setEmail(nextValue)}
@@ -129,6 +160,7 @@ const LoginScreen = () => {
 										color: COLORS.gray,
 										fontFamily: FONTS.regular,
 										fontSize: SIZES.font,
+										marginBottom: SIZES.base,
 									}}
 								>
 									Password
@@ -149,6 +181,20 @@ const LoginScreen = () => {
 								/>
 							</Layout>
 						</Layout>
+						{loginError && (
+							<Layout>
+								<Text
+									style={{
+										fontFamily: FONTS.medium,
+										fontSize: SIZES.small,
+										color: COLORS.error,
+										paddingTop: SIZES.base,
+									}}
+								>
+									{loginError}
+								</Text>
+							</Layout>
+						)}
 						<Layout>
 							<Divider style={{ marginVertical: 36 }} />
 							<Text
@@ -172,6 +218,40 @@ const LoginScreen = () => {
 							>
 								<GoogleIcon />
 							</CustomButton>
+							<TouchableOpacity
+								onPress={() =>
+									!loginLoading && navigation.navigate("ForgotPasswordPage")
+								}
+							>
+								<Text
+									style={{
+										alignSelf: "center",
+										color: COLORS.gray,
+										textDecorationLine: "underline",
+										fontFamily: FONTS.regular,
+										fontSize: SIZES.font,
+									}}
+								>
+									Forgot password?
+								</Text>
+							</TouchableOpacity>
+						</Layout>
+					</Layout>
+					<Layout style={{ paddingTop: 50, width: "85%" }}>
+						{!loginLoading ? (
+							<CustomButton
+								text={"Sign in"}
+								backgroundColor={COLORS.primary}
+								onPress={() => handleLogin()}
+							/>
+						) : (
+							<CustomButton backgroundColor={COLORS.lightPrimary}>
+								<Spinner status="basic" size="small" />
+							</CustomButton>
+						)}
+						<TouchableOpacity
+							onPress={() => !loginLoading && navigation.navigate("SignupPage")}
+						>
 							<Text
 								style={{
 									alignSelf: "center",
@@ -181,23 +261,9 @@ const LoginScreen = () => {
 									fontSize: SIZES.font,
 								}}
 							>
-								Forgot password?
+								I'm a new user. Registration
 							</Text>
-						</Layout>
-					</Layout>
-					<Layout style={{ paddingTop: 50, width: "85%" }}>
-						<CustomButton text={"Login"} backgroundColor={COLORS.primary} />
-						<Text
-							style={{
-								alignSelf: "center",
-								color: COLORS.gray,
-								textDecorationLine: "underline",
-								fontFamily: FONTS.regular,
-								fontSize: SIZES.font,
-							}}
-						>
-							I'm a new user. Registration
-						</Text>
+						</TouchableOpacity>
 					</Layout>
 				</Layout>
 			</TouchableWithoutFeedback>
