@@ -240,7 +240,7 @@ const LoginScreen = ({ navigation }) => {
 					<Layout style={{ paddingTop: 50, width: "85%" }}>
 						{!loginLoading ? (
 							<CustomButton
-								text={"Sign up"}
+								text={"Sign in"}
 								backgroundColor={COLORS.primary}
 								onPress={() => handleLogin()}
 							/>

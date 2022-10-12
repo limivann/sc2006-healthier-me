@@ -65,7 +65,7 @@ const SettingsScreen = ({ navigation }) => {
 						style={{
 							fontFamily: FONTS.bold,
 							textAlign: "center",
-							paddingBottom: SIZES.base,
+							paddingBottom: SIZES.font,
 							color: COLORS.white,
 							fontSize: SIZES.large,
 						}}

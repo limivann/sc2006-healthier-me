@@ -1,12 +1,12 @@
 import React from "react";
 import { Layout, Text } from "@ui-kitten/components";
-import { FocusedStatusBar, Navbar } from "../components";
+import { BackButton, FocusedStatusBar, Navbar } from "../components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { SafeAreaView } from "react-native";
 
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
-const TermsAndConditionsScreen = () => {
+const TermsAndConditionsScreen = ({ navigation }) => {
 	return (
 		<Layout style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -20,6 +20,7 @@ const TermsAndConditionsScreen = () => {
 				}}
 			></Layout>
 			<SafeAreaView style={{ flex: 1 }}>
+				<BackButton onPress={() => navigation.goBack()} color="white" />
 				<Layout
 					style={{
 						width: "100%",
@@ -32,7 +33,7 @@ const TermsAndConditionsScreen = () => {
 						style={{
 							fontFamily: FONTS.bold,
 							textAlign: "center",
-							paddingBottom: SIZES.base,
+							paddingBottom: SIZES.font,
 							color: COLORS.white,
 							fontSize: SIZES.large,
 						}}
