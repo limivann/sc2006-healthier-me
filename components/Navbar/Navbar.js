@@ -5,7 +5,8 @@ import NavbarIcons from "./NavbarIcons";
 
 const NAVBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
-const Navbar = () => {
+// 1 - 5, if index == 1 - home is fill etc
+const Navbar = ({ id }) => {
 	return (
 		<Layout
 			style={{
@@ -26,11 +27,11 @@ const Navbar = () => {
 					alignItems: "center",
 				}}
 			>
-				<NavbarIcons icon={assets.homeIcon} />
-				<NavbarIcons icon={assets.profileIcon} />
-				<NavbarIcons icon={assets.addIcon} />
-				<NavbarIcons icon={assets.navigateIcon} />
-				<NavbarIcons icon={assets.settingsIcon} />
+				<NavbarIcons iconName="home" fill={id === 1} />
+				<NavbarIcons iconName="person" fill={id === 2} />
+				<NavbarIcons iconName="plus-square" fill={id === 3} />
+				<NavbarIcons iconName="compass" fill={id === 4} />
+				<NavbarIcons iconName="settings-2" fill={id === 5} />
 			</SafeAreaView>
 		</Layout>
 	);

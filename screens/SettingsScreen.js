@@ -13,7 +13,6 @@ import { COLORS, FONTS, SIZES } from "../constants";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { signOutUser } from "../firebase/auth/emailProvider";
-import { auth } from "../firebase/firebase-config";
 
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
@@ -179,7 +178,7 @@ const SettingsScreen = ({ navigation }) => {
 						</TouchableOpacity>
 					</Layout>
 				</Layout>
-				<Navbar />
+				<Navbar id={5} />
 				<Modal
 					visible={logoutPanelVisible}
 					backdropStyle={styles.backdrop}

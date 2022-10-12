@@ -96,7 +96,7 @@ const TermsAndConditionsScreen = () => {
 						aspernatur reprehenderit. Facere sed corrupti voluptatem.
 					</Text>
 				</Layout>
-				<Navbar />
+				<Navbar id={5} />
 			</SafeAreaView>
 		</Layout>
 	);
