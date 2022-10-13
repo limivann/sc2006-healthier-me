@@ -1,29 +1,23 @@
 import { useState } from "react";
-import {
-	Layout,
-	Text,
-	Icon,
-	Input,
-	Button,
-	Divider,
-} from "@ui-kitten/components";
+import { Layout, Text, Icon, Input, Button } from "@ui-kitten/components";
 import {
 	Keyboard,
 	TouchableWithoutFeedback,
 	KeyboardAvoidingView,
-	Image,
 	Platform,
-} from "react-native";	
-import { FocusedStatusBar } from "../components";
-import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
+	StyleSheet,
+} from "react-native";
+import { BackButton, CustomButton, FocusedStatusBar } from "../components";
+import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
 
+const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
-const ChangePasswordScreen = () => {
+const ChangePasswordScreen = ({ navigation }) => {
+	const [oldPassword, setOldPassword] = useState("");
+	const [newPassword, setNewPassword] = useState("");
+	const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
 	const [secureTextEntry, setSecureTextEntry] = useState(true);
-
 
 	const toggleSecureEntry = () => {
 		setSecureTextEntry(!secureTextEntry);
@@ -35,7 +29,6 @@ const ChangePasswordScreen = () => {
 		</TouchableWithoutFeedback>
 	);
 
-
 	return (
 		<KeyboardAvoidingView
 			style={{ flex: 1 }}
@@ -46,9 +39,8 @@ const ChangePasswordScreen = () => {
 			})()}
 		>
 			<FocusedStatusBar
+				backgroundColor={COLORS.primary}
 				barStyle="dark-content"
-				backgroundColor="transparent"
-				translucent={true}
 			/>
 			<TouchableWithoutFeedback
 				onPress={() => {
@@ -58,111 +50,75 @@ const ChangePasswordScreen = () => {
 				<Layout
 					style={{
 						flex: 1,
-						alignItems: "center",
-						justifyContent: "flex-end",
-						marginBottom: "20%",
 					}}
 				>
-					<Layout style={{ width: "85%" }}>
+					<BackButton onPress={() => navigation.goBack()} color="white" />
 
-						<Layout>
-							<Layout style={{ marginBottom: SIZES.base }}>
-								<Text
-									style={{
-										paddingLeft: SIZES.large,
-										paddingTop: SIZES.base,
-										color: COLORS.gray,
-										fontFamily: FONTS.regular,
-										fontSize: SIZES.font,
-									}}
-								>
-									Current Password
-								</Text>
-
-								<Input
-									placeholder="Email"
-									autoCompleteType="email"
-									value={email}
-									onChangeText={nextValue => setEmail(nextValue)}
-									style={{
-										borderRadius: SIZES.base,
-										...SHADOWS.light,
-										fontFamily: FONTS.regular,
-										fontSize: SIZES.font,
-									}}
-								/>
-							</Layout>
-							<Layout>
-								<Text
-									style={{
-										paddingLeft: SIZES.large,
-										paddingTop: SIZES.base,
-										color: COLORS.gray,
-										fontFamily: FONTS.regular,
-										fontSize: SIZES.font,
-									}}
-								>
-									New Password
-								</Text>
-								<Input
-									placeholder="min 8 characters"
-									autoCompleteType="min 8 characters"
-									value={password}
-									onChangeText={nextValue => setPassword(nextValue)}
-									accessoryRight={renderIcon}
-									secureTextEntry={secureTextEntry}
-									style={{
-										borderRadius: SIZES.base,
-										...SHADOWS.light,
-										fontFamily: FONTS.regular,
-										fontSize: SIZES.font,
-									}}
-								/>
-							</Layout>
-							<Layout>
-								<Text
-									style={{
-										paddingLeft: SIZES.large,
-										paddingTop: SIZES.base,
-										color: COLORS.gray,
-										fontFamily: FONTS.regular,
-										fontSize: SIZES.font,
-									}}
-								>
-								Confirm Password	
-								</Text>
-								<Input
-									placeholder="Password"
-									autoCompleteType="password"
-									value={password}
-									onChangeText={nextValue => setPassword(nextValue)}
-									accessoryRight={renderIcon}
-									secureTextEntry={secureTextEntry}
-									style={{
-										borderRadius: SIZES.base,
-										...SHADOWS.light,
-										fontFamily: FONTS.regular,
-										fontSize: SIZES.font,
-									}}
-								/>
-							</Layout>
-						</Layout>
-						
-					</Layout>
-					<Layout style={{ paddingTop: 300, width: "80%" }}>
-						<Button
-							status="success"
+					<Layout
+						style={{
+							width: "100%",
+							height: TITLEBAR_HEIGHT,
+							backgroundColor: COLORS.primary,
+							justifyContent: "flex-end",
+						}}
+					>
+						<Text
 							style={{
-								marginBottom: SIZES.extraLarge,
-								backgroundColor: "#72BE79",
-								borderRadius: SIZES.font,
-
-	
+								fontFamily: FONTS.bold,
+								textAlign: "center",
+								paddingBottom: SIZES.font,
+								color: COLORS.white,
+								fontSize: SIZES.large,
 							}}
 						>
-							Save
-						</Button>
+							Change Password
+						</Text>
+					</Layout>
+					<Layout style={styles.changePasswordContainer}>
+						<Layout style={{ marginBottom: SIZES.base, width: "100%" }}>
+							<Text style={styles.inputLabel}>Current Password</Text>
 
+							<Input
+								placeholder="Current Password"
+								autoCompleteType="password"
+								value={oldPassword}
+								onChangeText={nextValue => setOldPassword(nextValue)}
+								accessoryRight={renderIcon}
+								secureTextEntry={secureTextEntry}
+								style={styles.textInput}
+							/>
+						</Layout>
+						<Layout style={{ marginBottom: SIZES.base, width: "100%" }}>
+							<Text style={styles.inputLabel}>New Password</Text>
+							<Input
+								placeholder="New Password"
+								autoCompleteType="password"
+								value={newPassword}
+								onChangeText={nextValue => setNewPassword(nextValue)}
+								accessoryRight={renderIcon}
+								secureTextEntry={secureTextEntry}
+								style={styles.textInput}
+							/>
+						</Layout>
+						<Layout style={{ marginBottom: SIZES.base, width: "100%" }}>
+							<Text style={styles.inputLabel}>Confirm Password</Text>
+							<Input
+								placeholder="Confirm password"
+								autoCompleteType="password"
+								value={confirmNewPassword}
+								onChangeText={nextValue => setConfirmNewPassword(nextValue)}
+								accessoryRight={renderIcon}
+								secureTextEntry={secureTextEntry}
+								style={styles.textInput}
+							/>
+						</Layout>
+						<Layout style={{ width: "100%", position: "absolute", bottom: 0 }}>
+							<CustomButton
+								text={"Save"}
+								backgroundColor={COLORS.primary}
+								onPress={() => {}}
+							/>
+						</Layout>
 					</Layout>
 				</Layout>
 			</TouchableWithoutFeedback>
@@ -171,3 +127,28 @@ const ChangePasswordScreen = () => {
 };
 
 export default ChangePasswordScreen;
+
+const styles = StyleSheet.create({
+	changePasswordContainer: {
+		flex: 1,
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		paddingHorizontal: "7.5%",
+		paddingTop: SIZES.large,
+	},
+	inputLabel: {
+		paddingLeft: SIZES.medium,
+		paddingTop: SIZES.base,
+		color: COLORS.gray,
+		fontFamily: FONTS.regular,
+		fontSize: SIZES.font,
+		marginBottom: SIZES.base,
+	},
+	textInput: {
+		borderRadius: SIZES.base,
+		...SHADOWS.light,
+		fontFamily: FONTS.regular,
+		fontSize: SIZES.font,
+	},
+});
