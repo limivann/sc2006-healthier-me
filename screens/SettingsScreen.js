@@ -8,7 +8,7 @@ import {
 	Modal,
 	Card,
 } from "@ui-kitten/components";
-import { CustomButton, FocusedStatusBar, Navbar } from "../components";
+import { CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -36,7 +36,6 @@ const SettingsScreen = ({ navigation }) => {
 		const { success } = await signOutUser();
 		if (success) {
 			setLogoutPanelVisible(false);
-			navigation.navigate("MainPage");
 		}
 	};
 
@@ -46,12 +45,6 @@ const SettingsScreen = ({ navigation }) => {
 				backgroundColor={COLORS.primary}
 				barStyle="dark-content"
 			/>
-			<Layout
-				style={{
-					width: "100%",
-					position: "absolute",
-				}}
-			></Layout>
 			<SafeAreaView style={{ flex: 1 }}>
 				<Layout
 					style={{
@@ -103,7 +96,9 @@ const SettingsScreen = ({ navigation }) => {
 							<Icon name="lock-outline" fill="black" style={styles.icon} />
 							<Text style={styles.iconText}>Change Password</Text>
 						</Layout>
-						<TouchableOpacity>
+						<TouchableOpacity
+							onPress={() => navigation.navigate("ChangePasswordPage")}
+						>
 							<Icon
 								name="chevron-right-outline"
 								fill="black"
@@ -153,7 +148,9 @@ const SettingsScreen = ({ navigation }) => {
 							<Icon name="email-outline" fill="black" style={styles.icon} />
 							<Text style={styles.iconText}>Support</Text>
 						</Layout>
-						<TouchableOpacity>
+						<TouchableOpacity
+							onPress={() => navigation.navigate("SupportPage")}
+						>
 							<Icon
 								name="chevron-right-outline"
 								fill="black"
@@ -178,7 +175,6 @@ const SettingsScreen = ({ navigation }) => {
 						</TouchableOpacity>
 					</Layout>
 				</Layout>
-				<Navbar id={5} />
 				<Modal
 					visible={logoutPanelVisible}
 					backdropStyle={styles.backdrop}

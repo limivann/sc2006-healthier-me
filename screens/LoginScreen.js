@@ -18,7 +18,6 @@ import { CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 import { signInUser } from "../firebase/auth/emailProvider";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { auth } from "../firebase/firebase-config";
 
 const LoginScreen = ({ navigation }) => {
 	const [loginError, setLoginError] = useState("");
@@ -66,8 +65,7 @@ const LoginScreen = ({ navigation }) => {
 				setLoginLoading(false);
 				return;
 			}
-			// no errors navigate to home page
-			navigation.navigate("HomePage");
+			// no errors. auto login
 			setLoginLoading(false);
 			return;
 		} catch (error) {

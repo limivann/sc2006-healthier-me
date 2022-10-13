@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Text } from "@ui-kitten/components";
-import { BackButton, FocusedStatusBar, Navbar } from "../components";
+import { BackButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { SafeAreaView } from "react-native";
 
@@ -97,7 +97,6 @@ const TermsAndConditionsScreen = ({ navigation }) => {
 						aspernatur reprehenderit. Facere sed corrupti voluptatem.
 					</Text>
 				</Layout>
-				<Navbar id={5} />
 			</SafeAreaView>
 		</Layout>
 	);

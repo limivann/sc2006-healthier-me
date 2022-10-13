@@ -22,7 +22,6 @@ export {
 	SignupScreen1,
 	SignupScreen2,
 	SignupScreen3,
-	ProfileScreen,
 	ChangePasswordScreen,
 	SupportScreen,
 	SettingsScreen,
