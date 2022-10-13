@@ -6,6 +6,7 @@ import GenderSwitchButton from "./GenderSwitchButton";
 import Navbar from "./Navbar/Navbar";
 import BackButton from "./BackButton";
 import CodeInputField from "./CodeInputField";
+import CustomButton from "./CustomButton";
 import DateButton from "./DateButton";
 export {
 	FocusedStatusBar,
@@ -16,5 +17,6 @@ export {
 	TickIcon,
 	BackButton,
 	CodeInputField,
+	CustomButton,
 	DateButton,
 };

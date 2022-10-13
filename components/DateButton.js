@@ -15,31 +15,36 @@ const DateButton = () => {
             id: 1,
             dayOfWeek: "Sat",
             dayOfMonth: "26",
+            isFocused: false,
         },
         {
             id: 2,
             dayOfWeek: "Sun",
             dayOfMonth: "27",
+            isFocused: false,
         },
         {
             id: 3,
             dayOfWeek: "Mon",
             dayOfMonth: "28",
+            isFocused: false,
         },
         {
             id: 4,
             dayOfWeek: "Tue",
             dayOfMonth: "29",
+            isFocused: false,
         },
         {
             id: 5,
             dayOfWeek: "Wed",
             dayOfMonth: "30",
+            isFocused: false,
         },
     ]);
-    const renderDate = ({ dayOfWeek, dayOfMonth, handleOnPress }) => {
+    const renderDate = ({ dayOfWeek, dayOfMonth, isFocused, handleOnPress }) => {
         return (
-            <TouchableOpacity
+            <TouchableWithoutFeedback
                 onPress={handleOnPress}
                 style={{
                     alignItems: "center",
@@ -65,7 +70,7 @@ const DateButton = () => {
                 >
                     {dayOfMonth}
                 </Text>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
         );
     };
 

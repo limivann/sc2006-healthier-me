@@ -10,7 +10,8 @@ export const SCREEN_DIM = {
 export const COLORS = {
 	primary: "#72BE79",
 	secondary: "#4D626C",
-
+	lightPrimary: "#95ce9a",
+	error: "#F81919",
 	white: "#FFF",
 	gray: "#707070",
 	lightgray: "#DCDCDC",

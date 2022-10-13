@@ -1,7 +1,7 @@
 import { SafeAreaView, Image } from "react-native";
 import { Text, Button, Layout } from "@ui-kitten/components";
 import React from "react";
-import { FocusedStatusBar, CircularDots } from "../../components";
+import { FocusedStatusBar, CircularDots, CustomButton } from "../../components";
 import { assets, COLORS, FONTS, SIZES } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
 
@@ -88,17 +88,11 @@ const SignupScreen1 = () => {
 					}}
 				>
 					<Layout style={{ paddingTop: 50, width: "80%" }}>
-						<Button
-							status="success"
-							style={{
-								marginBottom: SIZES.extraLarge,
-								backgroundColor: COLORS.primary,
-								borderRadius: SIZES.font,
-							}}
+						<CustomButton
+							text={"Login"}
+							backgroundColor={COLORS.primary}
 							onPress={() => navigation.navigate("SignupPage2")}
-						>
-							Login
-						</Button>
+						/>
 					</Layout>
 					<Layout
 						style={{

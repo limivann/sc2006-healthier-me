@@ -7,9 +7,8 @@ import {
 	sendPasswordResetEmail,
 	signOut,
 } from "firebase/auth";
-import { app } from "../firebase-config";
+import { auth } from "../firebase-config";
 
-const auth = getAuth(app);
 export const createUser = async (email, password) => {
 	try {
 		const userCredential = await createUserWithEmailAndPassword(
@@ -21,8 +20,20 @@ export const createUser = async (email, password) => {
 		return { user, error: null };
 	} catch (error) {
 		const errorCode = error.code;
-		// const errorMessage = error.message;
-		return { error: errorCode };
+		let errorMessage;
+		switch (errorCode) {
+			case "auth/email-already-in-use":
+				errorMessage = "Email already in use";
+				break;
+			case "auth/weak-password":
+				errorMessage =
+					"Password must have minimum of eight characters, at least one letter and one number";
+				break;
+			default:
+				errorMessage = "Something went wrong";
+				break;
+		}
+		return { error: errorMessage };
 	}
 };
 
@@ -37,7 +48,18 @@ export const signInUser = async (email, password) => {
 		return { user, error: null };
 	} catch (error) {
 		const errorCode = error.code;
-		// const errorMessage = error.message;
+		let errorMessage;
+		switch (error) {
+			case "auth/wrong-password":
+				errorMessage = "Wrong password";
+				break;
+			case "auth/user-not-found":
+				errorMessage = "User not found";
+				break;
+			default:
+				errorMessage = "Something went wrong";
+				break;
+		}
 		return { error: errorCode };
 	}
 };
@@ -58,7 +80,7 @@ export const updateUserName = async newName => {
 	}
 };
 
-export const sendVerificationEmail = async () => {
+export const verifyEmail = async () => {
 	try {
 		const verificationEmail = await sendEmailVerification(auth.currentUser);
 		return { success: true };
@@ -68,7 +90,7 @@ export const sendVerificationEmail = async () => {
 	}
 };
 
-export const sendPasswordResetEmail = async email => {
+export const resetPasswordEmail = async email => {
 	try {
 		// TODO: check if user is verified or not
 		const passwordReset = await sendPasswordResetEmail(auth, email);
@@ -84,6 +106,7 @@ export const signOutUser = async () => {
 	//  assume user is logged in
 	try {
 		await signOut(auth);
+		return { success: true };
 	} catch (error) {
 		const errorCode = error.code;
 		return { error: errorCode, success: false };

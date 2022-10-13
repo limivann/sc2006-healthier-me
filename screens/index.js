@@ -7,10 +7,13 @@ import SignupScreen3 from "./SignupScreens/SignupScreen3";
 import ForgotPasswordScreen from "./ForgotPasswordScreen";
 import SettingsScreen from "./SettingsScreen";
 import ProfileScreen from "./ProfileScreen";
+import ChangePasswordScreen from "./ChangePasswordScreen";
+import SupportScreen from "./SupportScreen";
 import SignupScreen from "./SignupScreens/SignupScreen";
 import VerificationCodeScreen from "./VerificationCodeScreen";
 import TermsAndConditionsScreen from "./TermsAndConditionsScreen";
 import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
+
 export {
 	HomeScreen,
 	LoginScreen,
@@ -19,9 +22,11 @@ export {
 	SignupScreen1,
 	SignupScreen2,
 	SignupScreen3,
+	ProfileScreen,
+	ChangePasswordScreen,
+	SupportScreen,
 	SettingsScreen,
 	ForgotPasswordScreen,
-	ProfileScreen,
 	VerificationCodeScreen,
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
