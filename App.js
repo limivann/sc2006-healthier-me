@@ -39,7 +39,7 @@ const theme = {
 };
 
 const App = () => {
-	const [isSignedIn, setIsSignedIn] = useState(false);
+	const [isSignedIn, setIsSignedIn] = useState(true);
 	const appContextValue = useMemo(
 		() => ({
 			isSignedIn,

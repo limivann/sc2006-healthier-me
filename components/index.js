@@ -6,7 +6,7 @@ import GenderSwitchButton from "./GenderSwitchButton";
 import Navbar from "./Navbar/Navbar";
 import BackButton from "./BackButton";
 import CodeInputField from "./CodeInputField";
-
+import DateButton from "./DateButton";
 export {
 	FocusedStatusBar,
 	ActivityLevelButton,
@@ -16,4 +16,5 @@ export {
 	TickIcon,
 	BackButton,
 	CodeInputField,
+	DateButton,
 };
