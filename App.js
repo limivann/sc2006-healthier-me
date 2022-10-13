@@ -160,8 +160,6 @@ const App = () => {
 								} else if (route.name === "Settings") {
 									iconName = focused ? "settings-2" : "settings-2-outline";
 								}
-
-								// You can return any component that you like here!
 								return (
 									<Icon
 										name={iconName}
@@ -170,8 +168,6 @@ const App = () => {
 									/>
 								);
 							},
-							tabBarActiveTintColor: "tomato",
-							tabBarInactiveTintColor: "gray",
 							tabBarShowLabel: false,
 							headerShown: false,
 							tabBarStyle: {
