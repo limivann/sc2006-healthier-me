@@ -15,6 +15,9 @@ import {
 	SignupScreen2,
 	SignupScreen3,
 	ForgotPasswordScreen,
+	ProfileScreen,
+	ChangePasswordScreen,
+	SupportScreen,
 	SettingsScreen,
 	ProfileScreen,
 	VerificationCodeScreen,
@@ -99,6 +102,11 @@ const App = () => {
 							<Stack.Screen
 								name="PrivacyPolicyPage"
 								component={PrivacyPolicyScreen}
+							/>
+							<Stack.Screen name="SupportPage" component={SupportScreen} />
+							<Stack.Screen
+								name="ChangePasswordPage"
+								component={ChangePasswordScreen}
 							/>
 						</Stack.Group>
 					)}
