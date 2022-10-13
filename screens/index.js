@@ -13,6 +13,7 @@ import SignupScreen from "./SignupScreens/SignupScreen";
 import VerificationCodeScreen from "./VerificationCodeScreen";
 import TermsAndConditionsScreen from "./TermsAndConditionsScreen";
 import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
+import VerifyEmailScreen from "./SignupScreens/VerifyEmailScreen";
 
 export {
 	HomeScreen,
@@ -30,4 +31,5 @@ export {
 	VerificationCodeScreen,
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
+	VerifyEmailScreen,
 };
