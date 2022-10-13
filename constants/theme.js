@@ -1,7 +1,17 @@
+import { Dimensions, Platform } from "react-native";
+
+export const APPBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
+
+export const SCREEN_DIM = {
+	width: Dimensions.get("window").width,
+	height: Dimensions.get("window").height - APPBAR_HEIGHT,
+};
+
 export const COLORS = {
 	primary: "#72BE79",
 	secondary: "#4D626C",
-
+	lightPrimary: "#95ce9a",
+	error: "#F81919",
 	white: "#FFF",
 	gray: "#707070",
 	lightgray: "#DCDCDC",
