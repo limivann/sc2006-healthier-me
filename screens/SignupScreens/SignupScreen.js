@@ -167,6 +167,7 @@ const SignupScreen = ({ navigation }) => {
 									}}
 								>
 									Username
+									<Text style={{color: COLORS.error}}> *</Text>
 								</Text>
 
 								<Input
@@ -195,6 +196,7 @@ const SignupScreen = ({ navigation }) => {
 									}}
 								>
 									Email address
+									<Text style={{color: COLORS.error}}> *</Text>
 								</Text>
 								<Input
 									placeholder="johndoe@example.com"
@@ -221,6 +223,7 @@ const SignupScreen = ({ navigation }) => {
 									}}
 								>
 									Password
+									<Text style={{color: COLORS.error}}> *</Text>
 								</Text>
 								<Input
 									placeholder="Password"
@@ -249,6 +252,7 @@ const SignupScreen = ({ navigation }) => {
 									}}
 								>
 									Confirm Password
+									<Text style={{color: COLORS.error}}> *</Text>
 								</Text>
 								<Input
 									placeholder="Confirm Password"

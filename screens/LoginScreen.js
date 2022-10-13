@@ -135,6 +135,7 @@ const LoginScreen = ({ navigation }) => {
 									}}
 								>
 									Email
+									<Text style={{color: COLORS.error}}> *</Text>
 								</Text>
 
 								<Input
@@ -162,6 +163,7 @@ const LoginScreen = ({ navigation }) => {
 									}}
 								>
 									Password
+									<Text style={{color: COLORS.error}}> *</Text>
 								</Text>
 								<Input
 									placeholder="Password"
