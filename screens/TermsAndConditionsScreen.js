@@ -13,12 +13,6 @@ const TermsAndConditionsScreen = ({ navigation }) => {
 				backgroundColor={COLORS.primary}
 				barStyle="dark-content"
 			/>
-			<Layout
-				style={{
-					width: "100%",
-					position: "absolute",
-				}}
-			></Layout>
 			<SafeAreaView style={{ flex: 1 }}>
 				<BackButton onPress={() => navigation.goBack()} color="white" />
 				<Layout

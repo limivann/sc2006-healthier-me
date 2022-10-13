@@ -1,6 +1,7 @@
 import { Icon } from "@ui-kitten/components";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, SIZES } from "../constants";
+const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
 const BackButton = ({ onPress, color }) => {
 	return (
@@ -13,7 +14,7 @@ const BackButton = ({ onPress, color }) => {
 const styles = StyleSheet.create({
 	button: {
 		width: 40,
-		height: 40,
+		height: TITLEBAR_HEIGHT,
 		backgroundColor: COLORS.primary,
 		position: "absolute",
 		zIndex: 1,
