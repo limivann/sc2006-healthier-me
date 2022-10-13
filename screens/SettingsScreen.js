@@ -178,7 +178,6 @@ const SettingsScreen = ({ navigation }) => {
 						</TouchableOpacity>
 					</Layout>
 				</Layout>
-				<Navbar id={5} />
 				<Modal
 					visible={logoutPanelVisible}
 					backdropStyle={styles.backdrop}

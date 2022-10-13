@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import * as eva from "@eva-design/eva";
-import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
+import { ApplicationProvider, Icon, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 
 // screens
@@ -19,7 +20,6 @@ import {
 	ChangePasswordScreen,
 	SupportScreen,
 	SettingsScreen,
-	ProfileScreen,
 	VerificationCodeScreen,
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
@@ -30,6 +30,7 @@ import { useFonts } from "expo-font";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase-config";
 import customTheme from "./constants/custom-theme.json";
+import { COLORS, SIZES } from "./constants";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,58 @@ const theme = {
 		...DefaultTheme.colors,
 		background: "transparent",
 	},
+};
+
+const Tab = createBottomTabNavigator();
+
+const HomeNavigator = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="HomePage" component={HomeScreen} />
+		</Stack.Navigator>
+	);
+};
+
+const ProfileNavigator = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="ProfilePage" component={HomeScreen} />
+		</Stack.Navigator>
+	);
+};
+
+const AddDailyNavigator = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="AddDailyPage" component={HomeScreen} />
+		</Stack.Navigator>
+	);
+};
+
+const NavigateNavigator = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="NavigatePage" component={HomeScreen} />
+		</Stack.Navigator>
+	);
+};
+
+const SettingsNavigator = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="SettingsPage" component={SettingsScreen} />
+			<Stack.Screen
+				name="TermsAndConditionsPage"
+				component={TermsAndConditionsScreen}
+			/>
+			<Stack.Screen name="PrivacyPolicyPage" component={PrivacyPolicyScreen} />
+			<Stack.Screen name="SupportPage" component={SupportScreen} />
+			<Stack.Screen
+				name="ChangePasswordPage"
+				component={ChangePasswordScreen}
+			/>
+		</Stack.Navigator>
+	);
 };
 
 const App = () => {
@@ -68,11 +121,11 @@ const App = () => {
 		<ApplicationProvider {...eva} theme={{ ...eva.light, ...customTheme }}>
 			<IconRegistry icons={EvaIconsPack} />
 			<NavigationContainer theme={theme}>
-				<Stack.Navigator
-					screenOptions={{ headerShown: false }}
-					initialRouteName="MainPage"
-				>
-					{!isSignedIn ? (
+				{!isSignedIn ? (
+					<Stack.Navigator
+						screenOptions={{ headerShown: false }}
+						initialRouteName="MainPage"
+					>
 						<Stack.Group>
 							<Stack.Screen name="MainPage" component={MainScreen} />
 							<Stack.Screen name="LoginPage" component={LoginScreen} />
@@ -90,27 +143,51 @@ const App = () => {
 								component={ForgotPasswordScreen}
 							/>
 						</Stack.Group>
-					) : (
-						<Stack.Group>
-							<Stack.Screen name="SettingsPage" component={SettingsScreen} />
-							<Stack.Screen name="HomePage" component={HomeScreen} />
-							<Stack.Screen name="ProfilePage" component={ProfileScreen} />
-							<Stack.Screen
-								name="TermsAndConditionsPage"
-								component={TermsAndConditionsScreen}
-							/>
-							<Stack.Screen
-								name="PrivacyPolicyPage"
-								component={PrivacyPolicyScreen}
-							/>
-							<Stack.Screen name="SupportPage" component={SupportScreen} />
-							<Stack.Screen
-								name="ChangePasswordPage"
-								component={ChangePasswordScreen}
-							/>
-						</Stack.Group>
-					)}
-				</Stack.Navigator>
+					</Stack.Navigator>
+				) : (
+					<Tab.Navigator
+						screenOptions={({ route }) => ({
+							tabBarIcon: ({ focused, color, size }) => {
+								let iconName;
+								if (route.name === "Home") {
+									iconName = focused ? "home" : "home-outline";
+								} else if (route.name === "Profile") {
+									iconName = focused ? "person" : "person-outline";
+								} else if (route.name === "AddDaily") {
+									iconName = focused ? "plus-square" : "plus-square-outline";
+								} else if (route.name === "Navigate") {
+									iconName = focused ? "compass" : "compass-outline";
+								} else if (route.name === "Settings") {
+									iconName = focused ? "settings-2" : "settings-2-outline";
+								}
+
+								// You can return any component that you like here!
+								return (
+									<Icon
+										name={iconName}
+										fill="white"
+										style={{ width: 32, height: 32 }}
+									/>
+								);
+							},
+							tabBarActiveTintColor: "tomato",
+							tabBarInactiveTintColor: "gray",
+							tabBarShowLabel: false,
+							headerShown: false,
+							tabBarStyle: {
+								backgroundColor: COLORS.primary,
+								paddingHorizontal: SIZES.extraLarge,
+							},
+						})}
+						initialRouteName="Home"
+					>
+						<Tab.Screen name="Home" component={HomeNavigator} />
+						<Tab.Screen name="Profile" component={ProfileNavigator} />
+						<Tab.Screen name="AddDaily" component={AddDailyNavigator} />
+						<Tab.Screen name="Navigate" component={NavigateNavigator} />
+						<Tab.Screen name="Settings" component={SettingsNavigator} />
+					</Tab.Navigator>
+				)}
 			</NavigationContainer>
 		</ApplicationProvider>
 	);
