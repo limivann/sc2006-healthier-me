@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 		zIndex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		paddingLeft: SIZES.large,
+		paddingLeft: SIZES.extraLarge,
 	},
 	icon: {
 		width: 36,

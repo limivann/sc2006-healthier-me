@@ -1,20 +1,18 @@
 import { useState } from "react";
-import { Layout, Text, Input, Button } from "@ui-kitten/components";
+import { Layout, Text, Input } from "@ui-kitten/components";
 import {
 	Keyboard,
 	TouchableWithoutFeedback,
 	KeyboardAvoidingView,
 	Platform,
-	TextInput,
-	SafeAreaView,
 	StyleSheet,
 } from "react-native";
-import { CustomButton, FocusedStatusBar } from "../components";
+import { BackButton, CustomButton, FocusedStatusBar } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
 
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
-const SupportScreen = () => {
+const SupportScreen = ({ navigation }) => {
 	const [email, setEmail] = useState("");
 	const [problem, setProblem] = useState("");
 
@@ -36,7 +34,8 @@ const SupportScreen = () => {
 					Keyboard.dismiss();
 				}}
 			>
-				<Layout style={{ flex: 1, alignItems: "center" }}>
+				<Layout style={{ flex: 1 }}>
+					<BackButton onPress={() => navigation.goBack()} color="white" />
 					<Layout
 						style={{
 							width: "100%",
@@ -113,7 +112,7 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
-		width: "85%",
+		paddingHorizontal: "7.5%",
 	},
 	titleText: {
 		paddingVertical: "7.5%",

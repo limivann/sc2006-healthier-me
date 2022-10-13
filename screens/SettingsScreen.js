@@ -96,7 +96,9 @@ const SettingsScreen = ({ navigation }) => {
 							<Icon name="lock-outline" fill="black" style={styles.icon} />
 							<Text style={styles.iconText}>Change Password</Text>
 						</Layout>
-						<TouchableOpacity>
+						<TouchableOpacity
+							onPress={() => navigation.navigate("ChangePasswordPage")}
+						>
 							<Icon
 								name="chevron-right-outline"
 								fill="black"
