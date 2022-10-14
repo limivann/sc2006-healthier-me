@@ -1,280 +1,190 @@
-import { StatusBar } from "expo-status-bar";
-import { Text, Button, Layout, Input } from "@ui-kitten/components";
-import React, { useState } from "react";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import { assets, COLORS, FONTS, SIZES, SHADOWS } from "../constants";
+import { Text, Layout, Input } from "@ui-kitten/components";
+import { useState } from "react";
+import {
+	StyleSheet,
+	Image,
+	KeyboardAvoidingView,
+	Platform,
+} from "react-native";
+import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
+import { EditButton, FocusedStatusBar } from "../components";
+const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
-const ProfileScreen = ({ navigation }) => {
-	const [height, setHeight] = useState("");
+const ProfileScreen = () => {
+	const [name, setName] = useState("John Doe");
+	const [email, setEmail] = useState("johndoe@gmail.com");
+	const [height, setHeight] = useState("170cm");
+	const [weight, setWeight] = useState("52kg");
+	const [age, setAge] = useState("21");
+	const [bmi, setBmi] = useState("20.0");
+	const [activityLevel, setActivityLevel] = useState("Not Very Active");
 	return (
-		<View style={styles.container}>
-			<View style={styles.header}></View>
-			<Image
-				style={styles.avatar}
-				source={require("../assets/icons/avatar.png")}
+		<KeyboardAvoidingView
+			style={{ flex: 1 }}
+			behavior={Platform.OS === "ios" ? "padding" : "height"}
+			keyboardVerticalOffset={Platform.select({
+				ios: () => -200,
+				android: () => -200,
+			})()}
+		>
+			<FocusedStatusBar
+				backgroundColor={COLORS.primary}
+				barStyle="dark-content"
 			/>
-			<View style={styles.headerContent}>
-				<Text style={styles.name}>John Doe </Text>
-				<Text style={styles.userInfo}>johndoe@gmail.com </Text>
-				<Text style={styles.userInfo}>Singapore</Text>
-			</View>
-
-			<View
-				style={[
-					styles.container,
-					{
-						flexDirection: "row",
-						alignContent: "space-between",
-						justifyContent: "center",
+			<Layout style={{ alignItems: "center" }}>
+				<Layout style={styles.header}></Layout>
+				<Layout
+					style={{
+						width: "100%",
+						height: TITLEBAR_HEIGHT,
+						backgroundColor: COLORS.primary,
+						justifyContent: "flex-end",
+						position: "relative",
 						alignItems: "center",
-					},
-				]}
-			>
-				<View style={[styles.row, { flexDirection: "column" }]}>
-					<View style={[styles.boxLabel]}>
-						<Layout style={{ marginBottom: SIZES.base, padding: 30 }}>
-							<Text
-								style={{
-									paddingLeft: SIZES.large,
-									paddingTop: SIZES.base,
-									color: COLORS.gray,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
-							>
-								Height
-							</Text>
-
-							<Input
-								placeholder="165cm"
-								autoCompleteType="165cm "
-								value={height}
-								onChangeText={nextValue => setHeight(nextValue)}
-								style={{
-									borderRadius: SIZES.base,
-									...SHADOWS.light,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
-							/>
-						</Layout>
-					</View>
-
-					<View style={[styles.boxLabel]}>
-						<Layout style={{ marginBottom: SIZES.base, padding: 30 }}>
-							<Text
-								style={{
-									paddingLeft: SIZES.large,
-									paddingTop: SIZES.base,
-									color: COLORS.gray,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
-							>
-								Age
-							</Text>
-
-							<Input
-								placeholder="21"
-								autoCompleteType="21"
-								value={height}
-								onChangeText={nextValue => setHeight(nextValue)}
-								style={{
-									borderRadius: SIZES.base,
-									...SHADOWS.light,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
-							/>
-						</Layout>
-					</View>
-				</View>
-				<View style={[styles.row, { flexDirection: "column" }]}>
-					<View style={[styles.boxLabel]}>
-						<Layout
-							style={{ marginBottom: SIZES.base, padding: 30, paddingLeft: 10 }}
-						>
-							<Text
-								style={{
-									paddingLeft: SIZES.large,
-									paddingTop: SIZES.base,
-									color: COLORS.gray,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
-							>
-								Weight
-							</Text>
-
-							<Input
-								placeholder="52 kg"
-								autoCompleteType="52 kg"
-								value={height}
-								onChangeText={nextValue => setHeight(nextValue)}
-								style={{
-									borderRadius: SIZES.base,
-									...SHADOWS.light,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
-							/>
-						</Layout>
-					</View>
-
-					<View style={[styles.boxLabel]}>
-						<Layout
-							style={{ marginBottom: SIZES.base, padding: 30, paddingLeft: 10 }}
-						>
-							<Text
-								style={{
-									paddingLeft: SIZES.large,
-									paddingTop: SIZES.base,
-									color: COLORS.gray,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
-							>
-								BMI
-							</Text>
-
-							<Input
-								placeholder="20.0"
-								autoCompleteType="20.0"
-								value={height}
-								onChangeText={nextValue => setHeight(nextValue)}
-								style={{
-									borderRadius: SIZES.base,
-									...SHADOWS.light,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-								}}
-							/>
-						</Layout>
-					</View>
-				</View>
-			</View>
-
-			<View style={[styles.boxLabel]}>
-				<Layout style={{ marginBottom: SIZES.base, padding: 30 }}>
+					}}
+				>
+					<EditButton onPress={() => {}} color="white" />
 					<Text
 						style={{
-							paddingLeft: SIZES.large,
-							paddingTop: SIZES.base,
-							color: COLORS.gray,
-							fontFamily: FONTS.regular,
-							fontSize: SIZES.font,
+							fontFamily: FONTS.bold,
+							letterSpacing: 1,
+							textAlign: "center",
+							paddingBottom: SIZES.font,
+							color: COLORS.white,
+							fontSize: SIZES.large,
 						}}
 					>
-						Email
+						Profile
 					</Text>
-
-					<Input
-						placeholder="johndoe@example.com"
-						autoCompleteType="johndoe@example.com "
-						value={height}
-						onChangeText={nextValue => setHeight(nextValue)}
-						style={{
-							borderRadius: SIZES.base,
-							...SHADOWS.light,
-							fontFamily: FONTS.regular,
-							fontSize: SIZES.font,
-						}}
-					/>
 				</Layout>
-			</View>
-
-			<View style={[styles.boxLabel]}>
-				<Layout style={{ marginBottom: SIZES.base, padding: 30 }}>
-					<Text
-						style={{
-							paddingLeft: SIZES.large,
-							paddingTop: SIZES.base,
-							color: COLORS.gray,
-							fontFamily: FONTS.regular,
-							fontSize: SIZES.font,
-						}}
-					>
-						Activity Level
-					</Text>
-
-					<Input
-						placeholder="Not Very Active"
-						autoCompleteType="Not Very Active"
-						value={height}
-						onChangeText={nextValue => setHeight(nextValue)}
-						style={{
-							borderRadius: SIZES.base,
-							...SHADOWS.light,
-							fontFamily: FONTS.regular,
-							fontSize: SIZES.font,
-						}}
-					/>
+				<Image
+					style={styles.avatar}
+					source={require("../assets/icons/avatar.png")}
+				/>
+				<Layout style={styles.headerContent}>
+					<Text style={styles.name}>{name}</Text>
+					<Text style={styles.userInfo}>{email}</Text>
+					<Text style={styles.userInfo}>Singapore</Text>
 				</Layout>
-			</View>
-		</View>
+
+				<Layout style={styles.profileContent}>
+					<Layout style={styles.row}>
+						<Layout style={styles.component}>
+							<Text style={styles.title}>Height</Text>
+							<Input
+								style={styles.input}
+								disabled={true}
+								value={height}
+								textStyle={{ color: "black" }}
+							/>
+						</Layout>
+						<Layout style={styles.component}>
+							<Text style={styles.title}>Weight</Text>
+							<Input
+								style={styles.input}
+								disabled={true}
+								value={weight}
+								textStyle={{ color: "black" }}
+							/>
+						</Layout>
+					</Layout>
+					<Layout style={styles.row}>
+						<Layout style={styles.component}>
+							<Text style={styles.title}>Age</Text>
+							<Input
+								style={styles.input}
+								disabled={true}
+								value={age}
+								textStyle={{ color: "black" }}
+							/>
+						</Layout>
+						<Layout style={styles.component}>
+							<Text style={styles.title}>BMI</Text>
+							<Input
+								style={styles.input}
+								disabled={true}
+								value={bmi}
+								textStyle={{ color: "black" }}
+							/>
+						</Layout>
+					</Layout>
+					<Layout style={styles.row}>
+						<Layout style={styles.longComponent}>
+							<Text style={styles.title}>Activity Level</Text>
+							<Input
+								style={styles.input}
+								disabled={true}
+								value={activityLevel}
+								textStyle={{ color: "black" }}
+							/>
+						</Layout>
+					</Layout>
+				</Layout>
+			</Layout>
+		</KeyboardAvoidingView>
 	);
 };
 
 const styles = StyleSheet.create({
 	header: {
-		backgroundColor: "#59D235",
-		height: 200,
+		backgroundColor: COLORS.primary,
+		height: 150,
+		width: "100%",
+		position: "absolute",
 	},
 	headerContent: {
-		marginTop: 30,
-		padding: 30,
 		alignItems: "center",
+		marginBottom: SIZES.font,
 	},
 	avatar: {
-		width: 130,
-		height: 130,
-		borderRadius: 63,
+		width: 150,
+		height: 150,
+		borderRadius: 75,
 		borderWidth: 4,
 		borderColor: "white",
-		marginBottom: 10,
 		alignSelf: "center",
-		position: "absolute",
-		marginTop: 130,
+		marginTop: 30,
+		marginBottom: 15,
 	},
 	name: {
-		fontSize: 22,
-		color: "#FFFFFF",
-		fontWeight: "600",
+		fontSize: 30,
+		color: "black",
+		fontFamily: FONTS.bold,
+		letterSpacing: 1,
 	},
-	body: {
-		marginTop: 40,
-	},
-	bodyContent: {
-		flex: 1,
-		alignItems: "center",
-		padding: 30,
-	},
-	name: {
-		fontSize: 28,
-		color: "#696969",
-		fontWeight: "600",
-	},
-	info: {
+	userInfo: {
 		fontSize: 16,
-		color: "#00BFFF",
-		marginTop: 10,
+		color: COLORS.gray,
+		paddingVertical: 2,
+		fontFamily: FONTS.light,
+		letterSpacing: 0.5,
 	},
-	description: {
-		fontSize: 16,
-		color: "#696969",
-		marginTop: 10,
-		textAlign: "center",
+	profileContent: {
+		width: "75%",
 	},
-	buttonContainer: {
-		marginTop: 10,
-		height: 45,
+	row: {
+		display: "flex",
 		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
-		marginBottom: 20,
-		width: 250,
-		borderRadius: 30,
-		backgroundColor: "#00BFFF",
+		justifyContent: "space-around",
+		marginBottom: 10,
+	},
+	component: {
+		width: "40%",
+	},
+	longComponent: {
+		width: "90%",
+	},
+	title: {
+		fontSize: SIZES.medium,
+		color: "black",
+		fontFamily: FONTS.medium,
+		paddingVertical: SIZES.base,
+	},
+	input: {
+		fontSize: SIZES.medium,
+		fontFamily: FONTS.medium,
+		backgroundColor: "white",
+		...SHADOWS.light,
 	},
 });
 
