@@ -48,7 +48,7 @@ const Tab = createBottomTabNavigator();
 const HomeNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="HomePage" component={RecordScreen} />
+			<Stack.Screen name="HomePage" component={HomeScreen} />
 		</Stack.Navigator>
 	);
 };
@@ -64,7 +64,7 @@ const ProfileNavigator = () => {
 const AddDailyNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="AddDailyPage" component={HomeScreen} />
+			<Stack.Screen name="AddDailyPage" component={RecordScreen} />
 		</Stack.Navigator>
 	);
 };
@@ -124,11 +124,6 @@ const App = () => {
 			setIsSetupComplete(false);
 		}
 	};
-
-	// const verifyUserEmail = async () => {
-	// 	const { success } = await verifyEmail();
-	// 	return success;
-	// };
 
 	useEffect(() => {
 		onAuthStateChanged(auth, user => {
