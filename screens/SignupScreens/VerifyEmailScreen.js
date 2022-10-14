@@ -2,8 +2,16 @@ import { Image, SafeAreaView, StyleSheet } from "react-native";
 import { Layout, Text } from "@ui-kitten/components";
 import { BackButton, CustomButton, FocusedStatusBar } from "../../components";
 import { assets, COLORS, FONTS, SIZES } from "../../constants";
+import { signOutUser, verifyEmail } from "../../firebase/auth/emailProvider";
 
 const VerifyEmailScreen = ({ navigation }) => {
+	const handleGoBack = async () => {
+		const { success } = await signOutUser();
+	};
+
+	const handleVerifyEmail = async () => {
+		await verifyEmail();
+	};
 	return (
 		<Layout style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -11,7 +19,7 @@ const VerifyEmailScreen = ({ navigation }) => {
 				backgroundColor={COLORS.primary}
 			/>
 			<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primary }}>
-				<BackButton onPress={() => navigation.goBack()} color="white" />
+				<BackButton onPress={() => handleGoBack()} color="white" />
 
 				<Layout
 					style={{
@@ -47,7 +55,7 @@ const VerifyEmailScreen = ({ navigation }) => {
 								fontColor={COLORS.primary}
 								text={"Continue"}
 								backgroundColor="white"
-								onPress={() => {}}
+								onPress={() => handleVerifyEmail()}
 							/>
 							<Text style={styles.resendEmailText}>Resend email</Text>
 						</Layout>

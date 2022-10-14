@@ -82,7 +82,11 @@ export const updateUserName = async newName => {
 
 export const verifyEmail = async () => {
 	try {
+		console.log("sending");
+		console.log(auth);
 		const verificationEmail = await sendEmailVerification(auth.currentUser);
+		console.log(verificationEmail);
+		console.log("verify");
 		return { success: true };
 	} catch (error) {
 		const errorCode = error.code;

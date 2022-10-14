@@ -1,10 +1,11 @@
 import { SafeAreaView } from "react-native";
-import { Text, Button, Layout, Divider } from "@ui-kitten/components";
-import React, { useState } from "react";
+import { Text, Layout, Divider } from "@ui-kitten/components";
+import { useState } from "react";
 import {
 	FocusedStatusBar,
 	CircularDots,
 	ActivityLevelButton,
+	CustomButton,
 } from "../../components";
 import { COLORS, FONTS, SIZES } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
@@ -12,6 +13,28 @@ import { useNavigation } from "@react-navigation/native";
 const SignupScreen2 = () => {
 	const [selectedActivity, setSelectedActivity] = useState(0);
 	const navigation = useNavigation();
+
+	const handlePress = () => {
+		let selectedActivityStr = "";
+		switch (selectedActivity) {
+			case 0:
+				selectedActivityStr = "Not Very Active";
+				break;
+			case 1:
+				selectedActivityStr = "Lightly Active";
+				break;
+			case 2:
+				selectedActivityStr = "Active";
+				break;
+			case 3:
+				selectedActivityStr = "Very Active";
+				break;
+			default:
+				break;
+		}
+		navigation.navigate("SignupPage3", { selectedActivityStr });
+	};
+
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -140,17 +163,11 @@ const SignupScreen2 = () => {
 					}}
 				>
 					<Layout style={{ paddingTop: 50, width: "80%" }}>
-						<Button
-							status="success"
-							style={{
-								marginBottom: SIZES.extraLarge,
-								backgroundColor: COLORS.primary,
-								borderRadius: SIZES.font,
-							}}
-							onPress={() => navigation.navigate("SignupPage3")}
-						>
-							Login
-						</Button>
+						<CustomButton
+							text={"Next"}
+							backgroundColor={COLORS.primary}
+							onPress={() => handlePress()}
+						/>
 					</Layout>
 					<Layout
 						style={{
