@@ -56,7 +56,7 @@ const HomeNavigator = () => {
 const ProfileNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="ProfilePage" component={HomeScreen} />
+			<Stack.Screen name="ProfilePage" component={ProfileScreen} />
 		</Stack.Navigator>
 	);
 };
