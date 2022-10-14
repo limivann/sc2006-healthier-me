@@ -25,6 +25,7 @@ export {
 	ChangePasswordScreen,
 	SupportScreen,
 	SettingsScreen,
+	ProfileScreen,
 	ForgotPasswordScreen,
 	VerificationCodeScreen,
 	TermsAndConditionsScreen,

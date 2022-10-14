@@ -20,7 +20,6 @@ import {
 	ChangePasswordScreen,
 	SupportScreen,
 	SettingsScreen,
-	VerificationCodeScreen,
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
 	RecordScreen,
@@ -29,9 +28,10 @@ import {
 // setup fonts
 import { useFonts } from "expo-font";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase/firebase-config";
+import { auth, db } from "./firebase/firebase-config";
 import customTheme from "./constants/custom-theme.json";
 import { COLORS, SIZES } from "./constants";
+import { doc, getDoc } from "firebase/firestore";
 
 const Stack = createStackNavigator();
 
@@ -56,7 +56,7 @@ const HomeNavigator = () => {
 const ProfileNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="ProfilePage" component={HomeScreen} />
+			<Stack.Screen name="ProfilePage" component={ProfileScreen} />
 		</Stack.Navigator>
 	);
 };
@@ -104,12 +104,40 @@ const App = () => {
 		InterLight: require("./assets/fonts/Inter-Light.ttf"),
 	});
 
-	const [isSignedIn, setIsSignedIn] = useState(true);
+	const [isSignedIn, setIsSignedIn] = useState(false);
+	const [isSetupComplete, setIsSetupComplete] = useState(false);
+
+	const checkUserSetup = async uid => {
+		if (!uid) {
+			setIsSetupComplete(false);
+			return;
+		}
+		try {
+			const userDocRef = doc(db, "users", uid);
+			const docSnap = await getDoc(userDocRef);
+			if (docSnap.exists()) {
+				const { finishedSetup } = docSnap.data();
+				setIsSetupComplete(finishedSetup);
+			}
+		} catch (error) {
+			console.log(error);
+			setIsSetupComplete(false);
+		}
+	};
+
+	// const verifyUserEmail = async () => {
+	// 	const { success } = await verifyEmail();
+	// 	return success;
+	// };
+
 	useEffect(() => {
 		onAuthStateChanged(auth, user => {
-			if (user) setIsSignedIn(true);
-			else {
+			if (user) {
+				setIsSignedIn(true);
+				checkUserSetup(user?.uid);
+			} else {
 				setIsSignedIn(false);
+				setIsSetupComplete(false);
 			}
 		});
 	}, [auth.currentUser]);
@@ -131,19 +159,21 @@ const App = () => {
 							<Stack.Screen name="MainPage" component={MainScreen} />
 							<Stack.Screen name="LoginPage" component={LoginScreen} />
 							<Stack.Screen name="SignupPage" component={SignupScreen} />
-							<Stack.Screen name="SignupPage1" component={SignupScreen1} />
-							<Stack.Screen name="SignupPage2" component={SignupScreen2} />
-							<Stack.Screen name="SignupPage3" component={SignupScreen3} />
-							<Stack.Screen
-								name="VerificationCodePage"
-								component={VerificationCodeScreen}
-							/>
 
 							<Stack.Screen
 								name="ForgotPasswordPage"
 								component={ForgotPasswordScreen}
 							/>
 						</Stack.Group>
+					</Stack.Navigator>
+				) : !isSetupComplete ? (
+					<Stack.Navigator
+						screenOptions={{ headerShown: false }}
+						initialRouteName="SignupPage1"
+					>
+						<Stack.Screen name="SignupPage1" component={SignupScreen1} />
+						<Stack.Screen name="SignupPage2" component={SignupScreen2} />
+						<Stack.Screen name="SignupPage3" component={SignupScreen3} />
 					</Stack.Navigator>
 				) : (
 					<Tab.Navigator

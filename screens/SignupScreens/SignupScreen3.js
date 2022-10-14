@@ -1,9 +1,10 @@
-import { Text, Button, Layout, Divider, Input } from "@ui-kitten/components";
+import { Text, Spinner, Layout, Divider, Input } from "@ui-kitten/components";
 import React, { useState } from "react";
 import {
 	FocusedStatusBar,
 	CircularDots,
 	GenderSwitchButton,
+	CustomButton,
 } from "../../components";
 import { COLORS, FONTS, SIZES } from "../../constants";
 import {
@@ -11,13 +12,62 @@ import {
 	TouchableWithoutFeedback,
 	KeyboardAvoidingView,
 	Platform,
+	DevSettings,
 } from "react-native";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../../firebase/firebase-config";
 
-const SignupScreen3 = () => {
-	const [age, setAge] = useState("");
-	const [height, setHeight] = useState("");
-	const [weight, setWeight] = useState("");
+const SignupScreen3 = ({ navigation, route }) => {
+	const [age, setAge] = useState(null);
+	const [height, setHeight] = useState(null);
+	const [weight, setWeight] = useState(null);
 	const [isMaleToggled, setIsMaleToggled] = useState(true);
+	const { selectedActivityStr } = route.params;
+	const [inputError, setInputError] = useState("");
+	const [isSignupLoading, setIsSignupLoading] = useState(false);
+
+	const handlePress = async () => {
+		// check validity
+		// check required fields
+		setIsSignupLoading(true);
+		if (age == undefined || height == undefined || weight == undefined) {
+			setInputError("Please fill in all fields");
+			setIsSignupLoading(false);
+			return;
+		}
+		// check age
+		if (age < 12 || age > 99) {
+			setInputError("Age must be within the range of 12 and 99");
+			setIsSignupLoading(false);
+			return;
+		}
+		if (height < 140 || height > 210) {
+			setInputError("Height must be within the range of 140 cm to 210 cm");
+			setIsSignupLoading(false);
+			return;
+		}
+		if (weight < 40 || weight > 130) {
+			setInputError("Weight must be within the range of 40kg to 130kg");
+			setIsSignupLoading(false);
+			return;
+		}
+		console.log(selectedActivityStr, age, height, weight);
+		// no errors, create user details and update to firestore
+		const userDocRef = doc(db, "users", auth.currentUser.uid);
+		await setDoc(
+			userDocRef,
+			{
+				finishedSetup: true,
+				age: age,
+				height: height,
+				weight: weight,
+				activityLevel: selectedActivityStr,
+			},
+			{ merge: true }
+		);
+		DevSettings.reload();
+		setIsSignupLoading(false);
+	};
 
 	return (
 		<KeyboardAvoidingView
@@ -280,6 +330,18 @@ const SignupScreen3 = () => {
 								/>
 							</Layout>
 						</Layout>
+						<Layout style={{ width: "95%" }}>
+							<Text
+								style={{
+									fontFamily: FONTS.medium,
+									fontSize: SIZES.small,
+									color: COLORS.error,
+									paddingTop: SIZES.base,
+								}}
+							>
+								{inputError}
+							</Text>
+						</Layout>
 					</Layout>
 
 					<Layout
@@ -290,16 +352,17 @@ const SignupScreen3 = () => {
 						}}
 					>
 						<Layout style={{ paddingTop: 100, width: "80%" }}>
-							<Button
-								status="success"
-								style={{
-									marginBottom: SIZES.extraLarge,
-									backgroundColor: COLORS.primary,
-									borderRadius: SIZES.font,
-								}}
-							>
-								Start
-							</Button>
+							{!isSignupLoading ? (
+								<CustomButton
+									text={"Sign up"}
+									backgroundColor={COLORS.primary}
+									onPress={() => handlePress()}
+								/>
+							) : (
+								<CustomButton backgroundColor={COLORS.lightPrimary}>
+									<Spinner status="basic" size="small" />
+								</CustomButton>
+							)}
 						</Layout>
 						<Layout
 							style={{
