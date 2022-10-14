@@ -8,6 +8,7 @@ import CodeInputField from "./CodeInputField";
 import CustomButton from "./CustomButton";
 import DateButton from "./DateButton";
 import HomePageIcon from "./HomePageIcon";
+import SearchBar from "./SearchBar";
 export {
 	FocusedStatusBar,
 	ActivityLevelButton,
@@ -19,4 +20,5 @@ export {
 	CustomButton,
 	DateButton,
 	HomePageIcon,
+	SearchBar,
 };

@@ -23,6 +23,7 @@ import {
 	VerificationCodeScreen,
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
+	RecordScreen,
 } from "./screens";
 
 // setup fonts
@@ -47,7 +48,7 @@ const Tab = createBottomTabNavigator();
 const HomeNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="HomePage" component={HomeScreen} />
+			<Stack.Screen name="HomePage" component={RecordScreen} />
 		</Stack.Navigator>
 	);
 };

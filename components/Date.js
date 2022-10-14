@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { Layout, Text, Icon, Input } from "@ui-kitten/components";
-import { Image, TouchableOpacity } from "react-native";
-import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
+import { Text } from "@ui-kitten/components";
+import { TouchableOpacity } from "react-native";
+import { COLORS, FONTS, SIZES } from "../constants";
 
 const Date = ({ date, onPress }) => {
     const { id, dayOfWeek, dayOfMonth, isFocused } = date;
-    
+
     return (
         <TouchableOpacity
             onPress={() => onPress(id)}

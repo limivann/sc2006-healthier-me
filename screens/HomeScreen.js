@@ -2,10 +2,6 @@ import { useState } from "react";
 import {
     Layout,
     Text,
-    Icon,
-    Input,
-    Button,
-    Divider,
     Avatar,
 } from "@ui-kitten/components";
 import { SafeAreaView } from "react-native";
@@ -14,7 +10,7 @@ import {
     DateButton,
     HomePageIcon,
 } from "../components";
-import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
+import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
 import eatIcon from "../assets/icons/eat-icon.png";
 import fireIcon from "../assets/icons/fire-icon.png";
 import flagIcon from "../assets/icons/flag-icon.png";
@@ -52,6 +48,12 @@ const HomeScreen = () => {
             isFocused: false,
         },
     ]);
+
+    const [caloriesDate, setCaloriesData] = useState([{
+        'baseGoal': 2940,
+        'Food': 370,
+        'Exercise': 0
+    }])
 
     const focusDate = (id) => {
         const temp = []
@@ -163,8 +165,12 @@ const HomeScreen = () => {
                             height: "70%",
                         }}
                     >
-                        <Layout>
-                            <Text>hello</Text>
+                        <Layout style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "60%"
+                        }}>
+                            <Text>Hello</Text>
                         </Layout>
                         <Layout style={{
                             width: "40%",
