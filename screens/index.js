@@ -13,8 +13,7 @@ import SignupScreen from "./SignupScreens/SignupScreen";
 import VerificationCodeScreen from "./VerificationCodeScreen";
 import TermsAndConditionsScreen from "./TermsAndConditionsScreen";
 import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
-import VerifyEmailScreen from "./SignupScreens/VerifyEmailScreen";
-
+import RecordScreen from "./RecordScreen";
 export {
 	HomeScreen,
 	LoginScreen,
@@ -26,10 +25,10 @@ export {
 	ChangePasswordScreen,
 	SupportScreen,
 	SettingsScreen,
-	ForgotPasswordScreen,
 	ProfileScreen,
+	ForgotPasswordScreen,
 	VerificationCodeScreen,
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
-	VerifyEmailScreen,
+	RecordScreen,
 };

@@ -20,10 +20,9 @@ import {
 	ChangePasswordScreen,
 	SupportScreen,
 	SettingsScreen,
-	VerificationCodeScreen,
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
-	VerifyEmailScreen,
+	RecordScreen,
 } from "./screens";
 
 // setup fonts
@@ -49,7 +48,7 @@ const Tab = createBottomTabNavigator();
 const HomeNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="HomePage" component={HomeScreen} />
+			<Stack.Screen name="HomePage" component={RecordScreen} />
 		</Stack.Navigator>
 	);
 };
