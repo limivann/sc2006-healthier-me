@@ -1,5 +1,5 @@
 import { Text, Layout, Input } from "@ui-kitten/components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	StyleSheet,
 	Image,
@@ -8,16 +8,36 @@ import {
 } from "react-native";
 import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
 import { EditButton, FocusedStatusBar } from "../components";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase/firebase-config";
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
 const ProfileScreen = () => {
-	const [name, setName] = useState("John Doe");
-	const [email, setEmail] = useState("johndoe@gmail.com");
-	const [height, setHeight] = useState("170cm");
-	const [weight, setWeight] = useState("52kg");
-	const [age, setAge] = useState("21");
-	const [bmi, setBmi] = useState("20.0");
-	const [activityLevel, setActivityLevel] = useState("Not Very Active");
+	const [name, setName] = useState("");
+	const [email, setEmail] = useState("");
+	const [height, setHeight] = useState("");
+	const [weight, setWeight] = useState("");
+	const [age, setAge] = useState("");
+	const [bmi, setBmi] = useState("20");
+	const [activityLevel, setActivityLevel] = useState("");
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const userDocRef = doc(db, "users", auth.currentUser.uid);
+			const docSnap = await getDoc(userDocRef);
+			if (docSnap.exists()) {
+				const user = docSnap.data();
+				setName(user.displayName);
+				setAge(user.age);
+				setEmail(user.email);
+				setWeight(user.weight);
+				setActivityLevel(user.activityLevel);
+				setHeight(user.height);
+			}
+		};
+		fetchData();
+	}, []);
+
 	return (
 		<KeyboardAvoidingView
 			style={{ flex: 1 }}

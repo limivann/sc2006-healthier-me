@@ -97,7 +97,7 @@ const SignupScreen = ({ navigation }) => {
 				joinedDate: serverTimestamp(),
 				finishedSetup: false,
 			});
-			navigation.navigate("SignupPage1");
+			// done sign up
 			setSignupLoading(false);
 			return;
 		} catch (error) {

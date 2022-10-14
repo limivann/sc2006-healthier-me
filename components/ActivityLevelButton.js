@@ -1,8 +1,7 @@
-import { Layout, Text } from "@ui-kitten/components";
+import { Layout, Text, Icon } from "@ui-kitten/components";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { COLORS, FONTS, SIZES } from "../constants";
-import TickIcon from "./TickIcon";
 
 const ActivityLevelButton = ({
 	title,
@@ -20,7 +19,7 @@ const ActivityLevelButton = ({
 			}}
 			onPress={onPress}
 		>
-			<Layout style={{ width: "85%", paddingRight: SIZES.base }}>
+			<Layout style={{ width: "90%", paddingRight: SIZES.base }}>
 				<Text
 					style={{
 						paddingVertical: SIZES.base,
@@ -30,19 +29,37 @@ const ActivityLevelButton = ({
 				>
 					{title}
 				</Text>
-				<Text
+				<Layout
 					style={{
-						paddingVertical: SIZES.base,
-						fontFamily: FONTS.regular,
-						fontSize: SIZES.font,
-						color: selectedActivity === index ? COLORS.primary : "black",
+						alignItems: "center",
+						flexDirection: "row",
+						justifyContent: "space-between",
+						width: "100%",
 					}}
 				>
-					{description}
-				</Text>
-			</Layout>
-			<Layout style={{ width: "10%" }}>
-				{selectedActivity === index ? <TickIcon /> : <></>}
+					<Text
+						style={{
+							paddingVertical: SIZES.base,
+							fontFamily: FONTS.regular,
+							fontSize: SIZES.font,
+							color: selectedActivity === index ? COLORS.primary : "black",
+							width: "80%",
+						}}
+					>
+						{description}
+					</Text>
+					<Layout style={{ width: "10%" }}>
+						{selectedActivity === index ? (
+							<Icon
+								name="checkmark-outline"
+								fill={COLORS.primary}
+								style={{ width: 26, height: 26 }}
+							/>
+						) : (
+							<></>
+						)}
+					</Layout>
+				</Layout>
 			</Layout>
 		</TouchableOpacity>
 	);
