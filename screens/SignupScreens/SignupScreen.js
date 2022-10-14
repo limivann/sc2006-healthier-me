@@ -167,15 +167,15 @@ const SignupScreen = ({ navigation }) => {
 									}}
 								>
 									Username
-									<Text style={{color: COLORS.error}}> *</Text>
+									<Text style={{ color: COLORS.error }}> *</Text>
 								</Text>
 
 								<Input
 									placeholder="John Doe"
 									autoCompleteType="username-new"
 									value={username}
+									autoCapitalize={false}
 									onChangeText={nextValue => setUsername(nextValue)}
-									autoCorrect={false}
 									style={{
 										borderRadius: SIZES.base,
 										...SHADOWS.light,
@@ -196,12 +196,13 @@ const SignupScreen = ({ navigation }) => {
 									}}
 								>
 									Email address
-									<Text style={{color: COLORS.error}}> *</Text>
+									<Text style={{ color: COLORS.error }}> *</Text>
 								</Text>
 								<Input
 									placeholder="johndoe@example.com"
 									autoCompleteType="email"
 									value={email}
+									autoCapitalize={false}
 									onChangeText={nextValue => setEmail(nextValue)}
 									style={{
 										borderRadius: SIZES.base,
@@ -223,12 +224,13 @@ const SignupScreen = ({ navigation }) => {
 									}}
 								>
 									Password
-									<Text style={{color: COLORS.error}}> *</Text>
+									<Text style={{ color: COLORS.error }}> *</Text>
 								</Text>
 								<Input
 									placeholder="Password"
 									autoCompleteType="password"
 									value={password}
+									autoCapitalize={false}
 									onChangeText={nextValue => setPassword(nextValue)}
 									accessoryRight={renderIcon}
 									secureTextEntry={secureTextEntry}
@@ -252,12 +254,13 @@ const SignupScreen = ({ navigation }) => {
 									}}
 								>
 									Confirm Password
-									<Text style={{color: COLORS.error}}> *</Text>
+									<Text style={{ color: COLORS.error }}> *</Text>
 								</Text>
 								<Input
 									placeholder="Confirm Password"
 									autoCompleteType="password"
 									value={confirmPassword}
+									autoCapitalize={false}
 									onChangeText={nextValue => setConfirmPassword(nextValue)}
 									accessoryRight={renderIcon}
 									secureTextEntry={secureTextEntry}

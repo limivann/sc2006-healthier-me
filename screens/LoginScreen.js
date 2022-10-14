@@ -135,13 +135,14 @@ const LoginScreen = ({ navigation }) => {
 									}}
 								>
 									Email
-									<Text style={{color: COLORS.error}}> *</Text>
+									<Text style={{ color: COLORS.error }}> *</Text>
 								</Text>
 
 								<Input
 									placeholder="johndoe@example.com"
 									autoCompleteType="email"
 									value={email}
+									autoCapitalize={false}
 									onChangeText={nextValue => setEmail(nextValue)}
 									style={{
 										borderRadius: SIZES.base,
@@ -163,12 +164,13 @@ const LoginScreen = ({ navigation }) => {
 									}}
 								>
 									Password
-									<Text style={{color: COLORS.error}}> *</Text>
+									<Text style={{ color: COLORS.error }}> *</Text>
 								</Text>
 								<Input
 									placeholder="Password"
 									autoCompleteType="password"
 									value={password}
+									autoCapitalize={false}
 									onChangeText={nextValue => setPassword(nextValue)}
 									accessoryRight={renderIcon}
 									secureTextEntry={secureTextEntry}
