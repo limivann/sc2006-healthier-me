@@ -70,7 +70,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
 								paddingLeft: "5%",
 							}}
 						>
-							Email
+							Email<Text style={{color: COLORS.error}}> *</Text>
 						</Text>
 						<Input
 							placeholder="johndoe@example.com"

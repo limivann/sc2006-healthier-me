@@ -72,11 +72,12 @@ const ChangePasswordScreen = ({ navigation }) => {
 							}}
 						>
 							Change Password
+							
 						</Text>
 					</Layout>
 					<Layout style={styles.changePasswordContainer}>
 						<Layout style={{ marginBottom: SIZES.base, width: "100%" }}>
-							<Text style={styles.inputLabel}>Current Password</Text>
+							<Text style={styles.inputLabel}>Current Password<Text style={{color: 'red'}}> *</Text></Text>
 
 							<Input
 								placeholder="Current Password"
@@ -89,7 +90,7 @@ const ChangePasswordScreen = ({ navigation }) => {
 							/>
 						</Layout>
 						<Layout style={{ marginBottom: SIZES.base, width: "100%" }}>
-							<Text style={styles.inputLabel}>New Password</Text>
+							<Text style={styles.inputLabel}>New Password<Text style={{color: 'red'}}> *</Text></Text>
 							<Input
 								placeholder="New Password"
 								autoCompleteType="password"
@@ -101,7 +102,7 @@ const ChangePasswordScreen = ({ navigation }) => {
 							/>
 						</Layout>
 						<Layout style={{ marginBottom: SIZES.base, width: "100%" }}>
-							<Text style={styles.inputLabel}>Confirm Password</Text>
+							<Text style={styles.inputLabel}>Confirm Password<Text style={{color: 'red'}}> *</Text></Text>
 							<Input
 								placeholder="Confirm password"
 								autoCompleteType="password"
