@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { FocusedStatusBar, SearchBar, CustomButton } from "../components";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
-import magnifierIcon from "../assets/icons/magnifier-icon.png";
 const RecordScreen = () => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const option = ["Breakfast", "Lunch", "Dinner"];
@@ -87,7 +86,7 @@ const RecordScreen = () => {
                         </Layout>
                         <Layout style={styles.content}>
                             <Image
-                                source={magnifierIcon}
+                                source={assets.magnidierIcon}
                                 style={styles.image}
                             />
                             <Text
