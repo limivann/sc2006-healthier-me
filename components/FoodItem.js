@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: 150,
 		borderRadius: SIZES.large,
-		borderColor: COLORS.black,
+		borderColor: "black",
 		borderWidth: 1,
 	},
 	foodText: {

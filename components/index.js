@@ -10,6 +10,7 @@ import HomePageIcon from "./HomePageIcon";
 import SearchBar from "./SearchBar";
 import EditButton from "./EditButton";
 import FoodItem from "./FoodItem";
+import RestaurantItem from "./RestaurantItem";
 
 export {
 	FocusedStatusBar,
@@ -24,4 +25,5 @@ export {
 	SearchBar,
 	EditButton,
 	FoodItem,
+	RestaurantItem,
 };
