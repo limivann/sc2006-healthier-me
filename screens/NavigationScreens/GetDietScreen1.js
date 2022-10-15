@@ -76,7 +76,9 @@ const GetDietScreen1 = () => {
 					}}
 				>
 					<GetDietHeader />
-					<Layout style={styles.borders}></Layout>
+					<Layout style={styles.borders}>
+						<Text style={styles.bordersText}>Healthier diets for you</Text>
+					</Layout>
 					<Layout style={styles.contentContainer}>
 						<FlatList
 							numColumns={2}
@@ -96,9 +98,15 @@ export default GetDietScreen1;
 const styles = StyleSheet.create({
 	borders: {
 		backgroundColor: "white",
-		borderTopLeftRadius: "50%",
-		borderTopRightRadius: "50%",
-		height: 15,
+		borderTopLeftRadius: SIZES.medium,
+		borderTopRightRadius: SIZES.medium,
+		minHeight: 20,
+	},
+	bordersText: {
+		paddingVertical: SIZES.large,
+		paddingHorizontal: "5%",
+		fontFamily: FONTS.bold,
+		fontSize: SIZES.large,
 	},
 	headerContainer: {
 		width: "100%",
