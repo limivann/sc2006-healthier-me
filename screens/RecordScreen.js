@@ -86,7 +86,7 @@ const RecordScreen = () => {
                         </Layout>
                         <Layout style={styles.content}>
                             <Image
-                                source={assets.magnidierIcon}
+                                source={assets.magnifierIcon}
                                 style={styles.image}
                             />
                             <Text

@@ -1,12 +1,15 @@
 import { SafeAreaView, Image } from "react-native";
-import { Text, Button, Layout } from "@ui-kitten/components";
+import { Text, Layout } from "@ui-kitten/components";
 import React from "react";
-import { FocusedStatusBar, CircularDots, CustomButton } from "../../components";
+import {
+	FocusedStatusBar,
+	CircularDots,
+	CustomButton,
+	BackButton,
+} from "../../components";
 import { assets, COLORS, FONTS, SIZES } from "../../constants";
-import { useNavigation } from "@react-navigation/native";
 
-const SignupScreen1 = () => {
-	const navigation = useNavigation();
+const SignupScreen1 = ({ navigation }) => {
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -89,7 +92,7 @@ const SignupScreen1 = () => {
 				>
 					<Layout style={{ paddingTop: 50, width: "80%" }}>
 						<CustomButton
-							text={"Login"}
+							text={"Get Started"}
 							backgroundColor={COLORS.primary}
 							onPress={() => navigation.navigate("SignupPage2")}
 						/>

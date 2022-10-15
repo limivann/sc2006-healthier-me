@@ -1,7 +1,13 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { FONTS, SIZES } from "../constants";
 
-const CustomButton = ({ onPress, text, children, ...props }) => {
+const CustomButton = ({
+	onPress,
+	text,
+	fontColor = "white",
+	children,
+	...props
+}) => {
 	return (
 		<TouchableOpacity
 			style={{
@@ -21,7 +27,7 @@ const CustomButton = ({ onPress, text, children, ...props }) => {
 				style={{
 					fontFamily: FONTS.bold,
 					fontSize: SIZES.font,
-					color: "#fff",
+					color: fontColor,
 				}}
 			>
 				{text}
