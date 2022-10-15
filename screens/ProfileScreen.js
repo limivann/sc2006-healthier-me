@@ -5,9 +5,11 @@ import {
 	Image,
 	KeyboardAvoidingView,
 	Platform,
+	TouchableWithoutFeedback,
+	Keyboard,
 } from "react-native";
 import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
-import { EditButton, FocusedStatusBar } from "../components";
+import { CustomButton, EditButton, FocusedStatusBar } from "../components";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
@@ -20,6 +22,8 @@ const ProfileScreen = () => {
 	const [age, setAge] = useState("");
 	const [bmi, setBmi] = useState("20");
 	const [activityLevel, setActivityLevel] = useState("");
+
+	const [isEditing, setIsEditing] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -38,6 +42,10 @@ const ProfileScreen = () => {
 		fetchData();
 	}, []);
 
+	const handleEdit = () => {
+		setIsEditing(true);
+	};
+
 	return (
 		<KeyboardAvoidingView
 			style={{ flex: 1 }}
@@ -51,96 +59,141 @@ const ProfileScreen = () => {
 				backgroundColor={COLORS.primary}
 				barStyle="dark-content"
 			/>
-			<Layout style={{ alignItems: "center" }}>
-				<Layout style={styles.header}></Layout>
+			<TouchableWithoutFeedback
+				onPress={() => {
+					Keyboard.dismiss();
+				}}
+			>
 				<Layout
 					style={{
-						width: "100%",
-						height: TITLEBAR_HEIGHT,
-						backgroundColor: COLORS.primary,
-						justifyContent: "flex-end",
-						position: "relative",
 						alignItems: "center",
+						flex: 1,
+						justifyContent: "space-around",
 					}}
 				>
-					<EditButton onPress={() => {}} color="white" />
-					<Text
+					<Layout style={styles.header}></Layout>
+					<Layout
 						style={{
-							fontFamily: FONTS.bold,
-							letterSpacing: 1,
-							textAlign: "center",
-							paddingBottom: SIZES.font,
-							color: COLORS.white,
-							fontSize: SIZES.large,
+							width: "100%",
+							height: TITLEBAR_HEIGHT,
+							backgroundColor: COLORS.primary,
+							justifyContent: "flex-end",
+							position: "relative",
+							alignItems: "center",
 						}}
 					>
-						Profile
-					</Text>
-				</Layout>
-				<Image
-					style={styles.avatar}
-					source={require("../assets/icons/avatar.png")}
-				/>
-				<Layout style={styles.headerContent}>
-					<Text style={styles.name}>{name}</Text>
-					<Text style={styles.userInfo}>{email}</Text>
-					<Text style={styles.userInfo}>Singapore</Text>
-				</Layout>
+						<EditButton onPress={() => handleEdit()} color="white" />
+						<Text
+							style={{
+								fontFamily: FONTS.bold,
+								letterSpacing: 1,
+								textAlign: "center",
+								paddingBottom: SIZES.font,
+								color: COLORS.white,
+								fontSize: SIZES.large,
+							}}
+						>
+							Profile
+						</Text>
+					</Layout>
+					<Image
+						style={styles.avatar}
+						source={require("../assets/icons/avatar.png")}
+					/>
+					<Layout style={styles.headerContent}>
+						<Text style={styles.name}>{name}</Text>
+						<Text style={styles.userInfo}>{email}</Text>
+						<Text style={styles.userInfo}>Singapore</Text>
+					</Layout>
 
-				<Layout style={styles.profileContent}>
-					<Layout style={styles.row}>
-						<Layout style={styles.component}>
-							<Text style={styles.title}>Height</Text>
-							<Input
-								style={styles.input}
-								disabled={true}
-								value={height}
-								textStyle={{ color: "black" }}
-							/>
+					<Layout style={styles.profileContent}>
+						<Layout style={styles.row}>
+							<Layout style={styles.component}>
+								<Text style={styles.title}>Height</Text>
+								<Input
+									style={{
+										...styles.input,
+										backgroundColor: isEditing ? "#F7F9FC" : "white",
+									}}
+									disabled={!isEditing}
+									value={height}
+									textStyle={{ color: "black" }}
+								/>
+							</Layout>
+							<Layout style={styles.component}>
+								<Text style={styles.title}>Weight</Text>
+								<Input
+									style={{
+										...styles.input,
+										backgroundColor: isEditing ? "#F7F9FC" : "white",
+									}}
+									disabled={!isEditing}
+									value={weight}
+									textStyle={{ color: "black" }}
+								/>
+							</Layout>
 						</Layout>
-						<Layout style={styles.component}>
-							<Text style={styles.title}>Weight</Text>
-							<Input
-								style={styles.input}
-								disabled={true}
-								value={weight}
-								textStyle={{ color: "black" }}
-							/>
+						<Layout style={styles.row}>
+							<Layout style={styles.component}>
+								<Text style={styles.title}>Age</Text>
+								<Input
+									style={{
+										...styles.input,
+										backgroundColor: isEditing ? "#F7F9FC" : "white",
+									}}
+									disabled={!isEditing}
+									value={age}
+									textStyle={{ color: "black" }}
+								/>
+							</Layout>
+							<Layout style={styles.component}>
+								<Text style={styles.title}>BMI</Text>
+								<Input
+									style={{
+										...styles.input,
+										backgroundColor: "white",
+									}}
+									disabled={false}
+									value={bmi}
+									textStyle={{ color: "black" }}
+								/>
+							</Layout>
+						</Layout>
+						<Layout style={styles.row}>
+							<Layout style={styles.longComponent}>
+								<Text style={styles.title}>Activity Level</Text>
+								<Input
+									style={{
+										...styles.input,
+										backgroundColor: isEditing ? "#F7F9FC" : "white",
+									}}
+									disabled={!isEditing}
+									value={activityLevel}
+									textStyle={{ color: "black" }}
+								/>
+							</Layout>
 						</Layout>
 					</Layout>
-					<Layout style={styles.row}>
-						<Layout style={styles.component}>
-							<Text style={styles.title}>Age</Text>
-							<Input
-								style={styles.input}
-								disabled={true}
-								value={age}
-								textStyle={{ color: "black" }}
+					{isEditing ? (
+						<Layout style={styles.cancelSaveButtons}>
+							<CustomButton
+								text={"Cancel"}
+								backgroundColor={COLORS.secondary}
+								flex={1}
+								onPress={() => setIsEditing(false)}
+							/>
+							<Layout style={{ width: "5%" }} />
+							<CustomButton
+								text={"Save"}
+								backgroundColor={COLORS.primary}
+								flex={1}
 							/>
 						</Layout>
-						<Layout style={styles.component}>
-							<Text style={styles.title}>BMI</Text>
-							<Input
-								style={styles.input}
-								disabled={true}
-								value={bmi}
-								textStyle={{ color: "black" }}
-							/>
-						</Layout>
-					</Layout>
-					<Layout style={styles.row}>
-						<Layout style={styles.longComponent}>
-							<Text style={styles.title}>Activity Level</Text>
-							<Input
-								style={styles.input}
-								disabled={true}
-								value={activityLevel}
-								textStyle={{ color: "black" }}
-							/>
-						</Layout>
-					</Layout>
+					) : (
+						<Layout style={{ height: 75 }} />
+					)}
 				</Layout>
-			</Layout>
+			</TouchableWithoutFeedback>
 		</KeyboardAvoidingView>
 	);
 };
@@ -151,6 +204,7 @@ const styles = StyleSheet.create({
 		height: 150,
 		width: "100%",
 		position: "absolute",
+		top: 0,
 	},
 	headerContent: {
 		alignItems: "center",
@@ -181,6 +235,7 @@ const styles = StyleSheet.create({
 	},
 	profileContent: {
 		width: "75%",
+		marginBottom: 36,
 	},
 	row: {
 		display: "flex",
@@ -203,8 +258,15 @@ const styles = StyleSheet.create({
 	input: {
 		fontSize: SIZES.medium,
 		fontFamily: FONTS.medium,
-		backgroundColor: "white",
 		...SHADOWS.light,
+	},
+	cancelSaveButtons: {
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		width: "75%",
+		paddingTop: "5%",
 	},
 });
 
