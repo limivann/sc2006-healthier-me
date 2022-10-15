@@ -14,6 +14,9 @@ import VerificationCodeScreen from "./VerificationCodeScreen";
 import TermsAndConditionsScreen from "./TermsAndConditionsScreen";
 import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
 import RecordScreen from "./RecordScreen";
+
+import GetDietScreen1 from "./NavigationScreens/GetDietScreen1";
+
 export {
 	HomeScreen,
 	LoginScreen,
@@ -31,4 +34,5 @@ export {
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
 	RecordScreen,
+	GetDietScreen1,
 };

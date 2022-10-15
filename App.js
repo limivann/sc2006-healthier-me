@@ -23,6 +23,7 @@ import {
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
 	RecordScreen,
+	GetDietScreen1,
 } from "./screens";
 
 // setup fonts
@@ -72,7 +73,7 @@ const AddDailyNavigator = () => {
 const NavigateNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="NavigatePage" component={HomeScreen} />
+			<Stack.Screen name="GetDietPage1" component={GetDietScreen1} />
 		</Stack.Navigator>
 	);
 };
