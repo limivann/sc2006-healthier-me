@@ -10,10 +10,8 @@ import {
     DateButton,
     HomePageIcon,
 } from "../components";
-import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
-import eatIcon from "../assets/icons/eat-icon.png";
-import fireIcon from "../assets/icons/fire-icon.png";
-import flagIcon from "../assets/icons/flag-icon.png";
+import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
+
 
 const HomeScreen = () => {
     const [date, setDate] = useState([
@@ -114,7 +112,7 @@ const HomeScreen = () => {
                         </Text>
                     </Layout>
                     <Avatar
-                        source={require("../assets/icons/avatar.png")}
+                        source={assets.avatar}
                         size="giant"
                     />
                 </Layout>
@@ -176,17 +174,17 @@ const HomeScreen = () => {
                             width: "40%",
                         }}>
                             <HomePageIcon
-                                source={flagIcon}
+                                source={assets.flagIcon}
                                 title="Base Goal"
                                 data={2940}
                             />
                             <HomePageIcon
-                                source={eatIcon}
+                                source={assets.eatIcon}
                                 title="Food"
                                 data={370}
                             />
                             <HomePageIcon
-                                source={fireIcon}
+                                source={assets.fireIcon}
                                 title="Exercise"
                                 data={0}
                             />

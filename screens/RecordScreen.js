@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { FocusedStatusBar, SearchBar, CustomButton } from "../components";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
-import magnifierIcon from "../assets/icons/magnifier-icon.png";
 const RecordScreen = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const option = ["Breakfast", "Lunch", "Dinner"];
@@ -68,10 +67,7 @@ const RecordScreen = () => {
 							width: "90%",
 						}}
 					>
-						<SearchBar
-							onSearch={handleSearch}
-							placeholder="Search for a food"
-						/>
+						<SearchBar onSearch={handleSearch} />
 					</Layout>
 					<Layout
 						style={{
@@ -89,7 +85,7 @@ const RecordScreen = () => {
 							</Text>
 						</Layout>
 						<Layout style={styles.content}>
-							<Image source={magnifierIcon} style={styles.image} />
+							<Image source={assets.magnifierIcon} style={styles.image} />
 							<Text
 								style={{
 									fontFamily: FONTS.bold,
