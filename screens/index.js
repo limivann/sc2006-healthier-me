@@ -17,6 +17,7 @@ import RecordScreen from "./RecordScreen";
 
 import GetDietScreen from "./NavigationScreens/GetDietScreen";
 import GetRestaurantsScreen from "./NavigationScreens/GetRestaurantsScreen";
+import RestaurantDetailsScreen from "./NavigationScreens/RestaurantDetailsScreen";
 
 export {
 	HomeScreen,
@@ -37,4 +38,5 @@ export {
 	RecordScreen,
 	GetDietScreen,
 	GetRestaurantsScreen,
+	RestaurantDetailsScreen,
 };
