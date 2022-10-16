@@ -23,6 +23,8 @@ import {
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
 	RecordScreen,
+	GetDietScreen1,
+	GetRestaurantsScreen1,
 } from "./screens";
 
 // setup fonts
@@ -48,7 +50,7 @@ const Tab = createBottomTabNavigator();
 const HomeNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="HomePage" component={RecordScreen} />
+			<Stack.Screen name="HomePage" component={HomeScreen} />
 		</Stack.Navigator>
 	);
 };
@@ -64,7 +66,7 @@ const ProfileNavigator = () => {
 const AddDailyNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="AddDailyPage" component={HomeScreen} />
+			<Stack.Screen name="AddDailyPage" component={RecordScreen} />
 		</Stack.Navigator>
 	);
 };
@@ -72,7 +74,11 @@ const AddDailyNavigator = () => {
 const NavigateNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="NavigatePage" component={HomeScreen} />
+			<Stack.Screen
+				name="GetRestaurantsPage1"
+				component={GetRestaurantsScreen1}
+			/>
+			<Stack.Screen name="GetDietPage1" component={GetDietScreen1} />
 		</Stack.Navigator>
 	);
 };
@@ -124,11 +130,6 @@ const App = () => {
 			setIsSetupComplete(false);
 		}
 	};
-
-	// const verifyUserEmail = async () => {
-	// 	const { success } = await verifyEmail();
-	// 	return success;
-	// };
 
 	useEffect(() => {
 		onAuthStateChanged(auth, user => {
