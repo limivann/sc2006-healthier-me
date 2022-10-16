@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Layout, Text, Select, SelectItem, Input } from "@ui-kitten/components";
+import {
+	Layout,
+	Text,
+	Select,
+	SelectItem,
+	Input,
+	Tab,
+	TabBar,
+	TabView,
+} from "@ui-kitten/components";
 import {
 	Keyboard,
 	TouchableWithoutFeedback,
@@ -10,6 +19,49 @@ import {
 } from "react-native";
 import { FocusedStatusBar, SearchBar, CustomButton } from "../components";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
+
+const AllTabScreen = () => {
+	return (
+		<Layout style={{ alignItems: "center", justifyContent: "center" }}>
+			<Layout>
+				<Text style={{ fontFamily: FONTS.bold, marginBottom: SIZES.large }}>
+					Search Results
+				</Text>
+			</Layout>
+			<Layout style={styles.content}>
+				<Image source={assets.magnifierIcon} style={styles.image} />
+				<Text
+					style={{
+						fontFamily: FONTS.bold,
+						fontSize: SIZES.extraLarge,
+						paddingTop: SIZES.font,
+					}}
+				>
+					No Results Found
+				</Text>
+				<Text
+					style={{
+						textAlign: "center",
+						color: COLORS.gray,
+						fontFamily: FONTS.regular,
+						fontSize: SIZES.font,
+						marginBottom: SIZES.font,
+					}}
+				>
+					Please check spelling or {"\n"}
+					create a personal food label
+				</Text>
+				<CustomButton
+					text={"Create Personal Food Label"}
+					backgroundColor={COLORS.primary}
+					width="70%"
+					borderRadius={SIZES.large}
+				/>
+			</Layout>
+		</Layout>
+	);
+};
+
 const RecordScreen = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const option = ["Breakfast", "Lunch", "Dinner"];
@@ -23,6 +75,9 @@ const RecordScreen = () => {
 		// const filteredData = data.filter((foodLabel) => foodLabel.name.toLowerCase().includes(value.toLowerCase()));
 		// filteredData.length ? setSearchValue(filteredData) : searchValue("")
 	};
+
+	const [tabSelectedIndex, setTabSelectedIndex] = useState(0);
+
 	return (
 		<KeyboardAvoidingView
 			style={{ flex: 1 }}
@@ -45,7 +100,6 @@ const RecordScreen = () => {
 				<Layout
 					style={{
 						alignItems: "center",
-						justifyContent: "center",
 						height: "100%",
 					}}
 				>
@@ -69,52 +123,16 @@ const RecordScreen = () => {
 					>
 						<SearchBar onSearch={handleSearch} />
 					</Layout>
-					<Layout
-						style={{
-							marginBottom: SIZES.font,
-						}}
-					>
-						<Text>Temp</Text>
+					<Layout style={{ width: "100%" }}>
+						<TabBar
+							selectedIndex={tabSelectedIndex}
+							onSelect={index => setTabSelectedIndex(index)}
+						>
+							<Tab title="All" />
+							<Tab title="My Personal Food Labels" />
+						</TabBar>
 					</Layout>
-					<Layout style={{ width: "90%" }}>
-						<Layout>
-							<Text
-								style={{ fontFamily: FONTS.bold, marginBottom: SIZES.large }}
-							>
-								Search Results
-							</Text>
-						</Layout>
-						<Layout style={styles.content}>
-							<Image source={assets.magnifierIcon} style={styles.image} />
-							<Text
-								style={{
-									fontFamily: FONTS.bold,
-									fontSize: SIZES.extraLarge,
-									paddingTop: SIZES.font,
-								}}
-							>
-								No Results Found
-							</Text>
-							<Text
-								style={{
-									textAlign: "center",
-									color: COLORS.gray,
-									fontFamily: FONTS.regular,
-									fontSize: SIZES.font,
-									marginBottom: SIZES.font,
-								}}
-							>
-								Please check spelling or {"\n"}
-								create a personal food label
-							</Text>
-							<CustomButton
-								text={"Create Personal Food Label"}
-								backgroundColor={COLORS.primary}
-								width="70%"
-								borderRadius={SIZES.large}
-							/>
-						</Layout>
-					</Layout>
+					{tabSelectedIndex === 0 ? <AllTabScreen /> : <></>}
 				</Layout>
 			</TouchableWithoutFeedback>
 		</KeyboardAvoidingView>
