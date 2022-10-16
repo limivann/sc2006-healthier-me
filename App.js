@@ -23,8 +23,9 @@ import {
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
 	RecordScreen,
-	GetDietScreen1,
-	GetRestaurantsScreen1,
+	GetDietScreen,
+	GetRestaurantsScreen,
+	RestaurantDetailsScreen,
 } from "./screens";
 
 // setup fonts
@@ -75,10 +76,14 @@ const NavigateNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
 			<Stack.Screen
-				name="GetRestaurantsPage1"
-				component={GetRestaurantsScreen1}
+				name="RestaurantDetailsPage"
+				component={RestaurantDetailsScreen}
 			/>
-			<Stack.Screen name="GetDietPage1" component={GetDietScreen1} />
+			<Stack.Screen
+				name="GetRestaurantsPage"
+				component={GetRestaurantsScreen}
+			/>
+			<Stack.Screen name="GetDietPage" component={GetDietScreen} />
 		</Stack.Navigator>
 	);
 };

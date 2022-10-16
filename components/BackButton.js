@@ -3,10 +3,14 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, SIZES } from "../constants";
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
-const BackButton = ({ onPress, color }) => {
+const BackButton = ({ onPress, color, ...props }) => {
 	return (
-		<TouchableOpacity style={styles.button} onPress={onPress}>
-			<Icon name="arrow-circle-left-outline" style={styles.icon} fill={color} />
+		<TouchableOpacity style={{ ...styles.button, ...props }} onPress={onPress}>
+			<Icon
+				name="arrow-circle-left-outline"
+				style={{ ...styles.icon }}
+				fill={color}
+			/>
 		</TouchableOpacity>
 	);
 };

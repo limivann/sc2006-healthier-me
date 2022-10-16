@@ -15,8 +15,9 @@ import TermsAndConditionsScreen from "./TermsAndConditionsScreen";
 import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
 import RecordScreen from "./RecordScreen";
 
-import GetDietScreen1 from "./NavigationScreens/GetDietScreen1";
-import GetRestaurantsScreen1 from "./NavigationScreens/GetRestaurantsScreen1";
+import GetDietScreen from "./NavigationScreens/GetDietScreen";
+import GetRestaurantsScreen from "./NavigationScreens/GetRestaurantsScreen";
+import RestaurantDetailsScreen from "./NavigationScreens/RestaurantDetailsScreen";
 
 export {
 	HomeScreen,
@@ -35,6 +36,7 @@ export {
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
 	RecordScreen,
-	GetDietScreen1,
-	GetRestaurantsScreen1,
+	GetDietScreen,
+	GetRestaurantsScreen,
+	RestaurantDetailsScreen,
 };
