@@ -1,7 +1,6 @@
 import { Layout } from "@ui-kitten/components";
-import { StyleSheet, Text } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { FocusedStatusBar, RestaurantItem, SearchBar } from "../../components";
+import { Text, FlatList, StyleSheet } from "react-native";
+import { FocusedStatusBar, FoodItem, SearchBar } from "../../components";
 import { assets, COLORS, FONTS, SIZES } from "../../constants";
 
 const data = [
@@ -25,22 +24,35 @@ const data = [
 		foodName: "Chicken Rice",
 		foodImg: assets.chickenRiceImg,
 	},
+	{
+		id: 5,
+		foodName: "Chicken Rice",
+		foodImg: assets.chickenRiceImg,
+	},
+	{
+		id: 6,
+		foodName: "Chicken Rice",
+		foodImg: assets.chickenRiceImg,
+	},
+	{
+		id: 7,
+		foodName: "Chicken Rice",
+		foodImg: assets.chickenRiceImg,
+	},
 ];
 
 const GetDietHeader = () => {
 	return (
 		<Layout style={styles.headerContainer}>
-			<Text style={styles.headerText}>
-				What restaurant would you like to explore today?
-			</Text>
+			<Text style={styles.headerText}>What food do you want to eat today?</Text>
 			<Layout style={styles.searchBar}>
-				<SearchBar onSearch={() => {}} placeholder="Search for a restaurant" />
+				<SearchBar onSearch={() => {}} placeholder="Search for a food" />
 			</Layout>
 		</Layout>
 	);
 };
 
-const GetRestaurantsScreen1 = () => {
+const GetDietScreen = () => {
 	return (
 		<Layout style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -65,14 +77,14 @@ const GetRestaurantsScreen1 = () => {
 				>
 					<GetDietHeader />
 					<Layout style={styles.borders}>
-						<Text style={styles.bordersText}>Healthy food near you</Text>
+						<Text style={styles.bordersText}>Healthier diets for you</Text>
 					</Layout>
 					<Layout style={styles.contentContainer}>
 						<FlatList
+							numColumns={2}
 							data={data}
-							renderItem={({ item }) => <RestaurantItem data={item} />}
+							renderItem={({ item }) => <FoodItem data={item} />}
 							keyExtractor={item => item.id}
-							style={{ width: "100%" }}
 						/>
 					</Layout>
 				</Layout>
@@ -81,7 +93,7 @@ const GetRestaurantsScreen1 = () => {
 	);
 };
 
-export default GetRestaurantsScreen1;
+export default GetDietScreen;
 
 const styles = StyleSheet.create({
 	borders: {
@@ -117,6 +129,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		display: "flex",
 		alignItems: "center",
+		justifyContent: "",
 		paddingTop: 0,
 	},
 });
