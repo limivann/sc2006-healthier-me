@@ -23,6 +23,7 @@ import {
 	VerificationCodeScreen,
 	TermsAndConditionsScreen,
 	PrivacyPolicyScreen,
+	HealthyDietRestaurantScreen
 } from "./screens";
 
 // setup fonts
@@ -124,9 +125,10 @@ const App = () => {
 				{!isSignedIn ? (
 					<Stack.Navigator
 						screenOptions={{ headerShown: false }}
-						initialRouteName="MainPage"
+						initialRouteName="MainScreen"
 					>
 						<Stack.Group>
+							<Stack.Screen name="HealthyDietRestaurants" component={HealthyDietRestaurantScreen} />
 							<Stack.Screen name="MainPage" component={MainScreen} />
 							<Stack.Screen name="LoginPage" component={LoginScreen} />
 							<Stack.Screen name="SignupPage" component={SignupScreen} />
