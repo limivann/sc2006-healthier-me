@@ -75,15 +75,15 @@ const AddDailyNavigator = () => {
 const NavigateNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen
-				name="RestaurantDetailsPage"
-				component={RestaurantDetailsScreen}
-			/>
+			<Stack.Screen name="GetDietPage" component={GetDietScreen} />
 			<Stack.Screen
 				name="GetRestaurantsPage"
 				component={GetRestaurantsScreen}
 			/>
-			<Stack.Screen name="GetDietPage" component={GetDietScreen} />
+			<Stack.Screen
+				name="RestaurantDetailsPage"
+				component={RestaurantDetailsScreen}
+			/>
 		</Stack.Navigator>
 	);
 };
