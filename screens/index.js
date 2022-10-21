@@ -18,7 +18,7 @@ import RecordScreen from "./RecordScreen";
 import GetDietScreen from "./NavigationScreens/GetDietScreen";
 import GetRestaurantsScreen from "./NavigationScreens/GetRestaurantsScreen";
 import RestaurantDetailsScreen from "./NavigationScreens/RestaurantDetailsScreen";
-
+import CreatePersonalFoodLabelScreen from "./CreatePersonalFoodLabelScreen";
 export {
 	HomeScreen,
 	LoginScreen,
@@ -39,4 +39,5 @@ export {
 	GetDietScreen,
 	GetRestaurantsScreen,
 	RestaurantDetailsScreen,
+	CreatePersonalFoodLabelScreen
 };

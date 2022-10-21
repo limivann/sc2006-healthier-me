@@ -54,7 +54,9 @@ const AllTabScreen = () => {
 				<CustomButton
 					text={"Create Personal Food Label"}
 					backgroundColor={COLORS.primary}
-					width="70%"
+					width="100%"
+					padding={10}
+					justifyContent="flex-start"
 					borderRadius={SIZES.large}
 				/>
 			</Layout>

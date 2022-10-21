@@ -62,7 +62,7 @@ const RestaurantDetailsScreen = ({ navigation, route }) => {
                         {data.status ? "Open" : "Close"} now.
                     </Text>
                     <Text style={styles.statusOppositeText}>
-                        Closes {data.openingTime}
+                        Opening Time {data.openingTime}
                     </Text>
                 </Layout>
                 <Layout style={styles.button}>

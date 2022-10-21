@@ -26,6 +26,7 @@ import {
 	GetDietScreen,
 	GetRestaurantsScreen,
 	RestaurantDetailsScreen,
+	CreatePersonalFoodLabelScreen,
 } from "./screens";
 
 // setup fonts
@@ -67,7 +68,8 @@ const ProfileNavigator = () => {
 const AddDailyNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="AddDailyPage" component={RecordScreen} />
+			<Stack.Screen name="AddDailyPage" component={CreatePersonalFoodLabelScreen} />
+			{/* <Stack.Screen name="AddDailyPage" component={RecordScreen} /> */}
 		</Stack.Navigator>
 	);
 };
