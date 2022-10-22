@@ -27,6 +27,7 @@ import {
 	GetRestaurantsScreen,
 	RestaurantDetailsScreen,
 	CreatePersonalFoodLabelScreen,
+	HealthyDietRestaurantScreen,
 } from "./screens";
 
 // setup fonts
@@ -68,7 +69,10 @@ const ProfileNavigator = () => {
 const AddDailyNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="AddDailyPage" component={CreatePersonalFoodLabelScreen} />
+			<Stack.Screen
+				name="AddDailyPage"
+				component={CreatePersonalFoodLabelScreen}
+			/>
 			{/* <Stack.Screen name="AddDailyPage" component={RecordScreen} /> */}
 		</Stack.Navigator>
 	);
@@ -78,6 +82,11 @@ const NavigateNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
 			<Stack.Screen
+				name="HealthyDietRestaurants"
+				component={HealthyDietRestaurantScreen}
+			/>
+			<Stack.Screen name="GetDietPage" component={GetDietScreen} />
+			<Stack.Screen
 				name="GetRestaurantsPage"
 				component={GetRestaurantsScreen}
 			/>
@@ -85,7 +94,6 @@ const NavigateNavigator = () => {
 				name="RestaurantDetailsPage"
 				component={RestaurantDetailsScreen}
 			/>
-			<Stack.Screen name="GetDietPage" component={GetDietScreen} />
 		</Stack.Navigator>
 	);
 };
@@ -161,7 +169,7 @@ const App = () => {
 				{!isSignedIn ? (
 					<Stack.Navigator
 						screenOptions={{ headerShown: false }}
-						initialRouteName="MainPage"
+						initialRouteName="MainScreen"
 					>
 						<Stack.Group>
 							<Stack.Screen name="MainPage" component={MainScreen} />
