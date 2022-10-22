@@ -26,6 +26,7 @@ import {
 	GetDietScreen,
 	GetRestaurantsScreen,
 	RestaurantDetailsScreen,
+	HealthyDietRestaurantScreen,
 } from "./screens";
 
 // setup fonts
@@ -75,6 +76,10 @@ const AddDailyNavigator = () => {
 const NavigateNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen
+				name="HealthyDietRestaurants"
+				component={HealthyDietRestaurantScreen}
+			/>
 			<Stack.Screen name="GetDietPage" component={GetDietScreen} />
 			<Stack.Screen
 				name="GetRestaurantsPage"
@@ -159,7 +164,7 @@ const App = () => {
 				{!isSignedIn ? (
 					<Stack.Navigator
 						screenOptions={{ headerShown: false }}
-						initialRouteName="MainPage"
+						initialRouteName="MainScreen"
 					>
 						<Stack.Group>
 							<Stack.Screen name="MainPage" component={MainScreen} />
