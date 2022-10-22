@@ -11,6 +11,8 @@ import avatar from "../assets/icons/avatar.png";
 import magnifierIcon from "../assets/icons/magnifier-icon.png";
 
 import noDataIcon from "../assets/images/noData.png";
+import healthyFoodIcon from "../assets/images/healthyFood.png";
+import healthyRestaurantIcon from "../assets/images/healthyRestaurant.png";
 
 export default {
 	googleIcon,
@@ -24,4 +26,6 @@ export default {
 	avatar,
 	chickenRiceImg,
 	noDataIcon,
+	healthyFoodIcon,
+	healthyRestaurantIcon,
 };
