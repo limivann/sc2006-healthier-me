@@ -10,6 +10,8 @@ import flagIcon from "../assets/icons/flag-icon.png";
 import avatar from "../assets/icons/avatar.png";
 import magnifierIcon from "../assets/icons/magnifier-icon.png";
 
+import noDataIcon from "../assets/images/noData.png";
+
 export default {
 	googleIcon,
 	welcomeImg,
@@ -21,4 +23,5 @@ export default {
 	flagIcon,
 	avatar,
 	chickenRiceImg,
+	noDataIcon,
 };

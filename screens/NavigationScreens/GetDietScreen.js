@@ -29,16 +29,6 @@ const data = [
 		foodName: "Chicken Rice",
 		foodImg: assets.chickenRiceImg,
 	},
-	{
-		id: 6,
-		foodName: "Chicken Rice",
-		foodImg: assets.chickenRiceImg,
-	},
-	{
-		id: 7,
-		foodName: "Chicken Rice",
-		foodImg: assets.chickenRiceImg,
-	},
 ];
 
 const GetDietHeader = () => {

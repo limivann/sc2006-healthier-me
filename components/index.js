@@ -11,6 +11,8 @@ import SearchBar from "./SearchBar";
 import EditButton from "./EditButton";
 import FoodItem from "./FoodItem";
 import RestaurantItem from "./RestaurantItem";
+import PersonalFoodLabelBar from "./PersonalFoodLabelBar";
+import AddButton from "./AddButton";
 
 export {
 	FocusedStatusBar,
@@ -26,4 +28,6 @@ export {
 	EditButton,
 	FoodItem,
 	RestaurantItem,
+	PersonalFoodLabelBar,
+	AddButton,
 };
