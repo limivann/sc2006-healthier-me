@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Layout, Text, Input, Tab, TabBar } from "@ui-kitten/components";
+import { Layout, Text, Input } from "@ui-kitten/components";
 import {
 	Keyboard,
 	TouchableWithoutFeedback,
@@ -13,40 +12,25 @@ import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
 const CreateByCaloriesScreen = () => {
 	return (
 		<Layout style={styles.contentContainer}>
-			<Layout>
-				<Text style={styles.text}>Food Name</Text>
-				<Input style={styles.input} placeholder="John Doe's Chicken Rice" />
-			</Layout>
-			<Layout>
-				<Text style={styles.text}>Calories</Text>
-				<Input style={styles.input} placeholder="500" keyboardType="numeric" />
-			</Layout>
-			<Layout style={styles.buttonContainer}>
-				<CustomButton
-					text={"Create"}
-					backgroundColor={COLORS.primary}
-					width="60%"
-					borderRadius={SIZES.large}
-				/>
-			</Layout>
-		</Layout>
-	);
-};
-
-const CreateByIngredientsScreen = () => {
-	return (
-		<Layout style={styles.contentContainer}>
-			<Layout>
-				<Text style={styles.text}>Food Name</Text>
-				<Input style={styles.input} placeholder="John Doe's Chicken Rice" />
+			<Layout style={styles.inputContainer}>
+				<Layout style={styles.labelInput}>
+					<Text style={styles.text}>Food Name</Text>
+					<Input style={styles.input} placeholder="John Doe's Chicken Rice" />
+				</Layout>
+				<Layout style={styles.labelInput}>
+					<Text style={styles.text}>Calories</Text>
+					<Input
+						style={styles.input}
+						placeholder="500"
+						keyboardType="numeric"
+					/>
+				</Layout>
 			</Layout>
 		</Layout>
 	);
 };
 
 const CreatePersonalFoodLabelScreen = () => {
-	const [tabSelectedIndex, setTabSelectedIndex] = useState(0);
-
 	return (
 		<KeyboardAvoidingView
 			style={{ flex: 1 }}
@@ -58,7 +42,7 @@ const CreatePersonalFoodLabelScreen = () => {
 		>
 			<FocusedStatusBar
 				barStyle="dark-content"
-				backgroundColor="transparent"
+				backgroundColor="white"
 				translucent={true}
 			/>
 			<TouchableWithoutFeedback
@@ -66,24 +50,19 @@ const CreatePersonalFoodLabelScreen = () => {
 					Keyboard.dismiss();
 				}}
 			>
-				<Layout>
+				<Layout style={styles.page}>
 					<Layout style={styles.headerContainer}>
 						<Text style={styles.header}>Create Personal Food Label</Text>
 					</Layout>
-					<Layout style={{ width: "100%" }}>
-						<TabBar
-							selectedIndex={tabSelectedIndex}
-							onSelect={index => setTabSelectedIndex(index)}
-						>
-							<Tab title="Create by Calories" />
-							<Tab title="Create by Ingredients" />
-						</TabBar>
+
+					<CreateByCaloriesScreen />
+					<Layout style={styles.buttonContainer}>
+						<CustomButton
+							text={"Create"}
+							backgroundColor={COLORS.primary}
+							borderRadius={SIZES.large}
+						/>
 					</Layout>
-					{tabSelectedIndex === 0 ? (
-						<CreateByCaloriesScreen />
-					) : (
-						<CreateByIngredientsScreen />
-					)}
 				</Layout>
 			</TouchableWithoutFeedback>
 		</KeyboardAvoidingView>
@@ -103,11 +82,10 @@ const styles = StyleSheet.create({
 		fontSize: SIZES.large,
 	},
 	contentContainer: {
-		width: "90%",
-		height: "80%",
+		width: "100%",
+		paddingHorizontal: "7.5%",
+		flex: 1,
 		justifyContent: "center",
-		alignContent: "center",
-		alignSelf: "center",
 	},
 	text: {
 		fontFamily: FONTS.regular,
@@ -120,9 +98,18 @@ const styles = StyleSheet.create({
 		marginBottom: SIZES.large,
 	},
 	buttonContainer: {
-		alignItems: "center",
-		justifyContent: "flex-end",
-		height: "40%",
+		width: "100%",
+		paddingHorizontal: "7.5%",
+	},
+	inputContainer: {
+		paddingBottom: "20%",
+	},
+	labelInput: {
+		width: "100%",
+	},
+	page: {
+		flex: 1,
+		width: "100%",
 	},
 });
 export default CreatePersonalFoodLabelScreen;

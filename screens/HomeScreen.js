@@ -70,7 +70,11 @@ const HomeScreen = ({ navigation }) => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<FocusedStatusBar barStyle="dark-content" backgroundColor="transparent" />
+			<FocusedStatusBar
+				barStyle="dark-content"
+				backgroundColor="transparent"
+				translucent={true}
+			/>
 			<Layout
 				style={{
 					width: "100%",

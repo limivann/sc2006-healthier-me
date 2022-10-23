@@ -23,48 +23,71 @@ import {
 } from "../components";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 
-const AllTabScreen = () => {
+const AllTabScreen = ({ navigation }) => {
+	const handleSearch = value => {
+		// if (!value.length) return setSearchValue("")
+		// const filteredData = data.filter((foodLabel) => foodLabel.name.toLowerCase().includes(value.toLowerCase()));
+		// filteredData.length ? setSearchValue(filteredData) : searchValue("")
+	};
 	return (
 		<TouchableWithoutFeedback
 			onPress={() => {
 				Keyboard.dismiss();
 			}}
 		>
-			<Layout style={{ alignItems: "center", justifyContent: "center" }}>
-				<Layout>
-					<Text style={{ fontFamily: FONTS.bold, marginBottom: SIZES.large }}>
-						Search Results
-					</Text>
+			<Layout style={{ alignItems: "center", width: "100%" }}>
+				<Layout
+					style={{
+						width: "100%",
+						paddingHorizontal: "5%",
+						marginBottom: SIZES.extraLarge,
+					}}
+				>
+					<SearchBar onSearch={handleSearch} placeholder="Search for a food" />
 				</Layout>
-				<Layout style={styles.content}>
-					<Image source={assets.magnifierIcon} style={styles.image} />
-					<Text
-						style={{
-							fontFamily: FONTS.bold,
-							fontSize: SIZES.extraLarge,
-							paddingTop: SIZES.font,
-						}}
-					>
-						No Results Found
-					</Text>
-					<Text
-						style={{
-							textAlign: "center",
-							color: COLORS.gray,
-							fontFamily: FONTS.regular,
-							fontSize: SIZES.font,
-							marginBottom: SIZES.font,
-						}}
-					>
-						Please check spelling or {"\n"}
-						create a personal food label
-					</Text>
-					<CustomButton
-						text={"Create Personal Food Label"}
-						backgroundColor={COLORS.primary}
-						width="70%"
-						borderRadius={SIZES.large}
-					/>
+				<Layout style={{ width: "100%", marginTop: "15%" }}>
+					<Layout style={{ width: "100%" }}>
+						<Text
+							style={{
+								fontFamily: FONTS.bold,
+								marginBottom: SIZES.large,
+								textAlign: "center",
+							}}
+						>
+							Search Results
+						</Text>
+					</Layout>
+					<Layout style={styles.content}>
+						<Image source={assets.magnifierIcon} style={styles.image} />
+						<Text
+							style={{
+								fontFamily: FONTS.bold,
+								fontSize: SIZES.extraLarge,
+								paddingTop: SIZES.font,
+							}}
+						>
+							No Results Found
+						</Text>
+						<Text
+							style={{
+								textAlign: "center",
+								color: COLORS.gray,
+								fontFamily: FONTS.regular,
+								fontSize: SIZES.font,
+								marginBottom: SIZES.font,
+							}}
+						>
+							Please check spelling or {"\n"}
+							create a personal food label
+						</Text>
+						<CustomButton
+							text={"Create Personal Food Label"}
+							backgroundColor={COLORS.primary}
+							paddingHorizontal={SIZES.large}
+							borderRadius={SIZES.large}
+							onPress={() => navigation.navigate("CreateFoodLabelPage")}
+						/>
+					</Layout>
 				</Layout>
 			</Layout>
 		</TouchableWithoutFeedback>
@@ -79,7 +102,7 @@ const MyPersonalFoodLabelTab = ({ data }) => {
 					data={data}
 					keyExtractor={item => item.id}
 					renderItem={({ item }) => <PersonalFoodLabelBar data={item} />}
-					style={{ width: "100%" }}
+					style={{ width: "100%", flex: 1 }}
 				/>
 			) : (
 				<Layout
@@ -122,7 +145,7 @@ const MyPersonalFoodLabelTab = ({ data }) => {
 	);
 };
 
-const RecordScreen = () => {
+const RecordScreen = ({ navigation }) => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const option = ["Breakfast", "Lunch", "Dinner"];
 	const displayValue = option[selectedIndex.row];
@@ -130,11 +153,6 @@ const RecordScreen = () => {
 		<SelectItem key={option.indexOf(title)} title={title} />
 	);
 	const [searchValue, setSearchValue] = useState("");
-	const handleSearch = value => {
-		// if (!value.length) return setSearchValue("")
-		// const filteredData = data.filter((foodLabel) => foodLabel.name.toLowerCase().includes(value.toLowerCase()));
-		// filteredData.length ? setSearchValue(filteredData) : searchValue("")
-	};
 
 	const [tabSelectedIndex, setTabSelectedIndex] = useState(0);
 
@@ -269,7 +287,7 @@ const RecordScreen = () => {
 			<Layout
 				style={{
 					alignItems: "center",
-					height: "100%",
+					flex: 1,
 				}}
 			>
 				<Layout style={styles.select}>
@@ -284,14 +302,7 @@ const RecordScreen = () => {
 						{option.map(renderOption)}
 					</Select>
 				</Layout>
-				<Layout
-					style={{
-						marginVertical: SIZES.font,
-						width: "90%",
-					}}
-				>
-					<SearchBar onSearch={handleSearch} placeholder="Search for a food" />
-				</Layout>
+
 				<Layout style={{ width: "100%" }}>
 					<TabBar
 						selectedIndex={tabSelectedIndex}
@@ -302,7 +313,7 @@ const RecordScreen = () => {
 					</TabBar>
 				</Layout>
 				{tabSelectedIndex === 0 ? (
-					<AllTabScreen />
+					<AllTabScreen navigation={navigation} />
 				) : (
 					<MyPersonalFoodLabelTab data={data} />
 				)}
@@ -337,6 +348,8 @@ const styles = StyleSheet.create({
 		paddingVertical: SIZES.base,
 		alignItems: "center",
 		width: "100%",
+		flex: 1,
+		paddingBottom: 80,
 	},
 	recordContainer: {
 		position: "absolute",

@@ -72,11 +72,11 @@ const ProfileNavigator = () => {
 const AddDailyNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="AddDailyPage" component={RecordScreen} />
 			<Stack.Screen
-				name="AddDailyPage"
+				name="CreateFoodLabelPage"
 				component={CreatePersonalFoodLabelScreen}
 			/>
-			{/* <Stack.Screen name="AddDailyPage" component={RecordScreen} /> */}
 		</Stack.Navigator>
 	);
 };

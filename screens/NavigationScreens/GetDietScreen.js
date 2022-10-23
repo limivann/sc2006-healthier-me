@@ -47,6 +47,7 @@ const data = [
 ];
 
 const GetDietHeader = () => {
+	console.log("ok");
 	return (
 		<Layout style={styles.headerContainer}>
 			<Text style={styles.headerText}>What food do you want to eat today?</Text>
@@ -141,7 +142,6 @@ const styles = StyleSheet.create({
 		width: "100%",
 		display: "flex",
 		alignItems: "center",
-		justifyContent: "",
 		paddingTop: 0,
 	},
 });
