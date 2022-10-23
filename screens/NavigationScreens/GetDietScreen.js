@@ -6,28 +6,43 @@ import { assets, COLORS, FONTS, SIZES } from "../../constants";
 const data = [
 	{
 		id: 1,
-		foodName: "Chicken Breast",
+		foodName: "Salad",
 		foodImg: assets.chickenRiceImg,
+		calories: 500,
+		description:
+			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
 	},
 	{
 		id: 2,
 		foodName: "Chicken Leg",
 		foodImg: assets.chickenRiceImg,
+		calories: 500,
+		description:
+			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
 	},
 	{
 		id: 3,
 		foodName: "Chicken Rice",
 		foodImg: assets.chickenRiceImg,
+		calories: 500,
+		description:
+			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
 	},
 	{
 		id: 4,
 		foodName: "Chicken Rice",
 		foodImg: assets.chickenRiceImg,
+		calories: 500,
+		description:
+			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
 	},
 	{
 		id: 5,
 		foodName: "Chicken Rice",
 		foodImg: assets.chickenRiceImg,
+		calories: 500,
+		description:
+			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
 	},
 ];
 
@@ -42,7 +57,12 @@ const GetDietHeader = () => {
 	);
 };
 
-const GetDietScreen = () => {
+const GetDietScreen = ({ navigation }) => {
+	const handlePress = id => {
+		const filterData = data.filter(item => item.id == id);
+		navigation.navigate("DietDetailsPage", { data: filterData[0] });
+	};
+
 	return (
 		<Layout style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -73,7 +93,9 @@ const GetDietScreen = () => {
 						<FlatList
 							numColumns={2}
 							data={data}
-							renderItem={({ item }) => <FoodItem data={item} />}
+							renderItem={({ item }) => (
+								<FoodItem data={item} onPress={handlePress} />
+							)}
 							keyExtractor={item => item.id}
 						/>
 					</Layout>

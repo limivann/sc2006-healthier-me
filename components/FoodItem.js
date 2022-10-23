@@ -2,9 +2,12 @@ import { Layout } from "@ui-kitten/components";
 import { StyleSheet, Text, Image, TouchableOpacity } from "react-native";
 import { COLORS, FONTS, SIZES } from "../constants";
 
-const FoodItem = ({ data }) => {
+const FoodItem = ({ data, onPress }) => {
 	return (
-		<TouchableOpacity style={styles.foodContainer}>
+		<TouchableOpacity
+			style={styles.foodContainer}
+			onPress={() => onPress(data.id)}
+		>
 			<Layout style={styles.food}>
 				<Image source={data.foodImg} style={styles.img} resizeMode="cover" />
 				<Layout style={styles.foodTextContainer}>

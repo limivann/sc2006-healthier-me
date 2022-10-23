@@ -37,6 +37,7 @@ import { auth, db } from "./firebase/firebase-config";
 import customTheme from "./constants/custom-theme.json";
 import { COLORS, SIZES } from "./constants";
 import { doc, getDoc } from "firebase/firestore";
+import DietDetails from "./screens/NavigationScreens/DietDetailsScreen";
 
 const Stack = createStackNavigator();
 
@@ -86,6 +87,7 @@ const NavigateNavigator = () => {
 				component={HealthyDietRestaurantScreen}
 			/>
 			<Stack.Screen name="GetDietPage" component={GetDietScreen} />
+			<Stack.Screen name="DietDetailsPage" component={DietDetails} />
 			<Stack.Screen
 				name="GetRestaurantsPage"
 				component={GetRestaurantsScreen}
