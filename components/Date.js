@@ -1,38 +1,54 @@
-import { Text } from "@ui-kitten/components";
+import { Text, Layout } from "@ui-kitten/components";
 import { TouchableOpacity } from "react-native";
-import { COLORS, FONTS, SIZES } from "../constants";
+import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
 
 const Date = ({ date, onPress }) => {
-    const { id, dayOfWeek, dayOfMonth, isFocused } = date;
+	const { id, dayOfWeek, dayOfMonth, isFocused } = date;
 
-    return (
-        <TouchableOpacity
-            onPress={() => onPress(id)}
-            style={{
-                alignItems: "center",
-                backgroundColor: isFocused ? COLORS.primary : "#F1F3FA",
-                margin: SIZES.font,
-                padding: SIZES.font,
-                borderRadius: SIZES.font,
-            }}
-        >
-            <Text
-                style={{
-                    fontFamily: FONTS.regular,
-                    fontSize: SIZES.font,
-                }}
-            >
-                {dayOfWeek}
-            </Text>
-            <Text
-                style={{
-                    fontFamily: FONTS.bold,
-                    fontSize: SIZES.large,
-                }}
-            >
-                {dayOfMonth}
-            </Text>
-        </TouchableOpacity>
-    );
+	return (
+		<TouchableOpacity
+			onPress={() => {
+				onPress(id);
+			}}
+			style={{
+				alignItems: "center",
+				marginHorizontal: 6,
+			}}
+		>
+			<Layout
+				style={{
+					justifyContent: "center",
+					height: "80%",
+					backgroundColor: isFocused ? COLORS.primary : "#f1f3fa",
+					borderRadius: SIZES.base,
+					paddingVertical: SIZES.base,
+					paddingHorizontal: SIZES.large,
+					...SHADOWS.light,
+				}}
+			>
+				<Text
+					style={{
+						fontFamily: FONTS.regular,
+						fontSize: SIZES.small,
+						marginBottom: SIZES.base,
+						textAlign: "center",
+						color: isFocused ? "white" : "black",
+					}}
+				>
+					{dayOfWeek}
+				</Text>
+				<Text
+					style={{
+						fontFamily: FONTS.bold,
+						fontSize: SIZES.large,
+						textAlign: "center",
+						color: isFocused ? "white" : "black",
+					}}
+				>
+					{dayOfMonth}
+				</Text>
+			</Layout>
+		</TouchableOpacity>
+	);
 };
 export default Date;

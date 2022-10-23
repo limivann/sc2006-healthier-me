@@ -21,6 +21,7 @@ import RestaurantDetailsScreen from "./NavigationScreens/RestaurantDetailsScreen
 import CreatePersonalFoodLabelScreen from "./CreatePersonalFoodLabelScreen";
 import HealthyDietRestaurantScreen from "./HealthyDietRestaurantScreen";
 import DietDetailsScreen from "./NavigationScreens/DietDetailsScreen";
+import FoodHistoryScreen from "./FoodHistoryScreen";
 
 export {
 	HomeScreen,
@@ -45,4 +46,5 @@ export {
 	CreatePersonalFoodLabelScreen,
 	HealthyDietRestaurantScreen,
 	DietDetailsScreen,
+	FoodHistoryScreen,
 };

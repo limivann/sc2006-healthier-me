@@ -28,6 +28,7 @@ import {
 	RestaurantDetailsScreen,
 	CreatePersonalFoodLabelScreen,
 	HealthyDietRestaurantScreen,
+	FoodHistoryScreen,
 } from "./screens";
 
 // setup fonts
@@ -55,6 +56,7 @@ const HomeNavigator = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
 			<Stack.Screen name="HomePage" component={HomeScreen} />
+			<Stack.Screen name="FoodHistoryPage" component={FoodHistoryScreen} />
 		</Stack.Navigator>
 	);
 };
