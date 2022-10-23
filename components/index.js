@@ -13,6 +13,8 @@ import FoodItem from "./FoodItem";
 import RestaurantItem from "./RestaurantItem";
 import PersonalFoodLabelBar from "./PersonalFoodLabelBar";
 import AddButton from "./AddButton";
+import HistoryComponent from "./HistoryComponent";
+import CloseButton from "./CloseButton";
 
 export {
 	FocusedStatusBar,
@@ -30,4 +32,6 @@ export {
 	RestaurantItem,
 	PersonalFoodLabelBar,
 	AddButton,
+	HistoryComponent,
+	CloseButton,
 };

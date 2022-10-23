@@ -3,7 +3,7 @@ import { Layout } from "@ui-kitten/components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import AddButton from "./AddButton";
 
-const PersonalFoodLabelBar = () => {
+const PersonalFoodLabelBar = ({ data }) => {
 	return (
 		<Layout style={styles.content}>
 			<Layout style={styles.container}>
