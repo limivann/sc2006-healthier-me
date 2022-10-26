@@ -17,6 +17,7 @@
 		"@ui-kitten/eva-icons": "^5.1.2",
 		"expo": "~46.0.9",
 		"expo-font": "~10.2.0",
+		"expo-linking": "^3.2.2",
 		"expo-status-bar": "~1.4.0",
 		"firebase": "^9.1.0",
 		"formik": "^2.2.9",

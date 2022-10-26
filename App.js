@@ -3,7 +3,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import * as eva from "@eva-design/eva";
-import { ApplicationProvider, Icon, IconRegistry } from "@ui-kitten/components";
+import {
+	ApplicationProvider,
+	Icon,
+	IconRegistry,
+	Layout,
+} from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 
 // screens
@@ -32,13 +37,14 @@ import {
 } from "./screens";
 
 // setup fonts
-import { useFonts } from "expo-font";
+import { isLoading, useFonts } from "expo-font";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase/firebase-config";
 import customTheme from "./constants/custom-theme.json";
 import { COLORS, SIZES } from "./constants";
 import { doc, getDoc } from "firebase/firestore";
 import DietDetails from "./screens/NavigationScreens/DietDetailsScreen";
+import { LoadingPage } from "./components";
 
 const Stack = createStackNavigator();
 
@@ -132,9 +138,12 @@ const App = () => {
 	const [isSignedIn, setIsSignedIn] = useState(false);
 	const [isSetupComplete, setIsSetupComplete] = useState(false);
 
+	const [isLoading, setIsLoading] = useState(true);
+
 	const checkUserSetup = async uid => {
 		if (!uid) {
 			setIsSetupComplete(false);
+			setIsLoading(false);
 			return;
 		}
 		try {
@@ -143,21 +152,25 @@ const App = () => {
 			if (docSnap.exists()) {
 				const { finishedSetup } = docSnap.data();
 				setIsSetupComplete(finishedSetup);
+				setIsLoading(false);
 			}
 		} catch (error) {
 			console.log(error);
 			setIsSetupComplete(false);
+			setIsLoading(false);
 		}
 	};
 
 	useEffect(() => {
 		onAuthStateChanged(auth, user => {
+			setIsLoading(true);
 			if (user) {
 				setIsSignedIn(true);
 				checkUserSetup(user?.uid);
 			} else {
 				setIsSignedIn(false);
 				setIsSetupComplete(false);
+				setIsLoading(false);
 			}
 		});
 	}, [auth.currentUser]);
@@ -170,70 +183,74 @@ const App = () => {
 		<ApplicationProvider {...eva} theme={{ ...eva.light, ...customTheme }}>
 			<IconRegistry icons={EvaIconsPack} />
 			<NavigationContainer theme={theme}>
-				{!isSignedIn ? (
-					<Stack.Navigator
-						screenOptions={{ headerShown: false }}
-						initialRouteName="MainScreen"
-					>
-						<Stack.Group>
-							<Stack.Screen name="MainPage" component={MainScreen} />
-							<Stack.Screen name="LoginPage" component={LoginScreen} />
-							<Stack.Screen name="SignupPage" component={SignupScreen} />
+				{!isLoading ? (
+					!isSignedIn ? (
+						<Stack.Navigator
+							screenOptions={{ headerShown: false }}
+							initialRouteName="MainScreen"
+						>
+							<Stack.Group>
+								<Stack.Screen name="MainPage" component={MainScreen} />
+								<Stack.Screen name="LoginPage" component={LoginScreen} />
+								<Stack.Screen name="SignupPage" component={SignupScreen} />
 
-							<Stack.Screen
-								name="ForgotPasswordPage"
-								component={ForgotPasswordScreen}
-							/>
-						</Stack.Group>
-					</Stack.Navigator>
-				) : !isSetupComplete ? (
-					<Stack.Navigator
-						screenOptions={{ headerShown: false }}
-						initialRouteName="SignupPage1"
-					>
-						<Stack.Screen name="SignupPage1" component={SignupScreen1} />
-						<Stack.Screen name="SignupPage2" component={SignupScreen2} />
-						<Stack.Screen name="SignupPage3" component={SignupScreen3} />
-					</Stack.Navigator>
+								<Stack.Screen
+									name="ForgotPasswordPage"
+									component={ForgotPasswordScreen}
+								/>
+							</Stack.Group>
+						</Stack.Navigator>
+					) : !isSetupComplete ? (
+						<Stack.Navigator
+							screenOptions={{ headerShown: false }}
+							initialRouteName="SignupPage1"
+						>
+							<Stack.Screen name="SignupPage1" component={SignupScreen1} />
+							<Stack.Screen name="SignupPage2" component={SignupScreen2} />
+							<Stack.Screen name="SignupPage3" component={SignupScreen3} />
+						</Stack.Navigator>
+					) : (
+						<Tab.Navigator
+							screenOptions={({ route }) => ({
+								tabBarIcon: ({ focused, color, size }) => {
+									let iconName;
+									if (route.name === "Home") {
+										iconName = focused ? "home" : "home-outline";
+									} else if (route.name === "Profile") {
+										iconName = focused ? "person" : "person-outline";
+									} else if (route.name === "AddDaily") {
+										iconName = focused ? "plus-square" : "plus-square-outline";
+									} else if (route.name === "Navigate") {
+										iconName = focused ? "compass" : "compass-outline";
+									} else if (route.name === "Settings") {
+										iconName = focused ? "settings-2" : "settings-2-outline";
+									}
+									return (
+										<Icon
+											name={iconName}
+											fill="white"
+											style={{ width: 32, height: 32 }}
+										/>
+									);
+								},
+								tabBarShowLabel: false,
+								headerShown: false,
+								tabBarStyle: {
+									backgroundColor: COLORS.primary,
+									paddingHorizontal: SIZES.extraLarge,
+								},
+							})}
+							initialRouteName="Home"
+						>
+							<Tab.Screen name="Home" component={HomeNavigator} />
+							<Tab.Screen name="Profile" component={ProfileNavigator} />
+							<Tab.Screen name="AddDaily" component={AddDailyNavigator} />
+							<Tab.Screen name="Navigate" component={NavigateNavigator} />
+							<Tab.Screen name="Settings" component={SettingsNavigator} />
+						</Tab.Navigator>
+					)
 				) : (
-					<Tab.Navigator
-						screenOptions={({ route }) => ({
-							tabBarIcon: ({ focused, color, size }) => {
-								let iconName;
-								if (route.name === "Home") {
-									iconName = focused ? "home" : "home-outline";
-								} else if (route.name === "Profile") {
-									iconName = focused ? "person" : "person-outline";
-								} else if (route.name === "AddDaily") {
-									iconName = focused ? "plus-square" : "plus-square-outline";
-								} else if (route.name === "Navigate") {
-									iconName = focused ? "compass" : "compass-outline";
-								} else if (route.name === "Settings") {
-									iconName = focused ? "settings-2" : "settings-2-outline";
-								}
-								return (
-									<Icon
-										name={iconName}
-										fill="white"
-										style={{ width: 32, height: 32 }}
-									/>
-								);
-							},
-							tabBarShowLabel: false,
-							headerShown: false,
-							tabBarStyle: {
-								backgroundColor: COLORS.primary,
-								paddingHorizontal: SIZES.extraLarge,
-							},
-						})}
-						initialRouteName="Home"
-					>
-						<Tab.Screen name="Home" component={HomeNavigator} />
-						<Tab.Screen name="Profile" component={ProfileNavigator} />
-						<Tab.Screen name="AddDaily" component={AddDailyNavigator} />
-						<Tab.Screen name="Navigate" component={NavigateNavigator} />
-						<Tab.Screen name="Settings" component={SettingsNavigator} />
-					</Tab.Navigator>
+					<LoadingPage />
 				)}
 			</NavigationContainer>
 		</ApplicationProvider>
