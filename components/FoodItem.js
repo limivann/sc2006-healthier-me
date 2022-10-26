@@ -9,7 +9,11 @@ const FoodItem = ({ data, onPress }) => {
 			onPress={() => onPress(data.id)}
 		>
 			<Layout style={styles.food}>
-				<Image source={data.foodImg} style={styles.img} resizeMode="cover" />
+				<Image
+					source={{ uri: data.foodImg }}
+					style={styles.img}
+					resizeMode="cover"
+				/>
 				<Layout style={styles.foodTextContainer}>
 					<Text style={styles.foodText}>{data.foodName}</Text>
 				</Layout>

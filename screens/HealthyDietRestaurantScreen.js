@@ -1,5 +1,14 @@
 import { Layout, Text } from "@ui-kitten/components";
 import {
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	limit,
+	query,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
+import {
 	Platform,
 	StyleSheet,
 	Image,
@@ -8,9 +17,87 @@ import {
 } from "react-native";
 import { FocusedStatusBar } from "../components";
 import { assets, COLORS, FONTS, SHADOWS, SIZES } from "../constants";
+import { db } from "../firebase/firebase-config";
 
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 const HealthyDietRestaurantScreen = ({ navigation }) => {
+	const [dietsData, setDietsData] = useState([]);
+	const [restaurantsData, setRestaurantsData] = useState([]);
+
+	const [isDietLoading, setIsDietLoading] = useState(true);
+	const [isResLoading, setIsResLoading] = useState(true);
+
+	useEffect(() => {
+		const getSingleDoc = async ref => {
+			const docSnap = await getDoc(ref);
+			if (docSnap.exists()) {
+				return docSnap.data();
+			}
+			return null;
+		};
+
+		const getRestaurants = async refs => {
+			const temp = [];
+			for (const ref of refs) {
+				const restaurants = await getSingleDoc(ref);
+				temp.push(restaurants);
+			}
+			return temp;
+		};
+		const fetchDietData = async () => {
+			const dietsRef = collection(db, "diets");
+			const q = query(dietsRef, limit(8));
+			const querySnapshot = await getDocs(q);
+			const tempDiets = [];
+			querySnapshot.forEach(async doc => {
+				const restaurantsRefs = doc.data().restaurants;
+				const results = await getRestaurants(restaurantsRefs);
+				const formattedDiet = {
+					id: doc.id,
+					foodName: doc.data().name,
+					calories: doc.data().calories,
+					foodImg: doc.data().imageUrl,
+					description: doc.data().longDescription,
+					restaurants: [...results],
+				};
+				tempDiets.push(formattedDiet);
+			});
+			setIsDietLoading(false);
+			setDietsData(tempDiets);
+		};
+		const fetchRestaurantData = async () => {
+			const restaurantRef = collection(db, "restaurants");
+			const q = query(restaurantRef, limit(8));
+			const querySnapshot = await getDocs(q);
+			const tempRestaurants = [];
+			querySnapshot.forEach(async doc => {
+				const formattedRestaurant = {
+					id: doc.id,
+					title: doc.data().name,
+					shortDesc: doc.data().shortDescription,
+					longDesc: doc.data().longDescription,
+					restaurantImg: assets.theCrowdedBowlImg,
+					description: doc.data().longDescription,
+					distance: 1.0,
+					rating: doc.data().rating,
+					locationUrl: doc.data().locationUrl,
+					openingTime: "7.00 am ~ 9.00 pm",
+					status: true,
+					isDineInAvail: true,
+					isTakeawayAvail: true,
+					imageUrl: doc.data().imageUrl,
+					locationUrl: doc.data().locationUrl,
+				};
+				tempRestaurants.push(formattedRestaurant);
+			});
+			setIsResLoading(false);
+			setRestaurantsData(tempRestaurants);
+		};
+
+		fetchDietData();
+		fetchRestaurantData();
+	}, []);
+
 	return (
 		<Layout style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -42,7 +129,12 @@ const HealthyDietRestaurantScreen = ({ navigation }) => {
 				<Layout style={styles.content}>
 					<TouchableOpacity
 						style={{ marginBottom: SIZES.extraLarge }}
-						onPress={() => navigation.navigate("GetDietPage")}
+						onPress={() =>
+							navigation.navigate("GetDietPage", {
+								data: dietsData,
+								isDietLoading,
+							})
+						}
 					>
 						<Layout style={styles.container}>
 							<Image source={assets.healthyFoodIcon} style={styles.image} />
@@ -57,7 +149,12 @@ const HealthyDietRestaurantScreen = ({ navigation }) => {
 					</TouchableOpacity>
 
 					<TouchableOpacity
-						onPress={() => navigation.navigate("GetRestaurantsPage")}
+						onPress={() =>
+							navigation.navigate("GetRestaurantsPage", {
+								data: restaurantsData,
+								isResLoading,
+							})
+						}
 					>
 						<Layout style={styles.container}>
 							<Image

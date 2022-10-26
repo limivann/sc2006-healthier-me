@@ -1,16 +1,22 @@
 import { Icon, Layout } from "@ui-kitten/components";
 import { StyleSheet, Text, Image, ScrollView } from "react-native";
 import { BackButton, CustomButton, FocusedStatusBar } from "../../components";
-import { assets, COLORS, FONTS, SIZES } from "../../constants";
+import { COLORS, FONTS, SIZES } from "../../constants";
+import * as Linking from "expo-linking";
 
 const RestaurantDetailsScreen = ({ navigation, route }) => {
 	const { data } = route?.params;
+
+	const handlePress = () => {
+		Linking.openURL(data.locationUrl);
+	};
+
 	return (
 		<Layout style={{ flex: 1 }}>
 			<FocusedStatusBar backgroundColor="transparent" barStyle="dark-content" />
 			<Image
 				style={styles.image}
-				source={data.restaurantImg}
+				source={{ uri: data.imageUrl }}
 				resizeMode="cover"
 			/>
 			<BackButton
@@ -63,7 +69,11 @@ const RestaurantDetailsScreen = ({ navigation, route }) => {
 					</Text>
 				</Layout>
 				<Layout style={styles.button}>
-					<CustomButton text={"Directions"} backgroundColor={COLORS.primary}>
+					<CustomButton
+						text={"Directions"}
+						backgroundColor={COLORS.primary}
+						onPress={() => handlePress()}
+					>
 						<Icon
 							fill="white"
 							name="navigation-2-outline"

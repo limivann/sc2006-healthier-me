@@ -1,7 +1,7 @@
 import { Icon, Layout } from "@ui-kitten/components";
 import { StyleSheet, Text, Image, ScrollView } from "react-native";
 import { BackButton, CustomButton, FocusedStatusBar } from "../../components";
-import { assets, COLORS, FONTS, SIZES } from "../../constants";
+import { COLORS, FONTS, SIZES } from "../../constants";
 
 const DietDetails = ({ navigation, route }) => {
 	const { data } = route?.params;
@@ -10,7 +10,7 @@ const DietDetails = ({ navigation, route }) => {
 			<FocusedStatusBar backgroundColor="transparent" barStyle="dark-content" />
 			<Image
 				style={styles.image}
-				source={assets.chickenRiceImg}
+				source={{ uri: data.foodImg }}
 				resizeMode="cover"
 			/>
 			<BackButton

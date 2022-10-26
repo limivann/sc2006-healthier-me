@@ -15,6 +15,7 @@ import PersonalFoodLabelBar from "./PersonalFoodLabelBar";
 import AddButton from "./AddButton";
 import HistoryComponent from "./HistoryComponent";
 import CloseButton from "./CloseButton";
+import LoadingPage from "./LoadingPage";
 
 export {
 	FocusedStatusBar,
@@ -34,4 +35,5 @@ export {
 	AddButton,
 	HistoryComponent,
 	CloseButton,
+	LoadingPage,
 };

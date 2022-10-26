@@ -1,53 +1,9 @@
-import { Layout } from "@ui-kitten/components";
+import { Layout, Spinner } from "@ui-kitten/components";
 import { Text, FlatList, StyleSheet } from "react-native";
 import { FocusedStatusBar, FoodItem, SearchBar } from "../../components";
-import { assets, COLORS, FONTS, SIZES } from "../../constants";
-
-const data = [
-	{
-		id: 1,
-		foodName: "Salad",
-		foodImg: assets.chickenRiceImg,
-		calories: 500,
-		description:
-			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
-	},
-	{
-		id: 2,
-		foodName: "Chicken Leg",
-		foodImg: assets.chickenRiceImg,
-		calories: 500,
-		description:
-			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
-	},
-	{
-		id: 3,
-		foodName: "Chicken Rice",
-		foodImg: assets.chickenRiceImg,
-		calories: 500,
-		description:
-			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
-	},
-	{
-		id: 4,
-		foodName: "Chicken Rice",
-		foodImg: assets.chickenRiceImg,
-		calories: 500,
-		description:
-			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
-	},
-	{
-		id: 5,
-		foodName: "Chicken Rice",
-		foodImg: assets.chickenRiceImg,
-		calories: 500,
-		description:
-			"Salad is a dish consisting of mixed, mostly natural ingredients with at least one raw ingredient. They are often served at room temperature or chilled. Though some can be served warm",
-	},
-];
+import { COLORS, FONTS, SIZES } from "../../constants";
 
 const GetDietHeader = () => {
-	console.log("ok");
 	return (
 		<Layout style={styles.headerContainer}>
 			<Text style={styles.headerText}>What food do you want to eat today?</Text>
@@ -58,7 +14,8 @@ const GetDietHeader = () => {
 	);
 };
 
-const GetDietScreen = ({ navigation }) => {
+const GetDietScreen = ({ navigation, route }) => {
+	const { data, isDietLoading } = route.params;
 	const handlePress = id => {
 		const filterData = data.filter(item => item.id == id);
 		navigation.navigate("DietDetailsPage", { data: filterData[0] });
@@ -90,16 +47,22 @@ const GetDietScreen = ({ navigation }) => {
 					<Layout style={styles.borders}>
 						<Text style={styles.bordersText}>Healthier diets for you</Text>
 					</Layout>
-					<Layout style={styles.contentContainer}>
-						<FlatList
-							numColumns={2}
-							data={data}
-							renderItem={({ item }) => (
-								<FoodItem data={item} onPress={handlePress} />
-							)}
-							keyExtractor={item => item.id}
-						/>
-					</Layout>
+					{!isDietLoading ? (
+						<Layout style={styles.contentContainer}>
+							<FlatList
+								numColumns={2}
+								data={data}
+								renderItem={({ item }) => (
+									<FoodItem data={item} onPress={handlePress} />
+								)}
+								keyExtractor={item => item.id}
+							/>
+						</Layout>
+					) : (
+						<Layout style={styles.spinner}>
+							<Spinner status="primary" size="giant" />
+						</Layout>
+					)}
 				</Layout>
 			</Layout>
 		</Layout>
@@ -143,5 +106,11 @@ const styles = StyleSheet.create({
 		display: "flex",
 		alignItems: "center",
 		paddingTop: 0,
+	},
+	spinner: {
+		backgroundColor: "white",
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 });
