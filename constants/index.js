@@ -7,14 +7,4 @@ import {
 	SCREEN_DIM,
 } from "./theme";
 import assets from "./assets";
-import { loginSchema } from "./validationSchemas";
-export {
-	COLORS,
-	SHADOWS,
-	SIZES,
-	FONTS,
-	loginSchema,
-	assets,
-	APPBAR_HEIGHT,
-	SCREEN_DIM,
-};
+export { COLORS, SHADOWS, SIZES, FONTS, assets, APPBAR_HEIGHT, SCREEN_DIM };

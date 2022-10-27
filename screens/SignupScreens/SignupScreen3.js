@@ -18,9 +18,9 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebase-config";
 
 const SignupScreen3 = ({ navigation, route }) => {
-	const [age, setAge] = useState(null);
-	const [height, setHeight] = useState(null);
-	const [weight, setWeight] = useState(null);
+	const [age, setAge] = useState("");
+	const [height, setHeight] = useState("");
+	const [weight, setWeight] = useState("");
 	const [isMaleToggled, setIsMaleToggled] = useState(true);
 	const { selectedActivityStr } = route.params;
 	const [inputError, setInputError] = useState("");
@@ -30,7 +30,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 		// check validity
 		// check required fields
 		setIsSignupLoading(true);
-		if (age == undefined || height == undefined || weight == undefined) {
+		if (age === "" || height === "" || weight === "") {
 			setInputError("Please fill in all fields");
 			setIsSignupLoading(false);
 			return;
@@ -62,6 +62,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 				height: height,
 				weight: weight,
 				activityLevel: selectedActivityStr,
+				gender: isMaleToggled ? "male" : "female",
 			},
 			{ merge: true }
 		);
