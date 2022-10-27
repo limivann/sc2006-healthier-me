@@ -1,4 +1,12 @@
-import { Text, Layout, Input, Spinner } from "@ui-kitten/components";
+import {
+	Text,
+	Layout,
+	Input,
+	Spinner,
+	IndexPath,
+	Select,
+	SelectItem,
+} from "@ui-kitten/components";
 import { useEffect, useState } from "react";
 import {
 	StyleSheet,
@@ -15,6 +23,13 @@ import { auth, db } from "../firebase/firebase-config";
 import { calculateBmi } from "../utils";
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
+const activityLevelSelection = [
+	"Not Very Active",
+	"Lightly Active",
+	"Active",
+	"Very Active",
+];
+
 const ProfileScreen = () => {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -22,10 +37,26 @@ const ProfileScreen = () => {
 	const [weight, setWeight] = useState("");
 	const [age, setAge] = useState("");
 	const [bmi, setBmi] = useState("");
-	const [activityLevel, setActivityLevel] = useState("");
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+
+	// all editing stuff
+	const [editingHeight, setEditingHeight] = useState("");
+	const [editingWeight, setEditingWeight] = useState("");
+	const [editingAge, setEditingAge] = useState("");
+	const [editingActivityLevel, setEditingActivityLevel] = useState(
+		new IndexPath(0)
+	);
+
+	const [activityLevelIndex, setActivityLevelIndex] = useState(
+		new IndexPath(0)
+	);
+
+	const displayValue = activityLevelSelection[activityLevelIndex.row];
+	const displayValueEditing = activityLevelSelection[editingActivityLevel.row];
+
+	const renderOption = title => <SelectItem title={title} />;
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -37,7 +68,15 @@ const ProfileScreen = () => {
 				setAge(user.age);
 				setEmail(user.email);
 				setWeight(user.weight);
-				setActivityLevel(user.activityLevel);
+				if (user.activityLevel === "Not Very Active") {
+					setActivityLevelIndex(new IndexPath(0));
+				} else if (user.activityLevel === "Lightly Active") {
+					setActivityLevelIndex(new IndexPath(1));
+				} else if (user.activityLevel === "Active") {
+					setActivityLevelIndex(new IndexPath(2));
+				} else {
+					setActivityLevelIndex(new IndexPath(3));
+				}
 				setHeight(user.height);
 				const tempBmi = calculateBmi(user.weight, user.height);
 				setBmi(tempBmi);
@@ -49,7 +88,21 @@ const ProfileScreen = () => {
 	}, []);
 
 	const handleEdit = () => {
+		if (isEditing) {
+			setIsEditing(false);
+			return;
+		}
+		setEditingHeight(height);
+		setEditingWeight(weight);
+		setEditingAge(age);
+		setEditingActivityLevel(activityLevelIndex);
 		setIsEditing(true);
+	};
+
+	const handleSubmitEdit = async () => {
+		if (!isEditing) {
+			return;
+		}
 	};
 
 	return (
@@ -116,42 +169,81 @@ const ProfileScreen = () => {
 						<Layout style={styles.profileContent}>
 							<Layout style={styles.row}>
 								<Layout style={styles.component}>
-									<Text style={styles.title}>Height</Text>
-									<Input
-										style={{
-											...styles.input,
-											backgroundColor: isEditing ? "#F7F9FC" : "white",
-										}}
-										disabled={!isEditing}
-										value={height}
-										textStyle={{ color: "black" }}
-									/>
+									<Text style={styles.title}>Height (cm)</Text>
+									{isEditing ? (
+										<Input
+											style={{
+												...styles.input,
+												backgroundColor: "#F7F9FC",
+											}}
+											value={editingHeight}
+											textStyle={{ color: "black" }}
+											keyboardType="numeric"
+											onChangeText={nextValue => setEditingHeight(nextValue)}
+										/>
+									) : (
+										<Input
+											style={{
+												...styles.input,
+												backgroundColor: "white",
+											}}
+											disabled={true}
+											value={height}
+											textStyle={{ color: "black" }}
+										/>
+									)}
 								</Layout>
 								<Layout style={styles.component}>
-									<Text style={styles.title}>Weight</Text>
-									<Input
-										style={{
-											...styles.input,
-											backgroundColor: isEditing ? "#F7F9FC" : "white",
-										}}
-										disabled={!isEditing}
-										value={weight}
-										textStyle={{ color: "black" }}
-									/>
+									<Text style={styles.title}>Weight (kg)</Text>
+									{isEditing ? (
+										<Input
+											style={{
+												...styles.input,
+												backgroundColor: "#F7F9FC",
+											}}
+											value={editingWeight}
+											textStyle={{ color: "black" }}
+											keyboardType="numeric"
+											onChangeText={nextValue => setEditingHeight(nextValue)}
+										/>
+									) : (
+										<Input
+											style={{
+												...styles.input,
+												backgroundColor: "white",
+											}}
+											disabled={true}
+											value={weight}
+											textStyle={{ color: "black" }}
+										/>
+									)}
 								</Layout>
 							</Layout>
 							<Layout style={styles.row}>
 								<Layout style={styles.component}>
 									<Text style={styles.title}>Age</Text>
-									<Input
-										style={{
-											...styles.input,
-											backgroundColor: isEditing ? "#F7F9FC" : "white",
-										}}
-										disabled={!isEditing}
-										value={age}
-										textStyle={{ color: "black" }}
-									/>
+									{isEditing ? (
+										<Input
+											style={{
+												...styles.input,
+												backgroundColor: "#F7F9FC",
+											}}
+											value={editingAge}
+											textStyle={{ color: "black" }}
+											keyboardType="numeric"
+											onChangeText={nextValue => setEditingAge(nextValue)}
+										/>
+									) : (
+										<Input
+											style={{
+												...styles.input,
+												backgroundColor: "white",
+											}}
+											disabled={true}
+											value={age}
+											textStyle={{ color: "black" }}
+										/>
+									)}
 								</Layout>
 								<Layout style={styles.component}>
 									<Text style={styles.title}>BMI</Text>
@@ -169,15 +261,30 @@ const ProfileScreen = () => {
 							<Layout style={styles.row}>
 								<Layout style={styles.longComponent}>
 									<Text style={styles.title}>Activity Level</Text>
-									<Input
-										style={{
-											...styles.input,
-											backgroundColor: isEditing ? "#F7F9FC" : "white",
-										}}
-										disabled={!isEditing}
-										value={activityLevel}
-										textStyle={{ color: "black" }}
-									/>
+									{isEditing ? (
+										<Select
+											style={{
+												...styles.input,
+											}}
+											value={displayValueEditing}
+											selectedIndex={editingActivityLevel}
+											onSelect={index => setEditingActivityLevel(index)}
+										>
+											{activityLevelSelection.map(renderOption)}
+										</Select>
+									) : (
+										<Select
+											style={{
+												...styles.input,
+											}}
+											value={displayValue}
+											selectedIndex={activityLevelIndex}
+											onSelect={index => setActivityLevelIndex(index)}
+											disabled={true}
+										>
+											{activityLevelSelection.map(renderOption)}
+										</Select>
+									)}
 								</Layout>
 							</Layout>
 						</Layout>
