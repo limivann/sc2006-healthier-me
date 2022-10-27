@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Layout,
 	Text,
@@ -6,6 +6,7 @@ import {
 	SelectItem,
 	Tab,
 	TabBar,
+	Spinner,
 } from "@ui-kitten/components";
 import {
 	Image,
@@ -22,6 +23,8 @@ import {
 	PersonalFoodLabelBar,
 } from "../components";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
+import { collection, getDocs, query } from "firebase/firestore";
+import { auth, db } from "../firebase/firebase-config";
 
 const AllTabScreen = ({ navigation }) => {
 	const handleSearch = value => {
@@ -141,6 +144,17 @@ const MyPersonalFoodLabelTab = ({ data }) => {
 					</Layout>
 				</Layout>
 			)}
+			{data.length !== 0 ? (
+				<Layout style={styles.recordContainer}>
+					<CustomButton
+						text={"Add to consumption"}
+						backgroundColor={COLORS.primary}
+						onPress={() => {}}
+					/>
+				</Layout>
+			) : (
+				<></>
+			)}
 		</Layout>
 	);
 };
@@ -155,126 +169,38 @@ const RecordScreen = ({ navigation }) => {
 	const [searchValue, setSearchValue] = useState("");
 
 	const [tabSelectedIndex, setTabSelectedIndex] = useState(0);
-
-	const data = [
-		{
-			id: 1,
-			name: "John Doe's Chicken Rice",
-			totalCalories: 500,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "John Doe's Chicken Rice",
-					calories: 500,
-					id: 100,
-				},
-			],
-		},
-		{
-			id: 2,
-			name: "Max's Peanut Bread",
-			totalCalories: 100,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "2 breads",
-					calories: 40,
-					id: 101,
-				},
-				{
-					foodDescription: "Peanut butter",
-					calories: 20,
-					id: 102,
-				},
-			],
-		},
-		{
-			id: 3,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 4,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 5,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 6,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 7,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 8,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-	];
+	const [personalFoodLabelData, setPersonalFoodLabelData] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	useEffect(() => {
+		const fetchFoodLabelData = async () => {
+			setIsLoading(true);
+			try {
+				const personalFoodLabelRef = collection(
+					db,
+					"users",
+					auth.currentUser.uid,
+					"personalFoodLabel"
+				);
+				const q = query(personalFoodLabelRef);
+				const querySnapshot = await getDocs(q);
+				const tempData = [];
+				querySnapshot.forEach(doc => {
+					const formattedData = {
+						id: doc.id,
+						name: doc.data().name,
+						calories: doc.data().calories,
+					};
+					tempData.push(formattedData);
+				});
+				setPersonalFoodLabelData(tempData);
+				setIsLoading(false);
+			} catch (error) {
+				console.log(error);
+				setIsLoading(false);
+			}
+		};
+		fetchFoodLabelData();
+	}, []);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
@@ -284,51 +210,46 @@ const RecordScreen = ({ navigation }) => {
 				translucent={true}
 			/>
 
-			<Layout
-				style={{
-					alignItems: "center",
-					flex: 1,
-				}}
-			>
-				<Layout style={styles.select}>
-					<Select
-						status="primary"
-						size="large"
-						placeholder="Select a meal"
-						selectedIndex={selectedIndex}
-						value={displayValue}
-						onSelect={index => setSelectedIndex(index)}
-					>
-						{option.map(renderOption)}
-					</Select>
-				</Layout>
-
-				<Layout style={{ width: "100%" }}>
-					<TabBar
-						selectedIndex={tabSelectedIndex}
-						onSelect={index => setTabSelectedIndex(index)}
-					>
-						<Tab title="All" />
-						<Tab title="My Personal Food Labels" />
-					</TabBar>
-				</Layout>
-				{tabSelectedIndex === 0 ? (
-					<AllTabScreen navigation={navigation} />
-				) : (
-					<MyPersonalFoodLabelTab data={data} />
-				)}
-				{data.length !== 0 ? (
-					<Layout style={styles.recordContainer}>
-						<CustomButton
-							text={"Add to consumption"}
-							backgroundColor={COLORS.primary}
-							onPress={() => {}}
-						/>
+			{!isLoading ? (
+				<Layout
+					style={{
+						alignItems: "center",
+						flex: 1,
+					}}
+				>
+					<Layout style={styles.select}>
+						<Select
+							status="primary"
+							size="large"
+							placeholder="Select a meal"
+							selectedIndex={selectedIndex}
+							value={displayValue}
+							onSelect={index => setSelectedIndex(index)}
+						>
+							{option.map(renderOption)}
+						</Select>
 					</Layout>
-				) : (
-					<></>
-				)}
-			</Layout>
+
+					<Layout style={{ width: "100%" }}>
+						<TabBar
+							selectedIndex={tabSelectedIndex}
+							onSelect={index => setTabSelectedIndex(index)}
+						>
+							<Tab title="All" />
+							<Tab title="My Personal Food Labels" />
+						</TabBar>
+					</Layout>
+					{tabSelectedIndex === 0 ? (
+						<AllTabScreen navigation={navigation} />
+					) : (
+						<MyPersonalFoodLabelTab data={personalFoodLabelData} />
+					)}
+				</Layout>
+			) : (
+				<Layout style={styles.spinner}>
+					<Spinner status="primary" size="giant" />
+				</Layout>
+			)}
 		</SafeAreaView>
 	);
 };
@@ -357,6 +278,12 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		paddingVertical: SIZES.font,
 		paddingHorizontal: "10%",
+	},
+	spinner: {
+		backgroundColor: "white",
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 });
 export default RecordScreen;

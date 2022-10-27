@@ -8,11 +8,11 @@ import {
 	Platform,
 	StyleSheet,
 } from "react-native";
-import { FocusedStatusBar, CustomButton } from "../components";
+import { FocusedStatusBar, CustomButton, BackButton } from "../components";
 import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
 import { auth, db } from "../firebase/firebase-config";
 
-const CreatePersonalFoodLabelScreen = () => {
+const CreatePersonalFoodLabelScreen = ({ navigation }) => {
 	const [errorText, setErrorText] = useState("");
 	const [labelName, setLabelName] = useState("");
 	const [calories, setCalories] = useState(null);
@@ -53,10 +53,7 @@ const CreatePersonalFoodLabelScreen = () => {
 				name: labelName,
 				calories: calories,
 			};
-			const docRef = await addDoc(
-				collection(db, "users", auth.currentUser.uid, "personalFoodLabel"),
-				newData
-			);
+			const docRef = await addDoc(personalFoodLabelRef, newData);
 			setErrorText("");
 			setCreateLoading(false);
 			// clear inputs
@@ -92,6 +89,13 @@ const CreatePersonalFoodLabelScreen = () => {
 				}}
 			>
 				<Layout style={styles.page}>
+					<BackButton
+						onPress={() => navigation.goBack()}
+						color={COLORS.primary}
+						backgroundColor="transparent"
+						top={8}
+						paddingLeft={SIZES.large}
+					/>
 					<Layout style={styles.headerContainer}>
 						<Text style={styles.header}>Create Personal Food Label</Text>
 					</Layout>
