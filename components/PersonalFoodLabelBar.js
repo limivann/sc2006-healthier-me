@@ -8,10 +8,8 @@ const PersonalFoodLabelBar = ({ data }) => {
 		<Layout style={styles.content}>
 			<Layout style={styles.container}>
 				<Layout style={styles.foodLabelLeft}>
-					<Text style={styles.foodLabelNameText}>
-						Chicken Breast, raw, with skin
-					</Text>
-					<Text style={styles.foodLabelCalText}>195 cal, 113g</Text>
+					<Text style={styles.foodLabelNameText}>{data.name}</Text>
+					<Text style={styles.foodLabelCalText}>{`${data.calories} kcal`}</Text>
 				</Layout>
 				<Layout style={styles.foodLabelRight}>
 					<AddButton color={COLORS.primary} />

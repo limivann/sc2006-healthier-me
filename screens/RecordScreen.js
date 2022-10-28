@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Layout,
 	Text,
@@ -6,6 +6,10 @@ import {
 	SelectItem,
 	Tab,
 	TabBar,
+	Spinner,
+	Autocomplete,
+	AutocompleteItem,
+	Icon,
 } from "@ui-kitten/components";
 import {
 	Image,
@@ -14,6 +18,8 @@ import {
 	SafeAreaView,
 	TouchableWithoutFeedback,
 	Keyboard,
+	Platform,
+	TouchableOpacity,
 } from "react-native";
 import {
 	FocusedStatusBar,
@@ -22,30 +28,102 @@ import {
 	PersonalFoodLabelBar,
 } from "../components";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
+import { collection, getDocs, query } from "firebase/firestore";
+import { auth, db } from "../firebase/firebase-config";
+
+const movies = [
+	{ title: "Star Wars" },
+	{ title: "Back to the Future" },
+	{ title: "The Matrix" },
+	{ title: "Inception" },
+	{ title: "Interstellar" },
+];
+
+const showEvent = Platform.select({
+	android: "keyboardDidShow",
+	default: "keyboardWillShow",
+});
+
+const hideEvent = Platform.select({
+	android: "keyboardDidHide",
+	default: "keyboardWillHide",
+});
+
+const filter = (item, query) =>
+	item.title.toLowerCase().includes(query.toLowerCase());
 
 const AllTabScreen = ({ navigation }) => {
-	const handleSearch = value => {
-		// if (!value.length) return setSearchValue("")
-		// const filteredData = data.filter((foodLabel) => foodLabel.name.toLowerCase().includes(value.toLowerCase()));
-		// filteredData.length ? setSearchValue(filteredData) : searchValue("")
+	// autocomplete
+	const [value, setValue] = useState(null);
+	const [data, setData] = useState(movies);
+	const [placement, setPlacement] = useState("bottom");
+
+	useEffect(() => {
+		const keyboardShowListener = Keyboard.addListener(showEvent, () => {
+			setPlacement("top");
+		});
+
+		const keyboardHideListener = Keyboard.addListener(hideEvent, () => {
+			setPlacement("bottom");
+		});
+
+		return () => {
+			keyboardShowListener.remove();
+			keyboardHideListener.remove();
+		};
+	}, []);
+
+	const onSelect = index => {
+		setValue(movies[index].title);
 	};
+
+	const onChangeText = query => {
+		setValue(query);
+		setData(movies.filter(item => filter(item, query)));
+	};
+
+	const renderOption = (item, index) => (
+		<AutocompleteItem key={index} title={item.title} />
+	);
+
+	const renderIcon = props => (
+		<TouchableOpacity>
+			<Icon {...props} name="search-outline" />
+		</TouchableOpacity>
+	);
+
 	return (
 		<TouchableWithoutFeedback
 			onPress={() => {
 				Keyboard.dismiss();
 			}}
 		>
-			<Layout style={{ alignItems: "center", width: "100%" }}>
+			<Layout
+				style={{
+					alignItems: "center",
+					width: "100%",
+				}}
+			>
 				<Layout
 					style={{
 						width: "100%",
 						paddingHorizontal: "5%",
-						marginBottom: SIZES.extraLarge,
 					}}
 				>
-					<SearchBar onSearch={handleSearch} placeholder="Search for a food" />
+					<Text style={styles.queryText}>What are you having today?</Text>
+					<Autocomplete
+						placeholder="Search for a food"
+						value={value}
+						placement={placement}
+						onChangeText={onChangeText}
+						onSelect={onSelect}
+						style={styles.autocomplete}
+						accessoryRight={renderIcon}
+					>
+						{data.map(renderOption)}
+					</Autocomplete>
 				</Layout>
-				<Layout style={{ width: "100%", marginTop: "15%" }}>
+				{/* <Layout style={{ width: "100%", marginTop: "15%" }}>
 					<Layout style={{ width: "100%" }}>
 						<Text
 							style={{
@@ -88,13 +166,13 @@ const AllTabScreen = ({ navigation }) => {
 							onPress={() => navigation.navigate("CreateFoodLabelPage")}
 						/>
 					</Layout>
-				</Layout>
+				</Layout> */}
 			</Layout>
 		</TouchableWithoutFeedback>
 	);
 };
 
-const MyPersonalFoodLabelTab = ({ data }) => {
+const MyPersonalFoodLabelTab = ({ data, navigation }) => {
 	return (
 		<Layout style={styles.foodLabelsContainer}>
 			{data.length !== 0 ? (
@@ -132,15 +210,16 @@ const MyPersonalFoodLabelTab = ({ data }) => {
 						>
 							Please create a personal food label
 						</Text>
-						<CustomButton
-							text={"Create Personal Food Label"}
-							backgroundColor={COLORS.primary}
-							width="70%"
-							borderRadius={SIZES.large}
-						/>
 					</Layout>
 				</Layout>
 			)}
+			<Layout style={styles.recordContainer}>
+				<CustomButton
+					text={"Create Personal Food Label"}
+					backgroundColor={COLORS.primary}
+					onPress={() => navigation.navigate("CreateFoodLabelPage")}
+				/>
+			</Layout>
 		</Layout>
 	);
 };
@@ -155,126 +234,38 @@ const RecordScreen = ({ navigation }) => {
 	const [searchValue, setSearchValue] = useState("");
 
 	const [tabSelectedIndex, setTabSelectedIndex] = useState(0);
-
-	const data = [
-		{
-			id: 1,
-			name: "John Doe's Chicken Rice",
-			totalCalories: 500,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "John Doe's Chicken Rice",
-					calories: 500,
-					id: 100,
-				},
-			],
-		},
-		{
-			id: 2,
-			name: "Max's Peanut Bread",
-			totalCalories: 100,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "2 breads",
-					calories: 40,
-					id: 101,
-				},
-				{
-					foodDescription: "Peanut butter",
-					calories: 20,
-					id: 102,
-				},
-			],
-		},
-		{
-			id: 3,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 4,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 5,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 6,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 7,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-		{
-			id: 8,
-			name: "Yao long's specialty burger",
-			totalCalories: 120,
-			servingUnit: "One serving",
-			servingQuantity: 1,
-			ingredients: [
-				{
-					foodDescription: "bread",
-					calories: 120,
-					id: 103,
-				},
-			],
-		},
-	];
+	const [personalFoodLabelData, setPersonalFoodLabelData] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	useEffect(() => {
+		const fetchFoodLabelData = async () => {
+			setIsLoading(true);
+			try {
+				const personalFoodLabelRef = collection(
+					db,
+					"users",
+					auth.currentUser.uid,
+					"personalFoodLabel"
+				);
+				const q = query(personalFoodLabelRef);
+				const querySnapshot = await getDocs(q);
+				const tempData = [];
+				querySnapshot.forEach(doc => {
+					const formattedData = {
+						id: doc.id,
+						name: doc.data().name,
+						calories: doc.data().calories,
+					};
+					tempData.push(formattedData);
+				});
+				setPersonalFoodLabelData(tempData);
+				setIsLoading(false);
+			} catch (error) {
+				console.log(error);
+				setIsLoading(false);
+			}
+		};
+		fetchFoodLabelData();
+	}, []);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
@@ -284,51 +275,49 @@ const RecordScreen = ({ navigation }) => {
 				translucent={true}
 			/>
 
-			<Layout
-				style={{
-					alignItems: "center",
-					flex: 1,
-				}}
-			>
-				<Layout style={styles.select}>
-					<Select
-						status="primary"
-						size="large"
-						placeholder="Select a meal"
-						selectedIndex={selectedIndex}
-						value={displayValue}
-						onSelect={index => setSelectedIndex(index)}
-					>
-						{option.map(renderOption)}
-					</Select>
-				</Layout>
-
-				<Layout style={{ width: "100%" }}>
-					<TabBar
-						selectedIndex={tabSelectedIndex}
-						onSelect={index => setTabSelectedIndex(index)}
-					>
-						<Tab title="All" />
-						<Tab title="My Personal Food Labels" />
-					</TabBar>
-				</Layout>
-				{tabSelectedIndex === 0 ? (
-					<AllTabScreen navigation={navigation} />
-				) : (
-					<MyPersonalFoodLabelTab data={data} />
-				)}
-				{data.length !== 0 ? (
-					<Layout style={styles.recordContainer}>
-						<CustomButton
-							text={"Add to consumption"}
-							backgroundColor={COLORS.primary}
-							onPress={() => {}}
-						/>
+			{!isLoading ? (
+				<Layout
+					style={{
+						alignItems: "center",
+						flex: 1,
+					}}
+				>
+					<Layout style={styles.select}>
+						<Select
+							status="primary"
+							size="large"
+							placeholder="Select a meal"
+							selectedIndex={selectedIndex}
+							value={displayValue}
+							onSelect={index => setSelectedIndex(index)}
+						>
+							{option.map(renderOption)}
+						</Select>
 					</Layout>
-				) : (
-					<></>
-				)}
-			</Layout>
+
+					<Layout style={{ width: "100%" }}>
+						<TabBar
+							selectedIndex={tabSelectedIndex}
+							onSelect={index => setTabSelectedIndex(index)}
+						>
+							<Tab title="All" />
+							<Tab title="My Personal Food Labels" />
+						</TabBar>
+					</Layout>
+					{tabSelectedIndex === 0 ? (
+						<AllTabScreen navigation={navigation} />
+					) : (
+						<MyPersonalFoodLabelTab
+							data={personalFoodLabelData}
+							navigation={navigation}
+						/>
+					)}
+				</Layout>
+			) : (
+				<Layout style={styles.spinner}>
+					<Spinner status="primary" size="giant" />
+				</Layout>
+			)}
 		</SafeAreaView>
 	);
 };
@@ -358,5 +347,17 @@ const styles = StyleSheet.create({
 		paddingVertical: SIZES.font,
 		paddingHorizontal: "10%",
 	},
+	spinner: {
+		backgroundColor: "white",
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	queryText: {
+		fontFamily: FONTS.semiBold,
+		fontSize: SIZES.large,
+		paddingVertical: SIZES.medium,
+	},
+	autocomplete: {},
 });
 export default RecordScreen;

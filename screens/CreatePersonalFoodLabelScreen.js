@@ -1,4 +1,6 @@
-import { Layout, Text, Input } from "@ui-kitten/components";
+import { Layout, Text, Input, Spinner } from "@ui-kitten/components";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { useState } from "react";
 import {
 	Keyboard,
 	TouchableWithoutFeedback,
@@ -6,31 +8,67 @@ import {
 	Platform,
 	StyleSheet,
 } from "react-native";
-import { FocusedStatusBar, CustomButton } from "../components";
+import { FocusedStatusBar, CustomButton, BackButton } from "../components";
 import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
+import { auth, db } from "../firebase/firebase-config";
 
-const CreateByCaloriesScreen = () => {
-	return (
-		<Layout style={styles.contentContainer}>
-			<Layout style={styles.inputContainer}>
-				<Layout style={styles.labelInput}>
-					<Text style={styles.text}>Food Name</Text>
-					<Input style={styles.input} placeholder="John Doe's Chicken Rice" />
-				</Layout>
-				<Layout style={styles.labelInput}>
-					<Text style={styles.text}>Calories</Text>
-					<Input
-						style={styles.input}
-						placeholder="500"
-						keyboardType="numeric"
-					/>
-				</Layout>
-			</Layout>
-		</Layout>
-	);
-};
+const CreatePersonalFoodLabelScreen = ({ navigation }) => {
+	const [errorText, setErrorText] = useState("");
+	const [labelName, setLabelName] = useState("");
+	const [calories, setCalories] = useState(null);
 
-const CreatePersonalFoodLabelScreen = () => {
+	const [createLoading, setCreateLoading] = useState(false);
+	const [successMessageVisible, setSuccessMessageVisible] = useState(false);
+
+	const handleCreate = async () => {
+		try {
+			setCreateLoading(true);
+			// check required fields
+			if (labelName === "" || calories == null || calories == "") {
+				setErrorText("Please fill in all fields");
+				setCreateLoading(false);
+				return;
+			}
+			// check if calories >= 0
+			if (!(calories > 0)) {
+				setErrorText("Calories must be greater than 0");
+				setCreateLoading(false);
+				return;
+			}
+			// check if the food label already exists
+			const personalFoodLabelRef = collection(
+				db,
+				"users",
+				auth.currentUser.uid,
+				"personalFoodLabel"
+			);
+			const q = query(personalFoodLabelRef, where("name", "==", labelName));
+			const querySnapshot = await getDocs(q);
+			if (querySnapshot.size > 0) {
+				setErrorText("Food name already taken");
+				setCreateLoading(false);
+				return;
+			}
+			const newData = {
+				name: labelName,
+				calories: calories,
+			};
+			const docRef = await addDoc(personalFoodLabelRef, newData);
+			setErrorText("");
+			setCreateLoading(false);
+			// clear inputs
+			setLabelName("");
+			setCalories(null);
+			setSuccessMessageVisible(true);
+			setTimeout(() => {
+				setSuccessMessageVisible(false);
+			}, 2000);
+		} catch (error) {
+			console.log(error);
+			setCreateLoading(false);
+		}
+	};
+
 	return (
 		<KeyboardAvoidingView
 			style={{ flex: 1 }}
@@ -51,17 +89,66 @@ const CreatePersonalFoodLabelScreen = () => {
 				}}
 			>
 				<Layout style={styles.page}>
+					<BackButton
+						onPress={() => navigation.goBack()}
+						color={COLORS.primary}
+						backgroundColor="transparent"
+						top={8}
+						paddingLeft={SIZES.large}
+					/>
 					<Layout style={styles.headerContainer}>
 						<Text style={styles.header}>Create Personal Food Label</Text>
 					</Layout>
 
-					<CreateByCaloriesScreen />
+					<Layout style={styles.contentContainer}>
+						<Layout style={styles.inputContainer}>
+							<Layout style={styles.labelInput}>
+								<Text style={styles.text}>Food Name</Text>
+								<Input
+									style={styles.input}
+									placeholder="John Doe's Chicken Rice"
+									value={labelName}
+									autoCapitalize={false}
+									onChangeText={nextValue => setLabelName(nextValue)}
+								/>
+							</Layout>
+							<Layout style={styles.labelInput}>
+								<Text style={styles.text}>Calories (in kcal)</Text>
+								<Input
+									style={styles.input}
+									placeholder="500"
+									keyboardType="numeric"
+									value={calories}
+									onChangeText={nextValue => setCalories(nextValue)}
+								/>
+							</Layout>
+							{errorText && (
+								<Layout style={styles.errorContainer}>
+									<Text style={styles.errorText}>{errorText}</Text>
+								</Layout>
+							)}
+							{successMessageVisible && (
+								<Layout style={styles.successMessageContainer}>
+									<Text style={styles.successMessageText}>
+										{"Personal food label created!"}
+									</Text>
+								</Layout>
+							)}
+						</Layout>
+					</Layout>
 					<Layout style={styles.buttonContainer}>
-						<CustomButton
-							text={"Create"}
-							backgroundColor={COLORS.primary}
-							borderRadius={SIZES.large}
-						/>
+						{!createLoading ? (
+							<CustomButton
+								text={"Create"}
+								backgroundColor={COLORS.primary}
+								borderRadius={SIZES.large}
+								onPress={() => handleCreate()}
+							/>
+						) : (
+							<CustomButton backgroundColor={COLORS.lightPrimary}>
+								<Spinner status="basic" size="small" />
+							</CustomButton>
+						)}
 					</Layout>
 				</Layout>
 			</TouchableWithoutFeedback>
@@ -106,6 +193,24 @@ const styles = StyleSheet.create({
 	},
 	labelInput: {
 		width: "100%",
+	},
+	errorContainer: {
+		width: "100%",
+	},
+	errorText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.small,
+		color: COLORS.error,
+		paddingTop: SIZES.base,
+	},
+	successMessageContainer: {
+		width: "100%",
+	},
+	successMessageText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.small,
+		color: COLORS.primary,
+		paddingTop: SIZES.base,
 	},
 	page: {
 		flex: 1,
