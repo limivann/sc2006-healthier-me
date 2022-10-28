@@ -7,6 +7,9 @@ import {
 	Tab,
 	TabBar,
 	Spinner,
+	Autocomplete,
+	AutocompleteItem,
+	Icon,
 } from "@ui-kitten/components";
 import {
 	Image,
@@ -15,6 +18,8 @@ import {
 	SafeAreaView,
 	TouchableWithoutFeedback,
 	Keyboard,
+	Platform,
+	TouchableOpacity,
 } from "react-native";
 import {
 	FocusedStatusBar,
@@ -26,29 +31,99 @@ import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { collection, getDocs, query } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
 
+const movies = [
+	{ title: "Star Wars" },
+	{ title: "Back to the Future" },
+	{ title: "The Matrix" },
+	{ title: "Inception" },
+	{ title: "Interstellar" },
+];
+
+const showEvent = Platform.select({
+	android: "keyboardDidShow",
+	default: "keyboardWillShow",
+});
+
+const hideEvent = Platform.select({
+	android: "keyboardDidHide",
+	default: "keyboardWillHide",
+});
+
+const filter = (item, query) =>
+	item.title.toLowerCase().includes(query.toLowerCase());
+
 const AllTabScreen = ({ navigation }) => {
-	const handleSearch = value => {
-		// if (!value.length) return setSearchValue("")
-		// const filteredData = data.filter((foodLabel) => foodLabel.name.toLowerCase().includes(value.toLowerCase()));
-		// filteredData.length ? setSearchValue(filteredData) : searchValue("")
+	// autocomplete
+	const [value, setValue] = useState(null);
+	const [data, setData] = useState(movies);
+	const [placement, setPlacement] = useState("bottom");
+
+	useEffect(() => {
+		const keyboardShowListener = Keyboard.addListener(showEvent, () => {
+			setPlacement("top");
+		});
+
+		const keyboardHideListener = Keyboard.addListener(hideEvent, () => {
+			setPlacement("bottom");
+		});
+
+		return () => {
+			keyboardShowListener.remove();
+			keyboardHideListener.remove();
+		};
+	}, []);
+
+	const onSelect = index => {
+		setValue(movies[index].title);
 	};
+
+	const onChangeText = query => {
+		setValue(query);
+		setData(movies.filter(item => filter(item, query)));
+	};
+
+	const renderOption = (item, index) => (
+		<AutocompleteItem key={index} title={item.title} />
+	);
+
+	const renderIcon = props => (
+		<TouchableOpacity>
+			<Icon {...props} name="search-outline" />
+		</TouchableOpacity>
+	);
+
 	return (
 		<TouchableWithoutFeedback
 			onPress={() => {
 				Keyboard.dismiss();
 			}}
 		>
-			<Layout style={{ alignItems: "center", width: "100%" }}>
+			<Layout
+				style={{
+					alignItems: "center",
+					width: "100%",
+				}}
+			>
 				<Layout
 					style={{
 						width: "100%",
 						paddingHorizontal: "5%",
-						marginBottom: SIZES.extraLarge,
 					}}
 				>
-					<SearchBar onSearch={handleSearch} placeholder="Search for a food" />
+					<Text style={styles.queryText}>What are you having today?</Text>
+					<Autocomplete
+						placeholder="Search for a food"
+						value={value}
+						placement={placement}
+						onChangeText={onChangeText}
+						onSelect={onSelect}
+						style={styles.autocomplete}
+						accessoryRight={renderIcon}
+					>
+						{data.map(renderOption)}
+					</Autocomplete>
 				</Layout>
-				<Layout style={{ width: "100%", marginTop: "15%" }}>
+				{/* <Layout style={{ width: "100%", marginTop: "15%" }}>
 					<Layout style={{ width: "100%" }}>
 						<Text
 							style={{
@@ -91,13 +166,13 @@ const AllTabScreen = ({ navigation }) => {
 							onPress={() => navigation.navigate("CreateFoodLabelPage")}
 						/>
 					</Layout>
-				</Layout>
+				</Layout> */}
 			</Layout>
 		</TouchableWithoutFeedback>
 	);
 };
 
-const MyPersonalFoodLabelTab = ({ data }) => {
+const MyPersonalFoodLabelTab = ({ data, navigation }) => {
 	return (
 		<Layout style={styles.foodLabelsContainer}>
 			{data.length !== 0 ? (
@@ -135,26 +210,16 @@ const MyPersonalFoodLabelTab = ({ data }) => {
 						>
 							Please create a personal food label
 						</Text>
-						<CustomButton
-							text={"Create Personal Food Label"}
-							backgroundColor={COLORS.primary}
-							width="70%"
-							borderRadius={SIZES.large}
-						/>
 					</Layout>
 				</Layout>
 			)}
-			{data.length !== 0 ? (
-				<Layout style={styles.recordContainer}>
-					<CustomButton
-						text={"Add to consumption"}
-						backgroundColor={COLORS.primary}
-						onPress={() => {}}
-					/>
-				</Layout>
-			) : (
-				<></>
-			)}
+			<Layout style={styles.recordContainer}>
+				<CustomButton
+					text={"Create Personal Food Label"}
+					backgroundColor={COLORS.primary}
+					onPress={() => navigation.navigate("CreateFoodLabelPage")}
+				/>
+			</Layout>
 		</Layout>
 	);
 };
@@ -242,7 +307,10 @@ const RecordScreen = ({ navigation }) => {
 					{tabSelectedIndex === 0 ? (
 						<AllTabScreen navigation={navigation} />
 					) : (
-						<MyPersonalFoodLabelTab data={personalFoodLabelData} />
+						<MyPersonalFoodLabelTab
+							data={personalFoodLabelData}
+							navigation={navigation}
+						/>
 					)}
 				</Layout>
 			) : (
@@ -285,5 +353,11 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
+	queryText: {
+		fontFamily: FONTS.semiBold,
+		fontSize: SIZES.large,
+		paddingVertical: SIZES.medium,
+	},
+	autocomplete: {},
 });
 export default RecordScreen;

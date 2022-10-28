@@ -8,3 +8,9 @@ Content-Type: application/json
     "query":"1 serving of Chicken breast",
     "timezone": "US/Eastern"
 }
+
+###
+
+GET https://trackapi.nutritionix.com/v2/search/instant?query=bacon?common=true?locale=en_US?self=false
+x-app-id: 4751e5d2
+x-app-key: 39ecf2def220b623feeb16ac509e09f1
