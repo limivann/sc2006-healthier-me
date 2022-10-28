@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
 import { CustomButton, EditButton, FocusedStatusBar } from "../components";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
 import { calculateBmi } from "../utils";
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
@@ -40,6 +40,7 @@ const ProfileScreen = () => {
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isEditingLoading, setIsEditingLoading] = useState(false);
 
 	// all editing stuff
 	const [editingHeight, setEditingHeight] = useState("");
@@ -56,7 +57,12 @@ const ProfileScreen = () => {
 	const displayValue = activityLevelSelection[activityLevelIndex.row];
 	const displayValueEditing = activityLevelSelection[editingActivityLevel.row];
 
-	const renderOption = title => <SelectItem title={title} />;
+	const [errorText, setErrorText] = useState("");
+	const [successMessageVisible, setSuccessMessageVisible] = useState(false);
+
+	const renderOption = (title, index) => (
+		<SelectItem title={title} key={index} />
+	);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -90,6 +96,7 @@ const ProfileScreen = () => {
 	const handleEdit = () => {
 		if (isEditing) {
 			setIsEditing(false);
+			setErrorText("");
 			return;
 		}
 		setEditingHeight(height);
@@ -100,9 +107,63 @@ const ProfileScreen = () => {
 	};
 
 	const handleSubmitEdit = async () => {
+		setIsEditingLoading(true);
 		if (!isEditing) {
+			setIsEditingLoading(false);
 			return;
 		}
+		if (
+			editingHeight === height &&
+			editingWeight === weight &&
+			editingAge === age &&
+			displayValue === displayValueEditing
+		) {
+			setIsEditingLoading(false);
+			setIsEditing(false);
+			return;
+		}
+		// check height
+		if (!(editingHeight >= 140 && editingHeight <= 210)) {
+			setErrorText("Height must be within the range of 140 cm to 210 cm");
+			setIsEditingLoading(false);
+			return;
+		}
+		// check weight
+		if (!(editingWeight >= 40 && editingWeight <= 130)) {
+			setErrorText("Weight must be within the range of 40kg to 130kg");
+			setIsEditingLoading(false);
+			return;
+		}
+		// check age
+		if (!(editingAge >= 12 && editingAge <= 99)) {
+			setErrorText("Age must be within the range of 12 and 99");
+			setIsEditingLoading(false);
+			return;
+		}
+		// update
+		const userDocRef = doc(db, "users", auth.currentUser.uid);
+		await setDoc(
+			userDocRef,
+			{
+				age: editingAge,
+				height: editingHeight,
+				weight: editingWeight,
+				activityLevel: displayValueEditing,
+			},
+			{ merge: true }
+		);
+		setHeight(editingHeight);
+		setWeight(editingWeight);
+		setAge(editingAge);
+		setActivityLevelIndex(editingActivityLevel);
+		const tempBmi = calculateBmi(editingWeight, editingHeight);
+		setBmi(tempBmi);
+		setIsEditingLoading(false);
+		setIsEditing(false);
+		setSuccessMessageVisible(true);
+		setTimeout(() => {
+			setSuccessMessageVisible(false);
+		}, 2000);
 	};
 
 	return (
@@ -204,7 +265,7 @@ const ProfileScreen = () => {
 											value={editingWeight}
 											textStyle={{ color: "black" }}
 											keyboardType="numeric"
-											onChangeText={nextValue => setEditingHeight(nextValue)}
+											onChangeText={nextValue => setEditingWeight(nextValue)}
 										/>
 									) : (
 										<Input
@@ -287,6 +348,18 @@ const ProfileScreen = () => {
 									)}
 								</Layout>
 							</Layout>
+							{errorText && (
+								<Layout style={styles.errorContainer}>
+									<Text style={styles.errorText}>{errorText}</Text>
+								</Layout>
+							)}
+							{successMessageVisible && (
+								<Layout style={styles.successMessageContainer}>
+									<Text style={styles.successMessageText}>
+										{"Profile edited successfully!"}
+									</Text>
+								</Layout>
+							)}
 						</Layout>
 						{isEditing ? (
 							<Layout style={styles.cancelSaveButtons}>
@@ -294,14 +367,21 @@ const ProfileScreen = () => {
 									text={"Cancel"}
 									backgroundColor={COLORS.secondary}
 									flex={1}
-									onPress={() => setIsEditing(false)}
+									onPress={() => handleEdit()}
 								/>
 								<Layout style={{ width: "5%" }} />
-								<CustomButton
-									text={"Save"}
-									backgroundColor={COLORS.primary}
-									flex={1}
-								/>
+								{!isEditingLoading ? (
+									<CustomButton
+										text={"Save"}
+										backgroundColor={COLORS.primary}
+										flex={1}
+										onPress={() => handleSubmitEdit()}
+									/>
+								) : (
+									<CustomButton backgroundColor={COLORS.lightPrimary} flex={1}>
+										<Spinner status="basic" size="small" />
+									</CustomButton>
+								)}
 							</Layout>
 						) : (
 							<Layout style={{ height: 75 }} />
@@ -392,6 +472,24 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	errorContainer: {
+		width: "100%",
+	},
+	errorText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.font,
+		color: COLORS.error,
+		paddingTop: SIZES.base,
+	},
+	successMessageContainer: {
+		width: "100%",
+	},
+	successMessageText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.font,
+		color: COLORS.primary,
+		paddingTop: SIZES.base,
 	},
 });
 
