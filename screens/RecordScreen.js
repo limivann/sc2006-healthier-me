@@ -30,16 +30,10 @@ import {
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { collection, getDocs, query } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
-import { searchFood } from "../services";
+import { autoComplete, searchFood } from "../services";
+import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
 
-const movies = [
-	{ title: "Star Wars" },
-	{ title: "Back to the Future" },
-	{ title: "The Matrix" },
-	{ title: "Inception" },
-	{ title: "Interstellar" },
-];
-
+const suggestions = FOODSUGGESTIONS;
 const showEvent = Platform.select({
 	android: "keyboardDidShow",
 	default: "keyboardWillShow",
@@ -55,14 +49,15 @@ const filter = (item, query) =>
 
 const AllTabScreen = ({ navigation }) => {
 	// autocomplete
-	const [value, setValue] = useState(null);
-	const [data, setData] = useState(movies);
+	const [value, setValue] = useState("");
+	const [data, setData] = useState(suggestions);
 	const [placement, setPlacement] = useState("bottom");
 
 	const [isAddLoading, setIsAddLoading] = useState(false);
 	const [results, setResults] = useState([]);
 	const [isSearchBarVisible, setIsSearchBarVisible] = useState(true);
 	const [loadingSearch, setLoadingSearch] = useState(true);
+	const [searched, setSearched] = useState(false);
 
 	useEffect(() => {
 		// auto complete
@@ -85,18 +80,19 @@ const AllTabScreen = ({ navigation }) => {
 			return;
 		}
 		setIsSearchBarVisible(false);
-		const data = await searchFood(value);
-		setResults(data);
+		const results = await searchFood(value);
+		setResults(results);
 		setLoadingSearch(false);
 	};
 
 	const onSelect = index => {
-		setValue(movies[index].title);
+		const selected = suggestions[index].title;
+		setValue(selected);
 	};
 
 	const onChangeText = query => {
 		setValue(query);
-		setData(movies.filter(item => filter(item, query)));
+		setData(suggestions.filter(item => filter(item, query)));
 	};
 
 	const renderOption = (item, index) => (
@@ -142,29 +138,81 @@ const AllTabScreen = ({ navigation }) => {
 					<Text style={styles.resultsText}>Search Results</Text>
 					{!loadingSearch ? (
 						<>
-							<Layout style={{ width: "100%", flex: 1 }}>
-								{results.length != 0 && <ResultsFoodLabel data={results[0]} />}
-							</Layout>
+							{results.length != 0 ? (
+								<>
+									<Layout style={{ width: "100%", flex: 1 }}>
+										<ResultsFoodLabel data={results[0]} />
+									</Layout>
 
-							<Layout style={styles.buttonContainer}>
-								<Text style={styles.notText}>Not what you looking for?</Text>
-								<CustomButton
-									text={"Try again"}
-									backgroundColor={COLORS.gray}
-									onPress={() => {}}
-								/>
-								{!isAddLoading ? (
+									<Layout style={styles.buttonContainer}>
+										<Text style={styles.notText}>
+											Not what you looking for?
+										</Text>
+										<CustomButton
+											text={"Try again"}
+											backgroundColor={COLORS.gray}
+											onPress={() => {}}
+										/>
+										{!isAddLoading ? (
+											<CustomButton
+												text={"Create personal food label"}
+												backgroundColor={COLORS.primary}
+												onPress={() =>
+													navigation.navigate("CreateFoodLabelPage")
+												}
+											/>
+										) : (
+											<CustomButton
+												backgroundColor={COLORS.lightPrimary}
+												flex={1}
+											>
+												<Spinner status="basic" size="small" />
+											</CustomButton>
+										)}
+									</Layout>
+								</>
+							) : (
+								<Layout style={styles.content}>
+									<Image source={assets.magnifierIcon} style={styles.image} />
+									<Text
+										style={{
+											fontFamily: FONTS.bold,
+											fontSize: SIZES.extraLarge,
+											paddingVertical: SIZES.font,
+										}}
+									>
+										No Results Found
+									</Text>
+									<Text
+										style={{
+											textAlign: "center",
+											color: COLORS.gray,
+											fontFamily: FONTS.regular,
+											fontSize: SIZES.font,
+											marginBottom: SIZES.font,
+										}}
+									>
+										Please check spelling or {"\n"}
+										create a personal food label
+									</Text>
 									<CustomButton
-										text={"Create personal food label"}
+										text={"Try again"}
+										backgroundColor={COLORS.gray}
+										paddingHorizontal={SIZES.large}
+										borderRadius={SIZES.large}
+										width="80%"
+										onPress={() => {}}
+									/>
+									<CustomButton
+										text={"Create Personal Food Label"}
 										backgroundColor={COLORS.primary}
+										paddingHorizontal={SIZES.large}
+										borderRadius={SIZES.large}
+										width="80%"
 										onPress={() => navigation.navigate("CreateFoodLabelPage")}
 									/>
-								) : (
-									<CustomButton backgroundColor={COLORS.lightPrimary} flex={1}>
-										<Spinner status="basic" size="small" />
-									</CustomButton>
-								)}
-							</Layout>
+								</Layout>
+							)}
 						</>
 					) : (
 						<Layout style={styles.spinner}>
@@ -378,10 +426,11 @@ const styles = StyleSheet.create({
 	content: {
 		alignItems: "center",
 		justifyContent: "center",
+		flex: 1,
 	},
 	image: {
 		resizeMode: "contain",
-		height: "40%",
+		height: 150,
 	},
 	foodLabelsContainer: {
 		paddingVertical: SIZES.base,
