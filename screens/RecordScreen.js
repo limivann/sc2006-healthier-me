@@ -16,7 +16,6 @@ import {
 	StyleSheet,
 	FlatList,
 	SafeAreaView,
-	TouchableWithoutFeedback,
 	Keyboard,
 	Platform,
 	TouchableOpacity,
@@ -26,10 +25,12 @@ import {
 	SearchBar,
 	CustomButton,
 	PersonalFoodLabelBar,
+	ResultsFoodLabel,
 } from "../components";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { collection, getDocs, query } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
+import { searchFood } from "../services";
 
 const movies = [
 	{ title: "Star Wars" },
@@ -58,9 +59,15 @@ const AllTabScreen = ({ navigation }) => {
 	const [data, setData] = useState(movies);
 	const [placement, setPlacement] = useState("bottom");
 
+	const [isAddLoading, setIsAddLoading] = useState(false);
+	const [results, setResults] = useState([]);
+	const [isSearchBarVisible, setIsSearchBarVisible] = useState(true);
+	const [loadingSearch, setLoadingSearch] = useState(true);
+
 	useEffect(() => {
+		// auto complete
 		const keyboardShowListener = Keyboard.addListener(showEvent, () => {
-			setPlacement("top");
+			setPlacement("bottom");
 		});
 
 		const keyboardHideListener = Keyboard.addListener(hideEvent, () => {
@@ -72,6 +79,16 @@ const AllTabScreen = ({ navigation }) => {
 			keyboardHideListener.remove();
 		};
 	}, []);
+
+	const handleSearch = async () => {
+		if (value == null) {
+			return;
+		}
+		setIsSearchBarVisible(false);
+		const data = await searchFood(value);
+		setResults(data);
+		setLoadingSearch(false);
+	};
 
 	const onSelect = index => {
 		setValue(movies[index].title);
@@ -87,23 +104,20 @@ const AllTabScreen = ({ navigation }) => {
 	);
 
 	const renderIcon = props => (
-		<TouchableOpacity>
+		<TouchableOpacity onPress={() => handleSearch()}>
 			<Icon {...props} name="search-outline" />
 		</TouchableOpacity>
 	);
 
 	return (
-		<TouchableWithoutFeedback
-			onPress={() => {
-				Keyboard.dismiss();
+		<Layout
+			style={{
+				alignItems: "center",
+				width: "100%",
+				flex: 1,
 			}}
 		>
-			<Layout
-				style={{
-					alignItems: "center",
-					width: "100%",
-				}}
-			>
+			{isSearchBarVisible ? (
 				<Layout
 					style={{
 						width: "100%",
@@ -123,7 +137,44 @@ const AllTabScreen = ({ navigation }) => {
 						{data.map(renderOption)}
 					</Autocomplete>
 				</Layout>
-				{/* <Layout style={{ width: "100%", marginTop: "15%" }}>
+			) : (
+				<Layout style={styles.resultsContainer}>
+					<Text style={styles.resultsText}>Search Results</Text>
+					{!loadingSearch ? (
+						<>
+							<Layout style={{ width: "100%", flex: 1 }}>
+								{results.length != 0 && <ResultsFoodLabel data={results[0]} />}
+							</Layout>
+
+							<Layout style={styles.buttonContainer}>
+								<Text style={styles.notText}>Not what you looking for?</Text>
+								<CustomButton
+									text={"Try again"}
+									backgroundColor={COLORS.gray}
+									onPress={() => {}}
+								/>
+								{!isAddLoading ? (
+									<CustomButton
+										text={"Create personal food label"}
+										backgroundColor={COLORS.primary}
+										onPress={() => navigation.navigate("CreateFoodLabelPage")}
+									/>
+								) : (
+									<CustomButton backgroundColor={COLORS.lightPrimary} flex={1}>
+										<Spinner status="basic" size="small" />
+									</CustomButton>
+								)}
+							</Layout>
+						</>
+					) : (
+						<Layout style={styles.spinner}>
+							<Spinner status="primary" size="giant" />
+						</Layout>
+					)}
+				</Layout>
+			)}
+
+			{/* <Layout style={{ width: "100%", marginTop: "15%" }}>
 					<Layout style={{ width: "100%" }}>
 						<Text
 							style={{
@@ -167,8 +218,7 @@ const AllTabScreen = ({ navigation }) => {
 						/>
 					</Layout>
 				</Layout> */}
-			</Layout>
-		</TouchableWithoutFeedback>
+		</Layout>
 	);
 };
 
@@ -359,5 +409,35 @@ const styles = StyleSheet.create({
 		paddingVertical: SIZES.medium,
 	},
 	autocomplete: {},
+	resultsContainer: {
+		width: "100%",
+		paddingHorizontal: "5%",
+		paddingVertical: SIZES.extraLarge,
+		flex: 1,
+	},
+	resultsText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.medium,
+	},
+	idvContainer: {
+		paddingVertical: SIZES.base,
+	},
+	buttonContainer: {
+		marginTop: "auto",
+		paddingTop: SIZES.base,
+	},
+	notText: {
+		fontFamily: FONTS.medium,
+		paddingBottom: SIZES.small,
+		textAlign: "center",
+		fontSize: SIZES.font,
+		color: COLORS.error,
+	},
+	spinner: {
+		backgroundColor: "white",
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 });
 export default RecordScreen;
