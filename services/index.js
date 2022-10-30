@@ -2,17 +2,30 @@
 export const searchFood = async query => {
 	try {
 		const data = await searchFoodQuery(query);
-		return data.map((result, index) => ({
-			id: index,
-			name: result?.food_name,
-			calories: result?.nf_calories,
-			servingQuantity: result?.serving_qty,
-			servingUnit: result?.serving_unit,
-		}));
+		let exceedLimit = false;
+		const formmated = data.map((result, index) => {
+			if (!(result?.serving_qty > 0 && result?.serving_qty < 100)) {
+				exceedLimit = true;
+			}
+			return {
+				id: index,
+				name: result?.food_name,
+				calories: result?.nf_calories,
+				servingQuantity: result?.serving_qty,
+				servingUnit: result?.serving_unit,
+			};
+		});
+		return !exceedLimit
+			? { data: formmated, error: false }
+			: { data: [], error: true };
 	} catch (error) {
-		console.log(error);
-		return [];
+		console.log("Not found");
+		return { data: [], error: false };
 	}
+};
+
+const filter = (item, query) => {
+	return item.food_name.toLowerCase().includes(query.toLowerCase());
 };
 
 const searchFoodQuery = async query => {
@@ -43,9 +56,7 @@ const searchFoodQuery = async query => {
 export const autoComplete = async query => {
 	try {
 		const data = await autoCompleteQuery(query);
-		return data.map(result => ({
-			title: result.food_name,
-		}));
+		return data.filter(item => filter(item, query));
 	} catch (error) {
 		console.log(error);
 		return [];

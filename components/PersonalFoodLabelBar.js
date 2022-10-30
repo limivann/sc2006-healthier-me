@@ -22,9 +22,9 @@ export default PersonalFoodLabelBar;
 
 const styles = StyleSheet.create({
 	content: {
-		marginHorizontal: "5%",
 		marginVertical: SIZES.base,
 		backgroundColor: "#ececec",
+		marginHorizontal: SIZES.medium,
 		borderRadius: 10,
 	},
 	container: {

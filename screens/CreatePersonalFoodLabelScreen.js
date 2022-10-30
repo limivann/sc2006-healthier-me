@@ -29,9 +29,15 @@ const CreatePersonalFoodLabelScreen = ({ navigation }) => {
 				setCreateLoading(false);
 				return;
 			}
-			// check if calories >= 0
-			if (!(calories > 0)) {
-				setErrorText("Calories must be greater than 0");
+			// check length of name >=3 and <= 30
+			if (!(labelName.length >= 3 && labelName.length <= 30)) {
+				setErrorText("Length of name must be within 3 to 30");
+				setCreateLoading(false);
+				return;
+			}
+			// check if calories > 0 and < 10000
+			if (!(calories > 0 && calories < 10000)) {
+				setErrorText("Calories must be greater than 0 and less than 10000");
 				setCreateLoading(false);
 				return;
 			}
