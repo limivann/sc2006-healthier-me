@@ -2,43 +2,49 @@ import { useEffect, useState } from "react";
 import {
 	Layout,
 	Text,
-	Select,
-	SelectItem,
 	Tab,
 	TabBar,
 	Spinner,
 	Autocomplete,
 	AutocompleteItem,
 	Icon,
+	Modal,
+	Card,
+	Divider,
+	IndexPath,
+	Select,
+	SelectItem,
 } from "@ui-kitten/components";
 import {
 	Image,
 	StyleSheet,
 	FlatList,
 	SafeAreaView,
-	TouchableWithoutFeedback,
 	Keyboard,
 	Platform,
 	TouchableOpacity,
 } from "react-native";
 import {
 	FocusedStatusBar,
-	SearchBar,
 	CustomButton,
 	PersonalFoodLabelBar,
+	ResultsFoodLabel,
 } from "../components";
-import { COLORS, FONTS, SIZES, assets } from "../constants";
-import { collection, getDocs, query } from "firebase/firestore";
+import { COLORS, FONTS, SIZES, assets, SHADOWS } from "../constants";
+import {
+	addDoc,
+	arrayUnion,
+	collection,
+	doc,
+	getDocs,
+	query,
+	updateDoc,
+} from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
+import { searchFood } from "../services";
+import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
 
-const movies = [
-	{ title: "Star Wars" },
-	{ title: "Back to the Future" },
-	{ title: "The Matrix" },
-	{ title: "Inception" },
-	{ title: "Interstellar" },
-];
-
+const suggestions = FOODSUGGESTIONS;
 const showEvent = Platform.select({
 	android: "keyboardDidShow",
 	default: "keyboardWillShow",
@@ -54,13 +60,33 @@ const filter = (item, query) =>
 
 const AllTabScreen = ({ navigation }) => {
 	// autocomplete
-	const [value, setValue] = useState(null);
-	const [data, setData] = useState(movies);
+	const [value, setValue] = useState("");
+	const [data, setData] = useState(suggestions);
 	const [placement, setPlacement] = useState("bottom");
 
+	const [isAddLoading, setIsAddLoading] = useState(false);
+	const [results, setResults] = useState([]);
+	const [isSearchBarVisible, setIsSearchBarVisible] = useState(true);
+	const [loadingSearch, setLoadingSearch] = useState(true);
+	const [hasError, setHasError] = useState(false);
+	const [isSuccessTextVisible, setIsSuccessTextVisible] = useState(false);
+
+	const [modalData, setModalData] = useState({
+		foodName: "",
+		calories: 0,
+		quantity: 0,
+		unit: "",
+	});
+
+	const meal = ["Breakfast", "Lunch", "Dinner"];
+
+	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
+	const mealDisplayValue = meal[mealIndex.row];
+
 	useEffect(() => {
+		// auto complete
 		const keyboardShowListener = Keyboard.addListener(showEvent, () => {
-			setPlacement("top");
+			setPlacement("bottom");
 		});
 
 		const keyboardHideListener = Keyboard.addListener(hideEvent, () => {
@@ -73,13 +99,112 @@ const AllTabScreen = ({ navigation }) => {
 		};
 	}, []);
 
+	const handleSearch = async () => {
+		if (value == null || value == "") {
+			return;
+		}
+		setLoadingSearch(true);
+		setIsSearchBarVisible(false);
+		const { data, error } = await searchFood(value);
+		if (error) {
+			resetSearchFrom();
+			setHasError(true);
+			return;
+		}
+		setResults(data);
+		setHasError(false);
+		setLoadingSearch(false);
+	};
+
+	const resetSearchFrom = () => {
+		setIsSearchBarVisible(true);
+		setResults([]);
+		setValue("");
+	};
+
+	const handleRecordConsumption = async () => {
+		setIsAddLoading(true);
+		// record into user daily consumption collection
+		const today = new Date().toLocaleDateString().replaceAll("/", "_");
+		let currentTime = new Date().toLocaleTimeString();
+		// create user consumption reference first
+		const userConsumptionRef = collection(
+			db,
+			"users",
+			auth.currentUser.uid,
+			"userConsumption"
+		);
+
+		const docRef = await addDoc(userConsumptionRef, {
+			foodName: modalData.foodName,
+			totalCalories: modalData.calories,
+			servingQuantity: modalData.quantity,
+			servingUnit: modalData.unit,
+			time: currentTime,
+		});
+
+		// add to daily consumption of user
+		const userDailyConsumptionRef = doc(
+			db,
+			"users",
+			auth.currentUser.uid,
+			"userDailyConsumption",
+			today
+		);
+		try {
+			if (meal[mealIndex.row] == "Breakfast") {
+				await updateDoc(userDailyConsumptionRef, {
+					breakfast: arrayUnion(docRef),
+				});
+			} else if (meal[mealIndex.row] == "Lunch") {
+				await updateDoc(userDailyConsumptionRef, {
+					lunch: arrayUnion(docRef),
+				});
+			} else {
+				await updateDoc(userDailyConsumptionRef, {
+					dinner: arrayUnion(docRef),
+				});
+			}
+			setIsSuccessTextVisible(true);
+			setHasError(false);
+			setTimeout(() => {
+				setIsAddLoading(false);
+				setIsSuccessTextVisible(false);
+				resetSearchFrom();
+			}, 2000);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	// modal
+	const [addConsumptionPanelVisible, setAddConsumptionPanelVisible] =
+		useState(false);
+
+	const handleAdd = data => {
+		if (data) {
+			setModalData({
+				foodName: data.name,
+				calories: data.calories,
+				quantity: data.servingQuantity,
+				unit: data.servingUnit,
+			});
+			setAddConsumptionPanelVisible(true);
+		}
+	};
+
+	const renderMealOption = (title, index) => {
+		return <SelectItem title={title} key={index} />;
+	};
+	// autocomplete
 	const onSelect = index => {
-		setValue(movies[index].title);
+		const selected = suggestions[index].title;
+		setValue(selected);
 	};
 
 	const onChangeText = query => {
 		setValue(query);
-		setData(movies.filter(item => filter(item, query)));
+		setData(suggestions.filter(item => filter(item, query)));
 	};
 
 	const renderOption = (item, index) => (
@@ -87,23 +212,20 @@ const AllTabScreen = ({ navigation }) => {
 	);
 
 	const renderIcon = props => (
-		<TouchableOpacity>
+		<TouchableOpacity onPress={() => handleSearch()}>
 			<Icon {...props} name="search-outline" />
 		</TouchableOpacity>
 	);
 
 	return (
-		<TouchableWithoutFeedback
-			onPress={() => {
-				Keyboard.dismiss();
+		<Layout
+			style={{
+				alignItems: "center",
+				width: "100%",
+				flex: 1,
 			}}
 		>
-			<Layout
-				style={{
-					alignItems: "center",
-					width: "100%",
-				}}
-			>
+			{isSearchBarVisible ? (
 				<Layout
 					style={{
 						width: "100%",
@@ -122,66 +244,378 @@ const AllTabScreen = ({ navigation }) => {
 					>
 						{data.map(renderOption)}
 					</Autocomplete>
+					{hasError && (
+						<Text style={styles.errorText}>
+							Serving quantity must be greater than 0 and less than 100
+						</Text>
+					)}
+					<Layout style={styles.examplesContainer}>
+						<Text style={styles.examplesTitle}>Examples: </Text>
+						<Text style={styles.examplesText}>- one serving of salad</Text>
+						<Text style={styles.examplesText}>
+							- chicken rice and ice lemon tea
+						</Text>
+						<Text style={styles.examplesText}>
+							- 1 set of burger and lobster
+						</Text>
+						<Text style={styles.examplesText}>
+							- 2 slices of peanut butter bread and 1 glass of ice coffee
+						</Text>
+						<Text style={styles.examplesText}>- 1.5 glass of milk</Text>
+					</Layout>
 				</Layout>
-				{/* <Layout style={{ width: "100%", marginTop: "15%" }}>
-					<Layout style={{ width: "100%" }}>
-						<Text
-							style={{
-								fontFamily: FONTS.bold,
-								marginBottom: SIZES.large,
-								textAlign: "center",
-							}}
-						>
-							Search Results
-						</Text>
-					</Layout>
-					<Layout style={styles.content}>
-						<Image source={assets.magnifierIcon} style={styles.image} />
-						<Text
-							style={{
-								fontFamily: FONTS.bold,
-								fontSize: SIZES.extraLarge,
-								paddingTop: SIZES.font,
-							}}
-						>
-							No Results Found
-						</Text>
-						<Text
-							style={{
-								textAlign: "center",
-								color: COLORS.gray,
-								fontFamily: FONTS.regular,
-								fontSize: SIZES.font,
-								marginBottom: SIZES.font,
-							}}
-						>
-							Please check spelling or {"\n"}
-							create a personal food label
-						</Text>
-						<CustomButton
-							text={"Create Personal Food Label"}
-							backgroundColor={COLORS.primary}
-							paddingHorizontal={SIZES.large}
-							borderRadius={SIZES.large}
-							onPress={() => navigation.navigate("CreateFoodLabelPage")}
-						/>
-					</Layout>
-				</Layout> */}
-			</Layout>
-		</TouchableWithoutFeedback>
+			) : (
+				<Layout style={styles.resultsContainer}>
+					<Text style={styles.resultsText}>
+						{`Search Results ${!loadingSearch ? `(${results.length})` : ""}`}
+					</Text>
+					{!loadingSearch ? (
+						<>
+							{results.length != 0 ? (
+								<>
+									<Layout style={{ width: "100%", flex: 1 }}>
+										<FlatList
+											data={results}
+											keyExtractor={item => item.id}
+											renderItem={({ item }) => (
+												<ResultsFoodLabel
+													data={item}
+													onPressAdd={() => handleAdd(item)}
+												/>
+											)}
+											style={{ width: "100%", flex: 1 }}
+										/>
+									</Layout>
+
+									<Layout style={styles.buttonContainer}>
+										<Text style={styles.notText}>
+											Not what you looking for?
+										</Text>
+										<CustomButton
+											text={"Try again"}
+											backgroundColor={COLORS.gray}
+											onPress={() => resetSearchFrom()}
+										/>
+
+										<CustomButton
+											text={"Create personal food label"}
+											backgroundColor={COLORS.primary}
+											onPress={() => navigation.navigate("CreateFoodLabelPage")}
+										/>
+									</Layout>
+									<Modal
+										visible={isAddLoading || addConsumptionPanelVisible}
+										backdropStyle={styles.backdrop}
+										onBackdropPress={() => setAddConsumptionPanelVisible(false)}
+										style={styles.modal}
+									>
+										<Card disabled={true} style={styles.modalContent}>
+											<Layout style={styles.modalTitle}>
+												<Text
+													style={{
+														fontSize: SIZES.large,
+														fontFamily: FONTS.medium,
+														color: COLORS.primary,
+														fontFamily: FONTS.semiBold,
+													}}
+												>
+													Select Meal
+												</Text>
+											</Layout>
+											<Divider />
+											<Layout
+												style={{
+													justifyContent: "center",
+													alignItems: "center",
+													paddingVertical: SIZES.font,
+												}}
+											>
+												<Select
+													style={styles.mealSelect}
+													placeholder="Select a meal"
+													value={mealDisplayValue}
+													selectedIndex={mealIndex}
+													onSelect={index => setMealIndex(index)}
+												>
+													{meal.map(renderMealOption)}
+												</Select>
+												<Text style={styles.foodNameText}>
+													{modalData.foodName}
+												</Text>
+												<Text style={styles.leftText}>
+													{"Total calories: "}
+													<Text
+														style={styles.rightText}
+													>{`${modalData.calories} kcal`}</Text>
+												</Text>
+												<Text style={styles.leftText}>
+													{"Serving quantity: "}
+													<Text style={styles.rightText}>
+														{modalData.quantity}
+													</Text>
+												</Text>
+												<Text style={styles.leftText}>
+													{"Serving unit: "}
+													<Text style={styles.rightText}>{modalData.unit}</Text>
+												</Text>
+											</Layout>
+											{isSuccessTextVisible && (
+												<Text style={styles.successMessageText}>
+													Meal added to daily consumption!
+												</Text>
+											)}
+											<Layout style={styles.addButtonsContainer}>
+												<CustomButton
+													text={"Cancel"}
+													backgroundColor={COLORS.gray}
+													flex={1}
+													onPress={() => setAddConsumptionPanelVisible(false)}
+												/>
+												<Layout style={{ width: "5%" }} />
+												{!isAddLoading ? (
+													<CustomButton
+														text={"Add"}
+														backgroundColor={COLORS.primary}
+														flex={1}
+														onPress={() => handleRecordConsumption()}
+													/>
+												) : (
+													<CustomButton
+														backgroundColor={COLORS.lightPrimary}
+														flex={1}
+													>
+														<Spinner status="basic" size="small" />
+													</CustomButton>
+												)}
+											</Layout>
+										</Card>
+									</Modal>
+								</>
+							) : (
+								<Layout style={styles.content}>
+									<Image source={assets.magnifierIcon} style={styles.image} />
+									<Text
+										style={{
+											fontFamily: FONTS.bold,
+											fontSize: SIZES.extraLarge,
+											paddingVertical: SIZES.font,
+										}}
+									>
+										No Results Found
+									</Text>
+									<Text
+										style={{
+											textAlign: "center",
+											color: COLORS.gray,
+											fontFamily: FONTS.regular,
+											fontSize: SIZES.font,
+											marginBottom: SIZES.font,
+										}}
+									>
+										Please check spelling or {"\n"}
+										create a personal food label
+									</Text>
+									<CustomButton
+										text={"Try again"}
+										backgroundColor={COLORS.gray}
+										paddingHorizontal={SIZES.large}
+										borderRadius={SIZES.large}
+										width="80%"
+										onPress={() => resetSearchFrom()}
+									/>
+									<CustomButton
+										text={"Create Personal Food Label"}
+										backgroundColor={COLORS.primary}
+										paddingHorizontal={SIZES.large}
+										borderRadius={SIZES.large}
+										width="80%"
+										onPress={() => navigation.navigate("CreateFoodLabelPage")}
+									/>
+								</Layout>
+							)}
+						</>
+					) : (
+						<Layout style={styles.spinner}>
+							<Spinner status="primary" size="giant" />
+						</Layout>
+					)}
+				</Layout>
+			)}
+		</Layout>
 	);
 };
 
 const MyPersonalFoodLabelTab = ({ data, navigation }) => {
+	const [isAddLoading, setIsAddLoading] = useState(false);
+	const [isSuccessTextVisible, setIsSuccessTextVisible] = useState(false);
+	const [modalData, setModalData] = useState({
+		foodName: "",
+		calories: 0,
+	});
+	const meal = ["Breakfast", "Lunch", "Dinner"];
+	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
+	const mealDisplayValue = meal[mealIndex.row];
+	const renderMealOption = (title, index) => {
+		return <SelectItem title={title} key={index} />;
+	};
+
+	// modal
+	const [addConsumptionPanelVisible, setAddConsumptionPanelVisible] =
+		useState(false);
+
+	const handleAdd = data => {
+		if (data) {
+			setModalData({
+				foodName: data.name,
+				calories: data.calories,
+			});
+			setAddConsumptionPanelVisible(true);
+		}
+	};
+
+	const handleRecordConsumption = async () => {
+		setIsAddLoading(true);
+		// record into user daily consumption collection
+		const today = new Date().toLocaleDateString().replaceAll("/", "_");
+		let currentTime = new Date().toLocaleTimeString();
+		// create user consumption reference first
+		const userConsumptionRef = collection(
+			db,
+			"users",
+			auth.currentUser.uid,
+			"userConsumption"
+		);
+
+		const docRef = await addDoc(userConsumptionRef, {
+			foodName: modalData.foodName,
+			totalCalories: modalData.calories,
+			servingQuantity: 1,
+			servingUnit: "serving",
+			time: currentTime,
+		});
+
+		// add to daily consumption of user
+		const userDailyConsumptionRef = doc(
+			db,
+			"users",
+			auth.currentUser.uid,
+			"userDailyConsumption",
+			today
+		);
+		try {
+			if (meal[mealIndex.row] == "Breakfast") {
+				await updateDoc(userDailyConsumptionRef, {
+					breakfast: arrayUnion(docRef),
+				});
+			} else if (meal[mealIndex.row] == "Lunch") {
+				await updateDoc(userDailyConsumptionRef, {
+					lunch: arrayUnion(docRef),
+				});
+			} else {
+				await updateDoc(userDailyConsumptionRef, {
+					dinner: arrayUnion(docRef),
+				});
+			}
+			setIsSuccessTextVisible(true);
+			setTimeout(() => {
+				setIsAddLoading(false);
+				setIsSuccessTextVisible(false);
+				// close modal
+				setAddConsumptionPanelVisible(false);
+			}, 2000);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<Layout style={styles.foodLabelsContainer}>
 			{data.length !== 0 ? (
-				<FlatList
-					data={data}
-					keyExtractor={item => item.id}
-					renderItem={({ item }) => <PersonalFoodLabelBar data={item} />}
-					style={{ width: "100%", flex: 1 }}
-				/>
+				<>
+					<FlatList
+						data={data}
+						keyExtractor={item => item.id}
+						renderItem={({ item }) => (
+							<PersonalFoodLabelBar
+								data={item}
+								onPressAdd={() => handleAdd(item)}
+							/>
+						)}
+						style={{ width: "100%", flex: 1 }}
+					/>
+					<Modal
+						visible={isAddLoading || addConsumptionPanelVisible}
+						backdropStyle={styles.backdrop}
+						onBackdropPress={() => setAddConsumptionPanelVisible(false)}
+						style={styles.modal}
+					>
+						<Card disabled={true} style={styles.modalContent}>
+							<Layout style={styles.modalTitle}>
+								<Text
+									style={{
+										fontSize: SIZES.large,
+										fontFamily: FONTS.medium,
+										color: COLORS.primary,
+										fontFamily: FONTS.semiBold,
+									}}
+								>
+									Select Meal
+								</Text>
+							</Layout>
+							<Divider />
+							<Layout
+								style={{
+									justifyContent: "center",
+									alignItems: "center",
+									paddingVertical: SIZES.font,
+								}}
+							>
+								<Select
+									style={styles.mealSelect}
+									placeholder="Select a meal"
+									value={mealDisplayValue}
+									selectedIndex={mealIndex}
+									onSelect={index => setMealIndex(index)}
+								>
+									{meal.map(renderMealOption)}
+								</Select>
+								<Text style={styles.foodNameText}>{modalData.foodName}</Text>
+								<Text style={styles.leftText}>
+									{"Total calories: "}
+									<Text
+										style={styles.rightText}
+									>{`${modalData.calories} kcal`}</Text>
+								</Text>
+							</Layout>
+							{isSuccessTextVisible && (
+								<Text style={styles.successMessageText}>
+									Meal added to daily consumption!
+								</Text>
+							)}
+							<Layout style={styles.addButtonsContainer}>
+								<CustomButton
+									text={"Cancel"}
+									backgroundColor={COLORS.gray}
+									flex={1}
+									onPress={() => setAddConsumptionPanelVisible(false)}
+								/>
+								<Layout style={{ width: "5%" }} />
+								{!isAddLoading ? (
+									<CustomButton
+										text={"Add"}
+										backgroundColor={COLORS.primary}
+										flex={1}
+										onPress={() => handleRecordConsumption()}
+									/>
+								) : (
+									<CustomButton backgroundColor={COLORS.lightPrimary} flex={1}>
+										<Spinner status="basic" size="small" />
+									</CustomButton>
+								)}
+							</Layout>
+						</Card>
+					</Modal>
+				</>
 			) : (
 				<Layout
 					style={{ justifyContent: "center", width: "95%", height: "80%" }}
@@ -225,14 +659,6 @@ const MyPersonalFoodLabelTab = ({ data, navigation }) => {
 };
 
 const RecordScreen = ({ navigation }) => {
-	const [selectedIndex, setSelectedIndex] = useState(0);
-	const option = ["Breakfast", "Lunch", "Dinner"];
-	const displayValue = option[selectedIndex.row];
-	const renderOption = title => (
-		<SelectItem key={option.indexOf(title)} title={title} />
-	);
-	const [searchValue, setSearchValue] = useState("");
-
 	const [tabSelectedIndex, setTabSelectedIndex] = useState(0);
 	const [personalFoodLabelData, setPersonalFoodLabelData] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
@@ -282,17 +708,8 @@ const RecordScreen = ({ navigation }) => {
 						flex: 1,
 					}}
 				>
-					<Layout style={styles.select}>
-						<Select
-							status="primary"
-							size="large"
-							placeholder="Select a meal"
-							selectedIndex={selectedIndex}
-							value={displayValue}
-							onSelect={index => setSelectedIndex(index)}
-						>
-							{option.map(renderOption)}
-						</Select>
+					<Layout style={styles.headerContainer}>
+						<Text style={styles.header}>Add Daily Consumption</Text>
 					</Layout>
 
 					<Layout style={{ width: "100%" }}>
@@ -322,16 +739,55 @@ const RecordScreen = ({ navigation }) => {
 	);
 };
 const styles = StyleSheet.create({
-	select: {
+	headerContainer: {
 		width: "100%",
+		backgroundColor: "#F9F9F9",
+		alignItems: "center",
+		paddingVertical: "5%",
+		...SHADOWS.dark,
+	},
+	header: {
+		color: COLORS.primary,
+		fontFamily: FONTS.bold,
+		fontSize: SIZES.large,
+	},
+	addButtonsContainer: {
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+	},
+	foodNameText: {
+		fontFamily: FONTS.bold,
+		fontSize: SIZES.large,
+		paddingVertical: SIZES.base,
+		width: "100%",
+	},
+	leftText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.medium,
+		width: "100%",
+		paddingVertical: SIZES.base,
+	},
+	rightText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.medium,
+		color: COLORS.gray,
+	},
+	mealSelect: {
+		fontFamily: FONTS.font,
+		fontSize: SIZES.medium,
+		width: "100%",
+		marginBottom: SIZES.base,
 	},
 	content: {
 		alignItems: "center",
 		justifyContent: "center",
+		flex: 1,
 	},
 	image: {
 		resizeMode: "contain",
-		height: "40%",
+		height: 150,
 	},
 	foodLabelsContainer: {
 		paddingVertical: SIZES.base,
@@ -359,5 +815,75 @@ const styles = StyleSheet.create({
 		paddingVertical: SIZES.medium,
 	},
 	autocomplete: {},
+	resultsContainer: {
+		width: "100%",
+		paddingHorizontal: "5%",
+		paddingVertical: SIZES.extraLarge,
+		flex: 1,
+	},
+	resultsText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.medium,
+	},
+	idvContainer: {
+		paddingVertical: SIZES.base,
+	},
+	buttonContainer: {
+		marginTop: "auto",
+		paddingTop: SIZES.base,
+	},
+	notText: {
+		fontFamily: FONTS.medium,
+		paddingBottom: SIZES.small,
+		textAlign: "center",
+		fontSize: SIZES.font,
+		color: COLORS.error,
+	},
+	spinner: {
+		backgroundColor: "white",
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	backdrop: {
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	modal: {
+		width: "85%",
+	},
+	modalContent: {
+		flex: 1,
+		display: "flex",
+		justifyContent: "center",
+		alignContent: "center",
+	},
+	modalTitle: {
+		justifyContent: "center",
+		alignItems: "center",
+		paddingBottom: SIZES.font,
+	},
+	examplesTitle: {
+		paddingTop: SIZES.font,
+		fontFamily: FONTS.semiBold,
+		fontSize: SIZES.large,
+	},
+	examplesText: {
+		paddingVertical: 4,
+		fontFamily: FONTS.regular,
+		fontSize: SIZES.font,
+		color: COLORS.gray,
+	},
+	successMessageText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.font,
+		color: COLORS.primary,
+		paddingBottom: SIZES.small,
+	},
+	errorText: {
+		fontFamily: FONTS.medium,
+		fontSize: SIZES.small,
+		color: COLORS.error,
+		paddingTop: SIZES.base,
+	},
 });
 export default RecordScreen;

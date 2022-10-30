@@ -5,7 +5,6 @@ import GenderSwitchButton from "./GenderSwitchButton";
 import BackButton from "./BackButton";
 import CodeInputField from "./CodeInputField";
 import CustomButton from "./CustomButton";
-import DateButton from "./DateButton";
 import HomePageIcon from "./HomePageIcon";
 import SearchBar from "./SearchBar";
 import EditButton from "./EditButton";
@@ -16,6 +15,7 @@ import AddButton from "./AddButton";
 import HistoryComponent from "./HistoryComponent";
 import CloseButton from "./CloseButton";
 import LoadingPage from "./LoadingPage";
+import ResultsFoodLabel from "./ResultsFoodLabel";
 
 export {
 	FocusedStatusBar,
@@ -25,7 +25,6 @@ export {
 	BackButton,
 	CodeInputField,
 	CustomButton,
-	DateButton,
 	HomePageIcon,
 	SearchBar,
 	EditButton,
@@ -36,4 +35,5 @@ export {
 	HistoryComponent,
 	CloseButton,
 	LoadingPage,
+	ResultsFoodLabel,
 };

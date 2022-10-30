@@ -242,7 +242,11 @@ const App = () => {
 							})}
 							initialRouteName="Home"
 						>
-							<Tab.Screen name="Home" component={HomeNavigator} />
+							<Tab.Screen
+								name="Home"
+								component={HomeNavigator}
+								options={{ unmountOnBlur: true }}
+							/>
 							<Tab.Screen name="Profile" component={ProfileNavigator} />
 							<Tab.Screen name="AddDaily" component={AddDailyNavigator} />
 							<Tab.Screen name="Navigate" component={NavigateNavigator} />

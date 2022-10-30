@@ -3,13 +3,15 @@ import { Layout } from "@ui-kitten/components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import AddButton from "./AddButton";
 
-const PersonalFoodLabelBar = ({ data, onPressAdd }) => {
+const ResultsFoodLabel = ({ data, onPressAdd }) => {
 	return (
 		<Layout style={styles.content}>
 			<Layout style={styles.container}>
 				<Layout style={styles.foodLabelLeft}>
 					<Text style={styles.foodLabelNameText}>{data.name}</Text>
-					<Text style={styles.foodLabelCalText}>{`${data.calories} kcal`}</Text>
+					<Text
+						style={styles.foodLabelCalText}
+					>{`${data.calories} kcal, ${data.servingQuantity} ${data.servingUnit}`}</Text>
 				</Layout>
 				<Layout style={styles.foodLabelRight}>
 					<AddButton color={COLORS.primary} onPress={onPressAdd} />
@@ -18,13 +20,12 @@ const PersonalFoodLabelBar = ({ data, onPressAdd }) => {
 		</Layout>
 	);
 };
-export default PersonalFoodLabelBar;
+export default ResultsFoodLabel;
 
 const styles = StyleSheet.create({
 	content: {
 		marginVertical: SIZES.base,
 		backgroundColor: "#ececec",
-		marginHorizontal: SIZES.medium,
 		borderRadius: 10,
 	},
 	container: {

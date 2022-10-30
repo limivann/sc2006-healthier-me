@@ -3,17 +3,17 @@ import { Layout } from "@ui-kitten/components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import CloseButton from "./CloseButton";
 
-const HistoryComponent = () => {
+const HistoryComponent = ({ data }) => {
 	return (
 		<Layout style={styles.container}>
 			<Layout style={styles.timeContainer}>
-				<Text style={styles.time}>8:30 am</Text>
+				<Text style={styles.time}>{data.time}</Text>
 			</Layout>
 			<Layout style={styles.foodContainer}>
 				<Layout style={styles.left}>
-					<Text style={styles.foodTitle}>Peanut Butter Bread</Text>
+					<Text style={styles.foodTitle}>{data.foodName}</Text>
 					<Text style={styles.foodDescription}>
-						669 kcal, Homemade, 3 slices
+						{`${data.totalCalories} kcal, ${data.servingQuantity} ${data.servingUnit}`}
 					</Text>
 				</Layout>
 				<Layout style={styles.right}>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 	},
 	timeContainer: {
 		backgroundColor: "#f5f5f5",
-		maxWidth: 90,
+		maxWidth: 100,
 		paddingHorizontal: SIZES.base,
 		paddingVertical: 4,
 		justifyContent: "center",
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 	time: {
 		fontFamily: FONTS.medium,
 		color: COLORS.primary,
-		fontSize: SIZES.medium,
+		fontSize: SIZES.font,
 	},
 	right: {
 		backgroundColor: "transparent",
