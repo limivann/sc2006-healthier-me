@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
 		borderTopLeftRadius: 0,
 		flexDirection: "row",
 		justifyContent: "space-between",
+		alignItems: "center",
 	},
 	left: {
 		backgroundColor: "transparent",

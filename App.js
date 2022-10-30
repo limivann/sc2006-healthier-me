@@ -248,7 +248,11 @@ const App = () => {
 								options={{ unmountOnBlur: true }}
 							/>
 							<Tab.Screen name="Profile" component={ProfileNavigator} />
-							<Tab.Screen name="AddDaily" component={AddDailyNavigator} />
+							<Tab.Screen
+								name="AddDaily"
+								component={AddDailyNavigator}
+								options={{ unmountOnBlur: true }}
+							/>
 							<Tab.Screen name="Navigate" component={NavigateNavigator} />
 							<Tab.Screen name="Settings" component={SettingsNavigator} />
 						</Tab.Navigator>

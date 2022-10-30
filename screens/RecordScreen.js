@@ -36,8 +36,10 @@ import {
 	arrayUnion,
 	collection,
 	doc,
+	getDoc,
 	getDocs,
 	query,
+	setDoc,
 	updateDoc,
 } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
@@ -476,8 +478,15 @@ const MyPersonalFoodLabelTab = ({ data, navigation }) => {
 	const handleRecordConsumption = async () => {
 		setIsAddLoading(true);
 		// record into user daily consumption collection
-		const today = new Date().toLocaleDateString().replaceAll("/", "_");
-		let currentTime = new Date().toLocaleTimeString();
+		const today = new Date();
+		const day = today.getDay();
+		const month = today.getMonth();
+		const year = today.getFullYear();
+		const todayAsStr = day + "_" + month + "_" + year;
+		const hour = today.getHours();
+		const minute = today.getMinutes();
+		const second = today.getSeconds();
+		let currentTime = hour + ":" + minute + ":" + second;
 		// create user consumption reference first
 		const userConsumptionRef = collection(
 			db,
@@ -500,9 +509,18 @@ const MyPersonalFoodLabelTab = ({ data, navigation }) => {
 			"users",
 			auth.currentUser.uid,
 			"userDailyConsumption",
-			today
+			todayAsStr
 		);
+		let docSnap;
 		try {
+			docSnap = await getDoc(userDailyConsumptionRef);
+			if (!docSnap.exists()) {
+				await setDoc(userDailyConsumptionRef, {
+					breakfast: [],
+					lunch: [],
+					dinner: [],
+				});
+			}
 			if (meal[mealIndex.row] == "Breakfast") {
 				await updateDoc(userDailyConsumptionRef, {
 					breakfast: arrayUnion(docRef),

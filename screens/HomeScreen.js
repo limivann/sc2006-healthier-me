@@ -78,13 +78,17 @@ const HomeScreen = ({ navigation }) => {
 	});
 	useEffect(() => {
 		const fetchHistory = async () => {
-			const today = new Date().toLocaleDateString().replaceAll("/", "_");
+			const today = new Date();
+			const day = today.getDay();
+			const month = today.getMonth();
+			const year = today.getFullYear();
+			const todayAsStr = day + "_" + month + "_" + year;
 			const userDailyConsumptionRef = doc(
 				db,
 				"users",
 				auth.currentUser.uid,
 				"userDailyConsumption",
-				today
+				todayAsStr
 			);
 			const docSnap = await getDoc(userDailyConsumptionRef);
 			if (docSnap.exists()) {
