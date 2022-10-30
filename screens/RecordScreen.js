@@ -127,8 +127,6 @@ const AllTabScreen = ({ navigation }) => {
 		// record into user daily consumption collection
 		const today = new Date().toLocaleDateString().replaceAll("/", "_");
 		let currentTime = new Date().toLocaleTimeString();
-		console.log(today);
-		console.log(currentTime);
 		// create user consumption reference first
 		const userConsumptionRef = collection(
 			db,

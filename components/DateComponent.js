@@ -2,7 +2,7 @@ import { Text, Layout } from "@ui-kitten/components";
 import { TouchableOpacity } from "react-native";
 import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
 
-const Date = ({ date, onPress }) => {
+const DateComponent = ({ date, onPress }) => {
 	const { id, dayOfWeek, dayOfMonth, isFocused } = date;
 
 	return (
@@ -51,4 +51,4 @@ const Date = ({ date, onPress }) => {
 		</TouchableOpacity>
 	);
 };
-export default Date;
+export default DateComponent;

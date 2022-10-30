@@ -8,10 +8,11 @@ import {
 import { Layout } from "@ui-kitten/components";
 import { BackButton, FocusedStatusBar, HistoryComponent } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
-import { useState } from "react";
-import Date from "../components/Date";
+import { useEffect, useState } from "react";
+import Date from "../components/DateComponent";
 
-const FoodHistoryScreen = ({ navigation }) => {
+const FoodHistoryScreen = ({ navigation, route }) => {
+	const { data } = route?.params;
 	const [dates, setDates] = useState([
 		{
 			id: 1,
@@ -56,6 +57,8 @@ const FoodHistoryScreen = ({ navigation }) => {
 		});
 		setDates(temp);
 	};
+	console.log(data);
+
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FocusedStatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -83,17 +86,21 @@ const FoodHistoryScreen = ({ navigation }) => {
 			<ScrollView contentContainerStyle={styles.historyContainer}>
 				<Layout>
 					<Text style={styles.title}>Breakfast</Text>
-					<HistoryComponent />
-					<HistoryComponent />
+					{data?.breakfast.map((item, index) => {
+						return <HistoryComponent key={index} data={item} />;
+					})}
 				</Layout>
 				<Layout>
 					<Text style={styles.title}>Lunch</Text>
-					<HistoryComponent />
+					{data?.lunch.map((item, index) => {
+						return <HistoryComponent key={index} data={item} />;
+					})}
 				</Layout>
 				<Layout>
 					<Text style={styles.title}>Dinner</Text>
-					<HistoryComponent />
-					<HistoryComponent />
+					{data?.dinner.map((item, index) => {
+						return <HistoryComponent key={index} data={item} />;
+					})}
 				</Layout>
 			</ScrollView>
 		</SafeAreaView>

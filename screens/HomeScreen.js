@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout, Text, Avatar } from "@ui-kitten/components";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
 import { FocusedStatusBar, HomePageIcon, CustomButton } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 import { VictoryPie } from "victory-native";
-import Date from "../components/Date";
+import { auth, db } from "../firebase/firebase-config";
+import DateComponent from "../components/DateComponent";
+import { doc, getDoc } from "firebase/firestore";
+import { getFoodHistory } from "../firebase/firestore";
 
 const MiddleLabel = () => {
 	return (
@@ -68,6 +71,36 @@ const HomeScreen = ({ navigation }) => {
 		setDates(temp);
 	};
 
+	const [history, setHistory] = useState({
+		breakfast: [],
+		lunch: [],
+		dinner: [],
+	});
+	useEffect(() => {
+		const fetchHistory = async () => {
+			const today = new Date().toLocaleDateString().replaceAll("/", "_");
+			const userDailyConsumptionRef = doc(
+				db,
+				"users",
+				auth.currentUser.uid,
+				"userDailyConsumption",
+				today
+			);
+			const docSnap = await getDoc(userDailyConsumptionRef);
+			if (docSnap.exists()) {
+				let breakfastTemp = await getFoodHistory(docSnap.data()?.breakfast);
+				let lunchTemp = await getFoodHistory(docSnap.data()?.lunch);
+				let dinnerTemp = await getFoodHistory(docSnap.data()?.dinner);
+				setHistory({
+					breakfast: breakfastTemp,
+					lunch: lunchTemp,
+					dinner: dinnerTemp,
+				});
+			}
+		};
+		fetchHistory();
+	}, []);
+
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -118,7 +151,9 @@ const HomeScreen = ({ navigation }) => {
 					<FlatList
 						horizontal={true}
 						data={dates}
-						renderItem={({ item }) => <Date date={item} onPress={focusDate} />}
+						renderItem={({ item }) => (
+							<DateComponent date={item} onPress={focusDate} />
+						)}
 						keyExtractor={item => item.id}
 						style={{ width: "100%" }}
 					/>
@@ -211,7 +246,9 @@ const HomeScreen = ({ navigation }) => {
 				<CustomButton
 					text={"View History"}
 					backgroundColor={COLORS.primary}
-					onPress={() => navigation.navigate("FoodHistoryPage")}
+					onPress={() =>
+						navigation.navigate("FoodHistoryPage", { data: history })
+					}
 				></CustomButton>
 			</Layout>
 		</SafeAreaView>
