@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 	},
 	timeContainer: {
 		backgroundColor: "#f5f5f5",
-		maxWidth: 125,
+		maxWidth: 100,
 		paddingHorizontal: SIZES.base,
 		paddingVertical: 4,
 		justifyContent: "center",
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 	time: {
 		fontFamily: FONTS.medium,
 		color: COLORS.primary,
-		fontSize: SIZES.medium,
+		fontSize: SIZES.font,
 	},
 	right: {
 		backgroundColor: "transparent",

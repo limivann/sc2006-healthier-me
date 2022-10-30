@@ -446,15 +446,176 @@ const AllTabScreen = ({ navigation }) => {
 };
 
 const MyPersonalFoodLabelTab = ({ data, navigation }) => {
+	const [isAddLoading, setIsAddLoading] = useState(false);
+	const [isSuccessTextVisible, setIsSuccessTextVisible] = useState(false);
+	const [modalData, setModalData] = useState({
+		foodName: "",
+		calories: 0,
+	});
+	const meal = ["Breakfast", "Lunch", "Dinner"];
+	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
+	const mealDisplayValue = meal[mealIndex.row];
+	const renderMealOption = (title, index) => {
+		return <SelectItem title={title} key={index} />;
+	};
+
+	// modal
+	const [addConsumptionPanelVisible, setAddConsumptionPanelVisible] =
+		useState(false);
+
+	const handleAdd = data => {
+		if (data) {
+			setModalData({
+				foodName: data.name,
+				calories: data.calories,
+			});
+			setAddConsumptionPanelVisible(true);
+		}
+	};
+
+	const handleRecordConsumption = async () => {
+		setIsAddLoading(true);
+		// record into user daily consumption collection
+		const today = new Date().toLocaleDateString().replaceAll("/", "_");
+		let currentTime = new Date().toLocaleTimeString();
+		// create user consumption reference first
+		const userConsumptionRef = collection(
+			db,
+			"users",
+			auth.currentUser.uid,
+			"userConsumption"
+		);
+
+		const docRef = await addDoc(userConsumptionRef, {
+			foodName: modalData.foodName,
+			totalCalories: modalData.calories,
+			servingQuantity: 1,
+			servingUnit: "serving",
+			time: currentTime,
+		});
+
+		// add to daily consumption of user
+		const userDailyConsumptionRef = doc(
+			db,
+			"users",
+			auth.currentUser.uid,
+			"userDailyConsumption",
+			today
+		);
+		try {
+			if (meal[mealIndex.row] == "Breakfast") {
+				await updateDoc(userDailyConsumptionRef, {
+					breakfast: arrayUnion(docRef),
+				});
+			} else if (meal[mealIndex.row] == "Lunch") {
+				await updateDoc(userDailyConsumptionRef, {
+					lunch: arrayUnion(docRef),
+				});
+			} else {
+				await updateDoc(userDailyConsumptionRef, {
+					dinner: arrayUnion(docRef),
+				});
+			}
+			setIsSuccessTextVisible(true);
+			setTimeout(() => {
+				setIsAddLoading(false);
+				setIsSuccessTextVisible(false);
+				// close modal
+				setAddConsumptionPanelVisible(false);
+			}, 2000);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<Layout style={styles.foodLabelsContainer}>
 			{data.length !== 0 ? (
-				<FlatList
-					data={data}
-					keyExtractor={item => item.id}
-					renderItem={({ item }) => <PersonalFoodLabelBar data={item} />}
-					style={{ width: "100%", flex: 1 }}
-				/>
+				<>
+					<FlatList
+						data={data}
+						keyExtractor={item => item.id}
+						renderItem={({ item }) => (
+							<PersonalFoodLabelBar
+								data={item}
+								onPressAdd={() => handleAdd(item)}
+							/>
+						)}
+						style={{ width: "100%", flex: 1 }}
+					/>
+					<Modal
+						visible={isAddLoading || addConsumptionPanelVisible}
+						backdropStyle={styles.backdrop}
+						onBackdropPress={() => setAddConsumptionPanelVisible(false)}
+						style={styles.modal}
+					>
+						<Card disabled={true} style={styles.modalContent}>
+							<Layout style={styles.modalTitle}>
+								<Text
+									style={{
+										fontSize: SIZES.large,
+										fontFamily: FONTS.medium,
+										color: COLORS.primary,
+										fontFamily: FONTS.semiBold,
+									}}
+								>
+									Select Meal
+								</Text>
+							</Layout>
+							<Divider />
+							<Layout
+								style={{
+									justifyContent: "center",
+									alignItems: "center",
+									paddingVertical: SIZES.font,
+								}}
+							>
+								<Select
+									style={styles.mealSelect}
+									placeholder="Select a meal"
+									value={mealDisplayValue}
+									selectedIndex={mealIndex}
+									onSelect={index => setMealIndex(index)}
+								>
+									{meal.map(renderMealOption)}
+								</Select>
+								<Text style={styles.foodNameText}>{modalData.foodName}</Text>
+								<Text style={styles.leftText}>
+									{"Total calories: "}
+									<Text
+										style={styles.rightText}
+									>{`${modalData.calories} kcal`}</Text>
+								</Text>
+							</Layout>
+							{isSuccessTextVisible && (
+								<Text style={styles.successMessageText}>
+									Meal added to daily consumption!
+								</Text>
+							)}
+							<Layout style={styles.addButtonsContainer}>
+								<CustomButton
+									text={"Cancel"}
+									backgroundColor={COLORS.gray}
+									flex={1}
+									onPress={() => setAddConsumptionPanelVisible(false)}
+								/>
+								<Layout style={{ width: "5%" }} />
+								{!isAddLoading ? (
+									<CustomButton
+										text={"Add"}
+										backgroundColor={COLORS.primary}
+										flex={1}
+										onPress={() => handleRecordConsumption()}
+									/>
+								) : (
+									<CustomButton backgroundColor={COLORS.lightPrimary} flex={1}>
+										<Spinner status="basic" size="small" />
+									</CustomButton>
+								)}
+							</Layout>
+						</Card>
+					</Modal>
+				</>
 			) : (
 				<Layout
 					style={{ justifyContent: "center", width: "95%", height: "80%" }}

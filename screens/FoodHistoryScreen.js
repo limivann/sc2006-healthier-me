@@ -57,7 +57,6 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 		});
 		setDates(temp);
 	};
-	console.log(data);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
