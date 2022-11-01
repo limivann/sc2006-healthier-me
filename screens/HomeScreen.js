@@ -10,13 +10,14 @@ import { doc, getDoc } from "firebase/firestore";
 import { getFoodHistory } from "../firebase/firestore";
 import {
 	calculateCaloriesNeeded,
+	calculateRemainingCalories,
 	calculateTotalCaloriesConsumed,
 } from "../utils";
 
-const MiddleLabel = () => {
+const MiddleLabel = ({ caloriesRemaining }) => {
 	return (
 		<Layout style={styles.midLabel}>
-			<Text style={styles.caloriesText}>2560</Text>
+			<Text style={styles.caloriesText}>{caloriesRemaining}</Text>
 			<Text style={styles.remainingText}>Remaining</Text>
 		</Layout>
 	);
@@ -57,13 +58,11 @@ const HomeScreen = ({ navigation }) => {
 		},
 	]);
 
-	const [caloriesData, setCaloriesData] = useState([
-		{
-			baseGoal: 2940,
-			food: 370,
-			exercise: 0,
-		},
-	]);
+	const [caloriesData, setCaloriesData] = useState({
+		baseGoal: 2940,
+		food: 370,
+		exercise: 0,
+	});
 
 	const focusDate = id => {
 		const temp = [];
@@ -89,7 +88,7 @@ const HomeScreen = ({ navigation }) => {
 	const [weight, setWeight] = useState(0);
 	const [age, setAge] = useState(0);
 	const [isMale, setIsMale] = useState(true);
-	const [activityLevel, setActivityLevel] = useState("Not Very Active");
+	const [activityLevel, setActivityLevel] = useState(0);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -101,14 +100,45 @@ const HomeScreen = ({ navigation }) => {
 					setName(user.displayName);
 					setAge(user.age);
 					setWeight(user.weight);
-					setActivityLevel(user.activityLevel);
+					let activityLevelInCalories = 0;
+					if (user.activityLevel === "Not Very Active") {
+						setActivityLevel(0);
+						activityLevelInCalories = 0;
+					} else if (user.activityLevel === "Lightly Active") {
+						setActivityLevel(200);
+						activityLevelInCalories = 200;
+					} else if (user.activityLevel === "Active") {
+						setActivityLevel(400);
+						activityLevelInCalories = 400;
+					} else {
+						setActivityLevel(600);
+						activityLevelInCalories = 600;
+					}
 					setHeight(user.height);
+					if (user.gender === "male") {
+						setIsMale(true);
+					} else {
+						setIsMale(false);
+					}
+					return {
+						isMale: user.gender == "male" ? true : false,
+						weight: user.weight,
+						height: user.height,
+						age: user.age,
+						activityLevel: activityLevelInCalories,
+					};
 				}
 			} catch (error) {
 				console.log(error);
 			}
 		};
-		const fetchHistory = async () => {
+		const fetchHistory = async ({
+			isMale,
+			weight,
+			height,
+			age,
+			activityLevel,
+		}) => {
 			try {
 				const today = new Date();
 				const day = today.getDay();
@@ -123,11 +153,11 @@ const HomeScreen = ({ navigation }) => {
 					todayAsStr
 				);
 				const docSnap = await getDoc(userDailyConsumptionRef);
+				let foodConsumed = 0;
 				if (docSnap.exists()) {
 					let breakfastTemp = await getFoodHistory(docSnap.data()?.breakfast);
 					let lunchTemp = await getFoodHistory(docSnap.data()?.lunch);
 					let dinnerTemp = await getFoodHistory(docSnap.data()?.dinner);
-
 					Promise.all([breakfastTemp, lunchTemp, dinnerTemp]).then(() => {
 						setHistory({
 							breakfast: breakfastTemp,
@@ -135,19 +165,30 @@ const HomeScreen = ({ navigation }) => {
 							dinner: dinnerTemp,
 						});
 						setIsHistoryLoading(false);
-						calculateTotalCaloriesConsumed(
+						foodConsumed = calculateTotalCaloriesConsumed(
 							breakfastTemp,
 							lunchTemp,
 							dinnerTemp
 						);
 					});
+				} else {
+					foodConsumed = 0;
 				}
+				Promise.all([docSnap]).then(() => {
+					console.log(isMale, weight, height, age, activityLevel);
+					setCaloriesData({
+						baseGoal: calculateCaloriesNeeded(isMale, weight, height, age),
+						food: foodConsumed,
+						exercise: activityLevel,
+					});
+				});
 			} catch (error) {
 				console.log(error);
 			}
 		};
-		fetchUserData();
-		fetchHistory();
+		fetchUserData().then(data => {
+			fetchHistory(data);
+		});
 	}, []);
 
 	return (
@@ -269,7 +310,13 @@ const HomeScreen = ({ navigation }) => {
 									},
 								}}
 							/>
-							<MiddleLabel />
+							<MiddleLabel
+								caloriesRemaining={calculateRemainingCalories(
+									caloriesData.baseGoal,
+									caloriesData.food,
+									caloriesData.exercise
+								)}
+							/>
 						</Layout>
 						<Layout
 							style={{
@@ -279,13 +326,17 @@ const HomeScreen = ({ navigation }) => {
 							<HomePageIcon
 								source={assets.flagIcon}
 								title="Base Goal"
-								data={2940}
+								data={caloriesData.baseGoal}
 							/>
-							<HomePageIcon source={assets.eatIcon} title="Food" data={370} />
+							<HomePageIcon
+								source={assets.eatIcon}
+								title="Food"
+								data={caloriesData.food}
+							/>
 							<HomePageIcon
 								source={assets.fireIcon}
 								title="Exercise"
-								data={0}
+								data={caloriesData.exercise}
 							/>
 						</Layout>
 					</Layout>

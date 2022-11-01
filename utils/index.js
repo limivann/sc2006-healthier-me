@@ -10,13 +10,23 @@ export const calculateCaloriesNeeded = (isMale, weight, height, age) => {
 	} else {
 		tempBmr = 655.1 + 9.563 * weight + 1.85 * height - 4.676 * age;
 	}
-	return tempBmr;
+	return tempBmr.toFixed(2);
 };
 
 export const calculateTotalCaloriesConsumed = (breakfast, lunch, dinner) => {
-	let breakfastConsumption = 0;
+	let total = 0;
 	breakfast.forEach(meal => {
-		breakfastConsumption += meal.totalCalories;
+		total += meal.totalCalories;
 	});
-	console.log(breakfastConsumption);
+	lunch.forEach(meal => {
+		total += meal.totalCalories;
+	});
+	dinner.forEach(meal => {
+		total += meal.totalCalories;
+	});
+	return total.toFixed(2);
+};
+
+export const calculateRemainingCalories = (baseGoal, food, exercise) => {
+	return Math.round(baseGoal - food + exercise);
 };
