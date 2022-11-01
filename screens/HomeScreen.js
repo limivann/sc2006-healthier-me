@@ -18,6 +18,8 @@ const MiddleLabel = () => {
 	);
 };
 const HomeScreen = ({ navigation }) => {
+	const [isHistoryLoading, setIsHistoryLoading] = useState(true);
+	const [isUserLoading, setIsUserLoading] = useState(true);
 	const [dates, setDates] = useState([
 		{
 			id: 1,
@@ -54,8 +56,8 @@ const HomeScreen = ({ navigation }) => {
 	const [caloriesData, setCaloriesData] = useState([
 		{
 			baseGoal: 2940,
-			Food: 370,
-			Exercise: 0,
+			food: 370,
+			exercise: 0,
 		},
 	]);
 
@@ -76,7 +78,27 @@ const HomeScreen = ({ navigation }) => {
 		lunch: [],
 		dinner: [],
 	});
+
+	// user details
+	const [name, setName] = useState("");
+	const [height, setHeight] = useState(0);
+	const [weight, setWeight] = useState(0);
+	const [age, setAge] = useState(0);
+	const [activityLevel, setActivityLevel] = useState("Not Very Active");
+
 	useEffect(() => {
+		const fetchUserData = async () => {
+			const userDocRef = doc(db, "users", auth.currentUser.uid);
+			const docSnap = await getDoc(userDocRef);
+			if (docSnap.exists()) {
+				const user = docSnap.data();
+				setName(user.displayName);
+				setAge(user.age);
+				setWeight(user.weight);
+				setActivityLevel(user.activityLevel);
+				setHeight(user.height);
+			}
+		};
 		const fetchHistory = async () => {
 			const today = new Date();
 			const day = today.getDay();
@@ -100,8 +122,12 @@ const HomeScreen = ({ navigation }) => {
 					lunch: lunchTemp,
 					dinner: dinnerTemp,
 				});
+				console.log(caloriesData);
 			}
+
+			setIsHistoryLoading(false);
 		};
+		fetchUserData();
 		fetchHistory();
 	}, []);
 
@@ -145,7 +171,7 @@ const HomeScreen = ({ navigation }) => {
 								fontSize: SIZES.extraLarge,
 							}}
 						>
-							Victoria
+							{name}
 						</Text>
 					</Layout>
 					<Avatar source={assets.avatar} size="giant" />
