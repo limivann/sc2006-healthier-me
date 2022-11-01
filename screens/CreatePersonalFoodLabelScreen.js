@@ -15,7 +15,7 @@ import { auth, db } from "../firebase/firebase-config";
 const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 	const [errorText, setErrorText] = useState("");
 	const [labelName, setLabelName] = useState("");
-	const [calories, setCalories] = useState(null);
+	const [calories, setCalories] = useState("");
 	const { setPersonalFoodLabelData } = route?.params;
 	const [createLoading, setCreateLoading] = useState(false);
 	const [successMessageVisible, setSuccessMessageVisible] = useState(false);
@@ -24,7 +24,7 @@ const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 		try {
 			setCreateLoading(true);
 			// check required fields
-			if (labelName === "" || calories == null || calories == "") {
+			if (labelName === "" || calories == null) {
 				setErrorText("Please fill in all fields");
 				setCreateLoading(false);
 				return;
@@ -135,8 +135,8 @@ const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 									style={styles.input}
 									placeholder="500"
 									keyboardType="numeric"
-									value={calories}
-									onChangeText={nextValue => setCalories(nextValue)}
+									value={calories.toString()}
+									onChangeText={nextValue => setCalories(+nextValue)}
 								/>
 							</Layout>
 							{errorText && (
