@@ -35,6 +35,7 @@ const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 				setCreateLoading(false);
 				return;
 			}
+
 			// check if calories > 0 and < 10000
 			if (!(calories > 0 && calories < 10000)) {
 				setErrorText("Calories must be greater than 0 and less than 10000");
@@ -57,26 +58,28 @@ const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 			}
 			const newData = {
 				name: labelName,
-				calories: calories,
+				calories: +calories,
 			};
 			const docRef = await addDoc(personalFoodLabelRef, newData);
-			setErrorText("");
-			setCreateLoading(false);
-			// clear inputs
-			setLabelName("");
-			setCalories(null);
-			setSuccessMessageVisible(true);
-			setTimeout(() => {
-				setSuccessMessageVisible(false);
-				setPersonalFoodLabelData(prev => [
-					{
-						name: labelName,
-						calories: calories,
-						id: docRef,
-					},
-					...prev,
-				]);
-			}, 1000);
+			setPersonalFoodLabelData(prev => [
+				{
+					name: labelName,
+					calories: +calories,
+					id: docRef.id,
+				},
+				...prev,
+			]);
+			Promise.all([docRef]).then(() => {
+				setErrorText("");
+				setCreateLoading(false);
+				// clear inputs
+				setLabelName("");
+				setCalories(null);
+				setSuccessMessageVisible(true);
+				setTimeout(() => {
+					setSuccessMessageVisible(false);
+				}, 1000);
+			});
 		} catch (error) {
 			console.log(error);
 			setCreateLoading(false);

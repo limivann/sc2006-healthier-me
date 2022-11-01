@@ -8,6 +8,10 @@ import { auth, db } from "../firebase/firebase-config";
 import DateComponent from "../components/DateComponent";
 import { doc, getDoc } from "firebase/firestore";
 import { getFoodHistory } from "../firebase/firestore";
+import {
+	calculateCaloriesNeeded,
+	calculateTotalCaloriesConsumed,
+} from "../utils";
 
 const MiddleLabel = () => {
 	return (
@@ -84,48 +88,63 @@ const HomeScreen = ({ navigation }) => {
 	const [height, setHeight] = useState(0);
 	const [weight, setWeight] = useState(0);
 	const [age, setAge] = useState(0);
+	const [isMale, setIsMale] = useState(true);
 	const [activityLevel, setActivityLevel] = useState("Not Very Active");
 
 	useEffect(() => {
 		const fetchUserData = async () => {
-			const userDocRef = doc(db, "users", auth.currentUser.uid);
-			const docSnap = await getDoc(userDocRef);
-			if (docSnap.exists()) {
-				const user = docSnap.data();
-				setName(user.displayName);
-				setAge(user.age);
-				setWeight(user.weight);
-				setActivityLevel(user.activityLevel);
-				setHeight(user.height);
+			try {
+				const userDocRef = doc(db, "users", auth.currentUser.uid);
+				const docSnap = await getDoc(userDocRef);
+				if (docSnap.exists()) {
+					const user = docSnap.data();
+					setName(user.displayName);
+					setAge(user.age);
+					setWeight(user.weight);
+					setActivityLevel(user.activityLevel);
+					setHeight(user.height);
+				}
+			} catch (error) {
+				console.log(error);
 			}
 		};
 		const fetchHistory = async () => {
-			const today = new Date();
-			const day = today.getDay();
-			const month = today.getMonth();
-			const year = today.getFullYear();
-			const todayAsStr = day + "_" + month + "_" + year;
-			const userDailyConsumptionRef = doc(
-				db,
-				"users",
-				auth.currentUser.uid,
-				"userDailyConsumption",
-				todayAsStr
-			);
-			const docSnap = await getDoc(userDailyConsumptionRef);
-			if (docSnap.exists()) {
-				let breakfastTemp = await getFoodHistory(docSnap.data()?.breakfast);
-				let lunchTemp = await getFoodHistory(docSnap.data()?.lunch);
-				let dinnerTemp = await getFoodHistory(docSnap.data()?.dinner);
-				setHistory({
-					breakfast: breakfastTemp,
-					lunch: lunchTemp,
-					dinner: dinnerTemp,
-				});
-				console.log(caloriesData);
-			}
+			try {
+				const today = new Date();
+				const day = today.getDay();
+				const month = today.getMonth();
+				const year = today.getFullYear();
+				const todayAsStr = day + "_" + month + "_" + year;
+				const userDailyConsumptionRef = doc(
+					db,
+					"users",
+					auth.currentUser.uid,
+					"userDailyConsumption",
+					todayAsStr
+				);
+				const docSnap = await getDoc(userDailyConsumptionRef);
+				if (docSnap.exists()) {
+					let breakfastTemp = await getFoodHistory(docSnap.data()?.breakfast);
+					let lunchTemp = await getFoodHistory(docSnap.data()?.lunch);
+					let dinnerTemp = await getFoodHistory(docSnap.data()?.dinner);
 
-			setIsHistoryLoading(false);
+					Promise.all([breakfastTemp, lunchTemp, dinnerTemp]).then(() => {
+						setHistory({
+							breakfast: breakfastTemp,
+							lunch: lunchTemp,
+							dinner: dinnerTemp,
+						});
+						setIsHistoryLoading(false);
+						calculateTotalCaloriesConsumed(
+							breakfastTemp,
+							lunchTemp,
+							dinnerTemp
+						);
+					});
+				}
+			} catch (error) {
+				console.log(error);
+			}
 		};
 		fetchUserData();
 		fetchHistory();
