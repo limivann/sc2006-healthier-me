@@ -485,10 +485,6 @@ const MyPersonalFoodLabelTab = ({
 		return <SelectItem title={title} key={index} />;
 	};
 
-	useEffect(() => {
-		console.log(data);
-	}, [data]);
-
 	// modal
 	const [addConsumptionPanelVisible, setAddConsumptionPanelVisible] =
 		useState(false);

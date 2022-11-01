@@ -84,11 +84,6 @@ const HomeScreen = ({ navigation }) => {
 
 	// user details
 	const [name, setName] = useState("");
-	const [height, setHeight] = useState(0);
-	const [weight, setWeight] = useState(0);
-	const [age, setAge] = useState(0);
-	const [isMale, setIsMale] = useState(true);
-	const [activityLevel, setActivityLevel] = useState(0);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -98,27 +93,15 @@ const HomeScreen = ({ navigation }) => {
 				if (docSnap.exists()) {
 					const user = docSnap.data();
 					setName(user.displayName);
-					setAge(user.age);
-					setWeight(user.weight);
 					let activityLevelInCalories = 0;
 					if (user.activityLevel === "Not Very Active") {
-						setActivityLevel(0);
 						activityLevelInCalories = 0;
 					} else if (user.activityLevel === "Lightly Active") {
-						setActivityLevel(200);
 						activityLevelInCalories = 200;
 					} else if (user.activityLevel === "Active") {
-						setActivityLevel(400);
 						activityLevelInCalories = 400;
 					} else {
-						setActivityLevel(600);
 						activityLevelInCalories = 600;
-					}
-					setHeight(user.height);
-					if (user.gender === "male") {
-						setIsMale(true);
-					} else {
-						setIsMale(false);
 					}
 					return {
 						isMale: user.gender == "male" ? true : false,
@@ -175,7 +158,6 @@ const HomeScreen = ({ navigation }) => {
 					foodConsumed = 0;
 				}
 				Promise.all([docSnap]).then(() => {
-					console.log(isMale, weight, height, age, activityLevel);
 					setCaloriesData({
 						baseGoal: calculateCaloriesNeeded(isMale, weight, height, age),
 						food: foodConsumed,
