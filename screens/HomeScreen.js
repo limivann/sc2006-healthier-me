@@ -294,9 +294,24 @@ const HomeScreen = ({ navigation }) => {
 						>
 							<VictoryPie
 								data={[
-									{ x: "Cats", y: 30 },
-									{ x: "Dogs", y: 40 },
-									{ x: "Birds", y: 55 },
+									{
+										x: "Consumed",
+										y:
+											(caloriesData.food /
+												(caloriesData.baseGoal + caloriesData.exercise)) *
+											360,
+									},
+									{
+										x: "Remaining",
+										y:
+											(calculateRemainingCalories(
+												caloriesData.baseGoal,
+												caloriesData.food,
+												caloriesData.exercise
+											) /
+												(caloriesData.baseGoal + caloriesData.exercise)) *
+											360,
+									},
 								]}
 								width={200}
 								height={250}
@@ -305,7 +320,9 @@ const HomeScreen = ({ navigation }) => {
 								style={{
 									data: {
 										fill: ({ datum }) => {
-											return datum.x === "Cats" ? COLORS.primary : "#e4e6eb";
+											return datum.x === "Consumed"
+												? COLORS.primary
+												: "#e4e6eb";
 										},
 									},
 								}}

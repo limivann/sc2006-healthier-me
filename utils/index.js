@@ -28,5 +28,6 @@ export const calculateTotalCaloriesConsumed = (breakfast, lunch, dinner) => {
 };
 
 export const calculateRemainingCalories = (baseGoal, food, exercise) => {
-	return Math.round(baseGoal - food + exercise);
+	const remaining = Math.round(baseGoal - food + exercise);
+	return remaining >= 0 ? remaining : 0;
 };
