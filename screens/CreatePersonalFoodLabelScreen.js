@@ -74,7 +74,7 @@ const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 				setCreateLoading(false);
 				// clear inputs
 				setLabelName("");
-				setCalories(null);
+				setCalories("");
 				setSuccessMessageVisible(true);
 				setTimeout(() => {
 					setSuccessMessageVisible(false);

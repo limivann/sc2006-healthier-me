@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Layout, Text, Avatar } from "@ui-kitten/components";
+import { useEffect, useRef, useState } from "react";
+import { Layout, Text, Avatar, Spinner } from "@ui-kitten/components";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
 import { FocusedStatusBar, HomePageIcon, CustomButton } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
@@ -24,7 +24,6 @@ const MiddleLabel = ({ caloriesRemaining }) => {
 };
 const HomeScreen = ({ navigation }) => {
 	const [isHistoryLoading, setIsHistoryLoading] = useState(true);
-	const [isUserLoading, setIsUserLoading] = useState(true);
 	const [dates, setDates] = useState([
 		{
 			id: 1,
@@ -55,6 +54,18 @@ const HomeScreen = ({ navigation }) => {
 			dayOfWeek: "Wed",
 			dayOfMonth: "30",
 			isFocused: false,
+		},
+		{
+			id: 6,
+			dayOfWeek: "Wed",
+			dayOfMonth: "30",
+			isFocused: false,
+		},
+		{
+			id: 7,
+			dayOfWeek: "Wed",
+			dayOfMonth: "30",
+			isFocused: true,
 		},
 	]);
 
@@ -147,7 +158,7 @@ const HomeScreen = ({ navigation }) => {
 							lunch: lunchTemp,
 							dinner: dinnerTemp,
 						});
-						setIsHistoryLoading(false);
+
 						foodConsumed = calculateTotalCaloriesConsumed(
 							breakfastTemp,
 							lunchTemp,
@@ -163,6 +174,7 @@ const HomeScreen = ({ navigation }) => {
 						food: foodConsumed,
 						exercise: activityLevel,
 					});
+					setIsHistoryLoading(false);
 				});
 			} catch (error) {
 				console.log(error);
@@ -173,6 +185,9 @@ const HomeScreen = ({ navigation }) => {
 		});
 	}, []);
 
+	// for scroll view
+	const scrollViewRef = useRef();
+
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FocusedStatusBar
@@ -180,176 +195,188 @@ const HomeScreen = ({ navigation }) => {
 				backgroundColor="transparent"
 				translucent={true}
 			/>
-			<Layout
-				style={{
-					width: "100%",
-					alignItems: "center",
-					padding: SIZES.font,
-				}}
-			>
-				<Layout
-					style={{
-						flexDirection: "row",
-						justifyContent: "space-between",
-						width: "90%",
-						marginBottom: SIZES.large,
-						paddingTop: "5%",
-					}}
-				>
-					<Layout>
-						<Text
-							style={{
-								fontFamily: FONTS.regular,
-								fontSize: SIZES.font,
-								color: COLORS.gray,
-								paddingBottom: SIZES.font,
-							}}
-						>
-							Good Morning!
-						</Text>
-						<Text
-							style={{
-								fontFamily: FONTS.bold,
-								fontSize: SIZES.extraLarge,
-							}}
-						>
-							{name}
-						</Text>
-					</Layout>
-					<Avatar source={assets.avatar} size="giant" />
-				</Layout>
-
-				<Layout style={{ height: 100 }}>
-					<FlatList
-						horizontal={true}
-						data={dates}
-						renderItem={({ item }) => (
-							<DateComponent date={item} onPress={focusDate} />
-						)}
-						keyExtractor={item => item.id}
-						style={{ width: "100%" }}
-					/>
-				</Layout>
-
-				<Layout
-					style={{
-						borderRadius: SIZES.font,
-						...SHADOWS.dark,
-					}}
-				>
+			{!isHistoryLoading ? (
+				<>
 					<Layout
 						style={{
-							padding: SIZES.font,
-							paddingBottom: 0,
-						}}
-					>
-						<Text
-							style={{
-								fontFamily: FONTS.bold,
-								fontSize: SIZES.large,
-							}}
-						>
-							Calories
-						</Text>
-						<Text
-							style={{
-								fontFamily: FONTS.regular,
-								fontSize: SIZES.font,
-							}}
-						>
-							Remaining = Goal - Food + Exercise
-						</Text>
-					</Layout>
-					<Layout
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between",
+							width: "100%",
 							alignItems: "center",
+							padding: SIZES.font,
 						}}
 					>
 						<Layout
 							style={{
-								justifyContent: "center",
-								alignItems: "center",
-								width: "60%",
+								flexDirection: "row",
+								justifyContent: "space-between",
+								width: "90%",
+								marginBottom: SIZES.large,
+								paddingTop: "5%",
 							}}
 						>
-							<VictoryPie
-								data={[
-									{
-										x: "Consumed",
-										y:
-											(caloriesData.food /
-												(caloriesData.baseGoal + caloriesData.exercise)) *
-											360,
-									},
-									{
-										x: "Remaining",
-										y:
-											(calculateRemainingCalories(
-												caloriesData.baseGoal,
-												caloriesData.food,
-												caloriesData.exercise
-											) /
-												(caloriesData.baseGoal + caloriesData.exercise)) *
-											360,
-									},
-								]}
-								width={200}
-								height={250}
-								innerRadius={70}
-								labels={() => null}
-								style={{
-									data: {
-										fill: ({ datum }) => {
-											return datum.x === "Consumed"
-												? COLORS.primary
-												: "#e4e6eb";
-										},
-									},
-								}}
-							/>
-							<MiddleLabel
-								caloriesRemaining={calculateRemainingCalories(
-									caloriesData.baseGoal,
-									caloriesData.food,
-									caloriesData.exercise
+							<Layout>
+								<Text
+									style={{
+										fontFamily: FONTS.regular,
+										fontSize: SIZES.font,
+										color: COLORS.gray,
+										paddingBottom: SIZES.font,
+									}}
+								>
+									Good Morning!
+								</Text>
+								<Text
+									style={{
+										fontFamily: FONTS.bold,
+										fontSize: SIZES.extraLarge,
+									}}
+								>
+									{name}
+								</Text>
+							</Layout>
+							<Avatar source={assets.avatar} size="giant" />
+						</Layout>
+
+						<Layout style={{ height: 100 }}>
+							<FlatList
+								horizontal={true}
+								data={dates}
+								renderItem={({ item }) => (
+									<DateComponent date={item} onPress={focusDate} />
 								)}
+								ref={scrollViewRef}
+								onContentSizeChange={() =>
+									scrollViewRef.current.scrollToEnd({ animated: true })
+								}
+								keyExtractor={item => item.id}
+								// style={{ width: "100%" }}
 							/>
 						</Layout>
+
 						<Layout
 							style={{
-								width: "40%",
+								borderRadius: SIZES.font,
+								...SHADOWS.dark,
 							}}
 						>
-							<HomePageIcon
-								source={assets.flagIcon}
-								title="Base Goal"
-								data={caloriesData.baseGoal}
-							/>
-							<HomePageIcon
-								source={assets.eatIcon}
-								title="Food"
-								data={caloriesData.food}
-							/>
-							<HomePageIcon
-								source={assets.fireIcon}
-								title="Exercise"
-								data={caloriesData.exercise}
-							/>
+							<Layout
+								style={{
+									padding: SIZES.font,
+									paddingBottom: 0,
+								}}
+							>
+								<Text
+									style={{
+										fontFamily: FONTS.bold,
+										fontSize: SIZES.large,
+									}}
+								>
+									Calories
+								</Text>
+								<Text
+									style={{
+										fontFamily: FONTS.regular,
+										fontSize: SIZES.font,
+									}}
+								>
+									Remaining = Goal - Food + Exercise
+								</Text>
+							</Layout>
+							<Layout
+								style={{
+									flexDirection: "row",
+									justifyContent: "space-between",
+									alignItems: "center",
+								}}
+							>
+								<Layout
+									style={{
+										justifyContent: "center",
+										alignItems: "center",
+										width: "60%",
+									}}
+								>
+									<VictoryPie
+										data={[
+											{
+												x: "Consumed",
+												y:
+													(caloriesData.food /
+														(caloriesData.baseGoal + caloriesData.exercise)) *
+													360,
+											},
+											{
+												x: "Remaining",
+												y:
+													(calculateRemainingCalories(
+														caloriesData.baseGoal,
+														caloriesData.food,
+														caloriesData.exercise
+													) /
+														(caloriesData.baseGoal + caloriesData.exercise)) *
+													360,
+											},
+										]}
+										width={200}
+										height={250}
+										innerRadius={70}
+										labels={() => null}
+										style={{
+											data: {
+												fill: ({ datum }) => {
+													return datum.x === "Consumed"
+														? COLORS.primary
+														: "#e4e6eb";
+												},
+											},
+										}}
+									/>
+									<MiddleLabel
+										caloriesRemaining={calculateRemainingCalories(
+											caloriesData.baseGoal,
+											caloriesData.food,
+											caloriesData.exercise
+										)}
+									/>
+								</Layout>
+								<Layout
+									style={{
+										width: "40%",
+									}}
+								>
+									<HomePageIcon
+										source={assets.flagIcon}
+										title="Base Goal"
+										data={caloriesData.baseGoal}
+									/>
+									<HomePageIcon
+										source={assets.eatIcon}
+										title="Food"
+										data={caloriesData.food}
+									/>
+									<HomePageIcon
+										source={assets.fireIcon}
+										title="Exercise"
+										data={caloriesData.exercise}
+									/>
+								</Layout>
+							</Layout>
 						</Layout>
 					</Layout>
+					<Layout style={styles.button}>
+						<CustomButton
+							text={"View History"}
+							backgroundColor={COLORS.primary}
+							onPress={() =>
+								navigation.navigate("FoodHistoryPage", { data: history })
+							}
+						></CustomButton>
+					</Layout>
+				</>
+			) : (
+				<Layout style={styles.spinner}>
+					<Spinner status="primary" size="giant" />
 				</Layout>
-			</Layout>
-			<Layout style={styles.button}>
-				<CustomButton
-					text={"View History"}
-					backgroundColor={COLORS.primary}
-					onPress={() =>
-						navigation.navigate("FoodHistoryPage", { data: history })
-					}
-				></CustomButton>
-			</Layout>
+			)}
 		</SafeAreaView>
 	);
 };
@@ -357,6 +384,12 @@ const HomeScreen = ({ navigation }) => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+	spinner: {
+		backgroundColor: "white",
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 	midLabel: {
 		position: "absolute",
 		alignItems: "center",

@@ -8,8 +8,8 @@ import {
 import { Layout } from "@ui-kitten/components";
 import { BackButton, FocusedStatusBar, HistoryComponent } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
-import { useEffect, useState } from "react";
-import Date from "../components/DateComponent";
+import { useRef, useState } from "react";
+import DateComponent from "../components/DateComponent";
 
 const FoodHistoryScreen = ({ navigation, route }) => {
 	const { data } = route?.params;
@@ -44,6 +44,18 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 			dayOfMonth: "30",
 			isFocused: false,
 		},
+		{
+			id: 6,
+			dayOfWeek: "Wed",
+			dayOfMonth: "30",
+			isFocused: false,
+		},
+		{
+			id: 7,
+			dayOfWeek: "Wed",
+			dayOfMonth: "30",
+			isFocused: true,
+		},
 	]);
 
 	const focusDate = id => {
@@ -57,6 +69,9 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 		});
 		setDates(temp);
 	};
+
+	// for scroll view
+	const scrollViewRef = useRef();
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -76,9 +91,14 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 					<FlatList
 						horizontal={true}
 						data={dates}
-						renderItem={({ item }) => <Date date={item} onPress={focusDate} />}
+						renderItem={({ item }) => (
+							<DateComponent date={item} onPress={focusDate} />
+						)}
 						keyExtractor={item => item.id}
-						style={{ width: "100%" }}
+						ref={scrollViewRef}
+						onContentSizeChange={() =>
+							scrollViewRef.current.scrollToEnd({ animated: true })
+						}
 					/>
 				</Layout>
 			</Layout>
@@ -127,6 +147,7 @@ const styles = StyleSheet.create({
 	datesContainer: {
 		height: 100,
 		marginTop: SIZES.extraLarge,
+		paddingHorizontal: SIZES.font,
 	},
 	historyContainer: {
 		width: "100%",

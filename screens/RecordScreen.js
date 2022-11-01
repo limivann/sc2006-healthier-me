@@ -135,7 +135,12 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		const hour = today.getHours();
 		const minute = today.getMinutes();
 		const second = today.getSeconds();
-		let currentTime = hour + ":" + minute + ":" + second;
+		let currentTime =
+			hour.toString().padStart(2, "0") +
+			":" +
+			minute.toString().padStart(2, "0") +
+			":" +
+			second.toString().padStart(2, "0");
 		// create user consumption reference first
 		const userConsumptionRef = collection(
 			db,
