@@ -12,11 +12,11 @@ import { FocusedStatusBar, CustomButton, BackButton } from "../components";
 import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
 import { auth, db } from "../firebase/firebase-config";
 
-const CreatePersonalFoodLabelScreen = ({ navigation }) => {
+const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 	const [errorText, setErrorText] = useState("");
 	const [labelName, setLabelName] = useState("");
 	const [calories, setCalories] = useState(null);
-
+	const { setPersonalFoodLabelData } = route?.params;
 	const [createLoading, setCreateLoading] = useState(false);
 	const [successMessageVisible, setSuccessMessageVisible] = useState(false);
 
@@ -68,7 +68,15 @@ const CreatePersonalFoodLabelScreen = ({ navigation }) => {
 			setSuccessMessageVisible(true);
 			setTimeout(() => {
 				setSuccessMessageVisible(false);
-			}, 2000);
+				setPersonalFoodLabelData(prev => [
+					{
+						name: labelName,
+						calories: calories,
+						id: docRef,
+					},
+					...prev,
+				]);
+			}, 1000);
 		} catch (error) {
 			console.log(error);
 			setCreateLoading(false);

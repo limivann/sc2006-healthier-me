@@ -3,12 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import * as eva from "@eva-design/eva";
-import {
-	ApplicationProvider,
-	Icon,
-	IconRegistry,
-	Layout,
-} from "@ui-kitten/components";
+import { ApplicationProvider, Icon, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 
 // screens
@@ -45,6 +40,7 @@ import { COLORS, SIZES } from "./constants";
 import { doc, getDoc } from "firebase/firestore";
 import DietDetails from "./screens/NavigationScreens/DietDetailsScreen";
 import { LoadingPage } from "./components";
+import { LogBox } from "react-native";
 
 const Stack = createStackNavigator();
 
@@ -174,6 +170,13 @@ const App = () => {
 			}
 		});
 	}, [auth.currentUser]);
+
+	useEffect(() => {
+		LogBox.ignoreLogs([
+			"AsyncStorage has been extracted from react-native core and will be removed in a future release.",
+			"Non-serializable values were found in the navigation state",
+		]);
+	}, []);
 
 	if (!fontsLoaded) {
 		return null;

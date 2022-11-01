@@ -59,7 +59,7 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 	};
 
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 			<FocusedStatusBar barStyle="dark-content" backgroundColor="transparent" />
 			<Layout style={styles.container}>
 				<Layout style={styles.headerContainer}>

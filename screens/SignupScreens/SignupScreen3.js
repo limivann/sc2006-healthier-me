@@ -22,7 +22,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 	const [height, setHeight] = useState("");
 	const [weight, setWeight] = useState("");
 	const [isMaleToggled, setIsMaleToggled] = useState(true);
-	const { selectedActivityStr } = route.params;
+	const { selectedActivityStr } = route?.params;
 	const [inputError, setInputError] = useState("");
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
 
