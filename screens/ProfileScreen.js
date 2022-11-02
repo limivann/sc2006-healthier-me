@@ -71,9 +71,10 @@ const ProfileScreen = () => {
 			if (docSnap.exists()) {
 				const user = docSnap.data();
 				setName(user.displayName);
-				setAge(user.age);
+				setAge(+user.age);
 				setEmail(user.email);
-				setWeight(user.weight);
+				setHeight(+user.height);
+				setWeight(+user.weight);
 				if (user.activityLevel === "Not Very Active") {
 					setActivityLevelIndex(new IndexPath(0));
 				} else if (user.activityLevel === "Lightly Active") {
@@ -83,7 +84,6 @@ const ProfileScreen = () => {
 				} else {
 					setActivityLevelIndex(new IndexPath(3));
 				}
-				setHeight(user.height);
 				const tempBmi = calculateBmi(user.weight, user.height);
 				setBmi(tempBmi);
 				setIsLoading(false);
@@ -145,9 +145,9 @@ const ProfileScreen = () => {
 		await setDoc(
 			userDocRef,
 			{
-				age: editingAge,
-				height: editingHeight,
-				weight: editingWeight,
+				age: +editingAge,
+				height: +editingHeight,
+				weight: +editingWeight,
 				activityLevel: displayValueEditing,
 			},
 			{ merge: true }
@@ -161,6 +161,7 @@ const ProfileScreen = () => {
 		setIsEditingLoading(false);
 		setIsEditing(false);
 		setSuccessMessageVisible(true);
+		setErrorText("");
 		setTimeout(() => {
 			setSuccessMessageVisible(false);
 		}, 2000);
@@ -237,10 +238,10 @@ const ProfileScreen = () => {
 												...styles.input,
 												backgroundColor: "#F7F9FC",
 											}}
-											value={editingHeight}
+											value={editingHeight.toString()}
 											textStyle={{ color: "black" }}
 											keyboardType="numeric"
-											onChangeText={nextValue => setEditingHeight(nextValue)}
+											onChangeText={nextValue => setEditingHeight(+nextValue)}
 										/>
 									) : (
 										<Input
@@ -249,7 +250,7 @@ const ProfileScreen = () => {
 												backgroundColor: "white",
 											}}
 											disabled={true}
-											value={height}
+											value={height.toString()}
 											textStyle={{ color: "black" }}
 										/>
 									)}
@@ -262,10 +263,10 @@ const ProfileScreen = () => {
 												...styles.input,
 												backgroundColor: "#F7F9FC",
 											}}
-											value={editingWeight}
+											value={editingWeight.toString()}
 											textStyle={{ color: "black" }}
 											keyboardType="numeric"
-											onChangeText={nextValue => setEditingWeight(nextValue)}
+											onChangeText={nextValue => setEditingWeight(+nextValue)}
 										/>
 									) : (
 										<Input
@@ -274,7 +275,7 @@ const ProfileScreen = () => {
 												backgroundColor: "white",
 											}}
 											disabled={true}
-											value={weight}
+											value={weight.toString()}
 											textStyle={{ color: "black" }}
 										/>
 									)}
@@ -289,10 +290,10 @@ const ProfileScreen = () => {
 												...styles.input,
 												backgroundColor: "#F7F9FC",
 											}}
-											value={editingAge}
+											value={editingAge.toString()}
 											textStyle={{ color: "black" }}
 											keyboardType="numeric"
-											onChangeText={nextValue => setEditingAge(nextValue)}
+											onChangeText={nextValue => setEditingAge(+nextValue)}
 										/>
 									) : (
 										<Input
@@ -301,7 +302,7 @@ const ProfileScreen = () => {
 												backgroundColor: "white",
 											}}
 											disabled={true}
-											value={age}
+											value={age.toString()}
 											textStyle={{ color: "black" }}
 										/>
 									)}

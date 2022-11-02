@@ -29,6 +29,9 @@ export const createUser = async (email, password) => {
 				errorMessage =
 					"Password must have minimum of eight characters, at least one letter and one number";
 				break;
+			case "auth/invalid-email":
+				errorMessage = "Invalid email";
+				break;
 			default:
 				errorMessage = "Something went wrong";
 				break;

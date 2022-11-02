@@ -18,7 +18,10 @@ export const getFoodHistory = async refs => {
 const getSingleDoc = async ref => {
 	const docSnap = await getDoc(ref);
 	if (docSnap.exists()) {
-		return docSnap.data();
+		return {
+			id: docSnap.id,
+			...docSnap.data(),
+		};
 	}
 	return null;
 };

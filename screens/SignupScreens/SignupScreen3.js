@@ -1,5 +1,5 @@
 import { Text, Spinner, Layout, Divider, Input } from "@ui-kitten/components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	FocusedStatusBar,
 	CircularDots,
@@ -19,10 +19,10 @@ import { auth, db } from "../../firebase/firebase-config";
 
 const SignupScreen3 = ({ navigation, route }) => {
 	const [age, setAge] = useState(null);
-	const [height, setHeight] = useState("");
-	const [weight, setWeight] = useState("");
+	const [height, setHeight] = useState(null);
+	const [weight, setWeight] = useState(null);
 	const [isMaleToggled, setIsMaleToggled] = useState(true);
-	const { selectedActivityStr } = route.params;
+	const { selectedActivityStr } = route?.params;
 	const [inputError, setInputError] = useState("");
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
 
@@ -30,7 +30,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 		// check validity
 		// check required fields
 		setIsSignupLoading(true);
-		if (age == null || height === "" || weight === "") {
+		if (age == null || height == null || weight == null) {
 			setInputError("Please fill in all fields");
 			setIsSignupLoading(false);
 			return;
@@ -51,7 +51,6 @@ const SignupScreen3 = ({ navigation, route }) => {
 			setIsSignupLoading(false);
 			return;
 		}
-		console.log(selectedActivityStr, age, height, weight);
 		// no errors, create user details and update to firestore
 		const userDocRef = doc(db, "users", auth.currentUser.uid);
 		await setDoc(
@@ -169,10 +168,11 @@ const SignupScreen3 = ({ navigation, route }) => {
 										fontFamily: FONTS.semiBold,
 										fontSize: SIZES.large,
 										backgroundColor: "transparent",
+										maxWidth: 100,
 									}}
 									placeholder="E.g. 21"
 									value={age}
-									onChangeText={nextValue => setAge(nextValue)}
+									onChangeText={nextValue => setAge(+nextValue)}
 									keyboardType="numeric"
 								/>
 							</Layout>
@@ -216,9 +216,10 @@ const SignupScreen3 = ({ navigation, route }) => {
 										fontFamily: FONTS.semiBold,
 										fontSize: SIZES.large,
 										backgroundColor: "transparent",
+										maxWidth: 100,
 									}}
 									value={height}
-									onChangeText={nextValue => setHeight(nextValue)}
+									onChangeText={nextValue => setHeight(+nextValue)}
 									placeholder="E.g. 173"
 									keyboardType="numeric"
 								/>
@@ -273,9 +274,10 @@ const SignupScreen3 = ({ navigation, route }) => {
 										fontFamily: FONTS.semiBold,
 										fontSize: SIZES.large,
 										backgroundColor: "transparent",
+										maxWidth: 100,
 									}}
 									value={weight}
-									onChangeText={nextValue => setWeight(nextValue)}
+									onChangeText={nextValue => setWeight(+nextValue)}
 									placeholder="E.g. 65"
 									keyboardType="numeric"
 								/>

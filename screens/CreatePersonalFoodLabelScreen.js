@@ -12,11 +12,11 @@ import { FocusedStatusBar, CustomButton, BackButton } from "../components";
 import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
 import { auth, db } from "../firebase/firebase-config";
 
-const CreatePersonalFoodLabelScreen = ({ navigation }) => {
+const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 	const [errorText, setErrorText] = useState("");
 	const [labelName, setLabelName] = useState("");
-	const [calories, setCalories] = useState(null);
-
+	const [calories, setCalories] = useState("");
+	const { setPersonalFoodLabelData } = route?.params;
 	const [createLoading, setCreateLoading] = useState(false);
 	const [successMessageVisible, setSuccessMessageVisible] = useState(false);
 
@@ -24,7 +24,7 @@ const CreatePersonalFoodLabelScreen = ({ navigation }) => {
 		try {
 			setCreateLoading(true);
 			// check required fields
-			if (labelName === "" || calories == null || calories == "") {
+			if (labelName === "" || calories == null) {
 				setErrorText("Please fill in all fields");
 				setCreateLoading(false);
 				return;
@@ -35,6 +35,7 @@ const CreatePersonalFoodLabelScreen = ({ navigation }) => {
 				setCreateLoading(false);
 				return;
 			}
+
 			// check if calories > 0 and < 10000
 			if (!(calories > 0 && calories < 10000)) {
 				setErrorText("Calories must be greater than 0 and less than 10000");
@@ -57,18 +58,28 @@ const CreatePersonalFoodLabelScreen = ({ navigation }) => {
 			}
 			const newData = {
 				name: labelName,
-				calories: calories,
+				calories: +calories,
 			};
 			const docRef = await addDoc(personalFoodLabelRef, newData);
-			setErrorText("");
-			setCreateLoading(false);
-			// clear inputs
-			setLabelName("");
-			setCalories(null);
-			setSuccessMessageVisible(true);
-			setTimeout(() => {
-				setSuccessMessageVisible(false);
-			}, 2000);
+			setPersonalFoodLabelData(prev => [
+				{
+					name: labelName,
+					calories: +calories,
+					id: docRef.id,
+				},
+				...prev,
+			]);
+			Promise.all([docRef]).then(() => {
+				setErrorText("");
+				setCreateLoading(false);
+				// clear inputs
+				setLabelName("");
+				setCalories("");
+				setSuccessMessageVisible(true);
+				setTimeout(() => {
+					setSuccessMessageVisible(false);
+				}, 1000);
+			});
 		} catch (error) {
 			console.log(error);
 			setCreateLoading(false);
@@ -124,8 +135,8 @@ const CreatePersonalFoodLabelScreen = ({ navigation }) => {
 									style={styles.input}
 									placeholder="500"
 									keyboardType="numeric"
-									value={calories}
-									onChangeText={nextValue => setCalories(nextValue)}
+									value={calories.toString()}
+									onChangeText={nextValue => setCalories(+nextValue)}
 								/>
 							</Layout>
 							{errorText && (

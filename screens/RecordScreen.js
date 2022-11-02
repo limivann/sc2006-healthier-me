@@ -60,7 +60,7 @@ const hideEvent = Platform.select({
 const filter = (item, query) =>
 	item.title.toLowerCase().includes(query.toLowerCase());
 
-const AllTabScreen = ({ navigation }) => {
+const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	// autocomplete
 	const [value, setValue] = useState("");
 	const [data, setData] = useState(suggestions);
@@ -127,8 +127,20 @@ const AllTabScreen = ({ navigation }) => {
 	const handleRecordConsumption = async () => {
 		setIsAddLoading(true);
 		// record into user daily consumption collection
-		const today = new Date().toLocaleDateString().replaceAll("/", "_");
-		let currentTime = new Date().toLocaleTimeString();
+		const today = new Date();
+		const day = today.getDay();
+		const month = today.getMonth();
+		const year = today.getFullYear();
+		const todayAsStr = day + "_" + month + "_" + year;
+		const hour = today.getHours();
+		const minute = today.getMinutes();
+		const second = today.getSeconds();
+		let currentTime =
+			hour.toString().padStart(2, "0") +
+			":" +
+			minute.toString().padStart(2, "0") +
+			":" +
+			second.toString().padStart(2, "0");
 		// create user consumption reference first
 		const userConsumptionRef = collection(
 			db,
@@ -143,6 +155,7 @@ const AllTabScreen = ({ navigation }) => {
 			servingQuantity: modalData.quantity,
 			servingUnit: modalData.unit,
 			time: currentTime,
+			dailyConsumptionId: todayAsStr,
 		});
 
 		// add to daily consumption of user
@@ -151,9 +164,18 @@ const AllTabScreen = ({ navigation }) => {
 			"users",
 			auth.currentUser.uid,
 			"userDailyConsumption",
-			today
+			todayAsStr
 		);
+		let docSnap;
 		try {
+			docSnap = await getDoc(userDailyConsumptionRef);
+			if (!docSnap.exists()) {
+				await setDoc(userDailyConsumptionRef, {
+					breakfast: [],
+					lunch: [],
+					dinner: [],
+				});
+			}
 			if (meal[mealIndex.row] == "Breakfast") {
 				await updateDoc(userDailyConsumptionRef, {
 					breakfast: arrayUnion(docRef),
@@ -168,11 +190,11 @@ const AllTabScreen = ({ navigation }) => {
 				});
 			}
 			setIsSuccessTextVisible(true);
-			setHasError(false);
 			setTimeout(() => {
 				setIsAddLoading(false);
 				setIsSuccessTextVisible(false);
-				resetSearchFrom();
+				// close modal
+				setAddConsumptionPanelVisible(false);
 			}, 2000);
 		} catch (error) {
 			console.log(error);
@@ -431,7 +453,11 @@ const AllTabScreen = ({ navigation }) => {
 										paddingHorizontal={SIZES.large}
 										borderRadius={SIZES.large}
 										width="80%"
-										onPress={() => navigation.navigate("CreateFoodLabelPage")}
+										onPress={() =>
+											navigation.navigate("CreateFoodLabelPage", {
+												setPersonalFoodLabelData,
+											})
+										}
 									/>
 								</Layout>
 							)}
@@ -447,7 +473,11 @@ const AllTabScreen = ({ navigation }) => {
 	);
 };
 
-const MyPersonalFoodLabelTab = ({ data, navigation }) => {
+const MyPersonalFoodLabelTab = ({
+	data,
+	navigation,
+	setPersonalFoodLabelData,
+}) => {
 	const [isAddLoading, setIsAddLoading] = useState(false);
 	const [isSuccessTextVisible, setIsSuccessTextVisible] = useState(false);
 	const [modalData, setModalData] = useState({
@@ -501,6 +531,7 @@ const MyPersonalFoodLabelTab = ({ data, navigation }) => {
 			servingQuantity: 1,
 			servingUnit: "serving",
 			time: currentTime,
+			dailyConsumptionId: todayAsStr,
 		});
 
 		// add to daily consumption of user
@@ -669,7 +700,11 @@ const MyPersonalFoodLabelTab = ({ data, navigation }) => {
 				<CustomButton
 					text={"Create Personal Food Label"}
 					backgroundColor={COLORS.primary}
-					onPress={() => navigation.navigate("CreateFoodLabelPage")}
+					onPress={() =>
+						navigation.navigate("CreateFoodLabelPage", {
+							setPersonalFoodLabelData: setPersonalFoodLabelData,
+						})
+					}
 				/>
 			</Layout>
 		</Layout>
@@ -740,11 +775,15 @@ const RecordScreen = ({ navigation }) => {
 						</TabBar>
 					</Layout>
 					{tabSelectedIndex === 0 ? (
-						<AllTabScreen navigation={navigation} />
+						<AllTabScreen
+							navigation={navigation}
+							setPersonalFoodLabelData={setPersonalFoodLabelData}
+						/>
 					) : (
 						<MyPersonalFoodLabelTab
 							data={personalFoodLabelData}
 							navigation={navigation}
+							setPersonalFoodLabelData={setPersonalFoodLabelData}
 						/>
 					)}
 				</Layout>
