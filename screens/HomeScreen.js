@@ -69,11 +69,9 @@ const HomeScreen = ({ navigation }) => {
 		},
 	]);
 
-	const [caloriesData, setCaloriesData] = useState({
-		baseGoal: 2940,
-		food: 370,
-		exercise: 0,
-	});
+	const [baseGoal, setBaseGoal] = useState(2940);
+	const [food, setFood] = useState(370);
+	const [exercise, setExercise] = useState(0);
 
 	const focusDate = id => {
 		const temp = [];
@@ -169,11 +167,9 @@ const HomeScreen = ({ navigation }) => {
 					foodConsumed = 0;
 				}
 				Promise.all([docSnap]).then(() => {
-					setCaloriesData({
-						baseGoal: calculateCaloriesNeeded(isMale, weight, height, age),
-						food: foodConsumed,
-						exercise: activityLevel,
-					});
+					setBaseGoal(calculateCaloriesNeeded(isMale, weight, height, age));
+					setFood(foodConsumed);
+					setExercise(activityLevel);
 					setIsHistoryLoading(false);
 				});
 			} catch (error) {
@@ -299,20 +295,17 @@ const HomeScreen = ({ navigation }) => {
 										data={[
 											{
 												x: "Consumed",
-												y:
-													(caloriesData.food /
-														(caloriesData.baseGoal + caloriesData.exercise)) *
-													360,
+												y: (food / (baseGoal + exercise)) * 360,
 											},
 											{
 												x: "Remaining",
 												y:
 													(calculateRemainingCalories(
-														caloriesData.baseGoal,
-														caloriesData.food,
-														caloriesData.exercise
+														baseGoal,
+														food,
+														exercise
 													) /
-														(caloriesData.baseGoal + caloriesData.exercise)) *
+														(baseGoal + exercise)) *
 													360,
 											},
 										]}
@@ -332,9 +325,9 @@ const HomeScreen = ({ navigation }) => {
 									/>
 									<MiddleLabel
 										caloriesRemaining={calculateRemainingCalories(
-											caloriesData.baseGoal,
-											caloriesData.food,
-											caloriesData.exercise
+											baseGoal,
+											food,
+											exercise
 										)}
 									/>
 								</Layout>
@@ -346,17 +339,17 @@ const HomeScreen = ({ navigation }) => {
 									<HomePageIcon
 										source={assets.flagIcon}
 										title="Base Goal"
-										data={caloriesData.baseGoal}
+										data={baseGoal}
 									/>
 									<HomePageIcon
 										source={assets.eatIcon}
 										title="Food"
-										data={caloriesData.food}
+										data={food}
 									/>
 									<HomePageIcon
 										source={assets.fireIcon}
 										title="Exercise"
-										data={caloriesData.exercise}
+										data={exercise}
 									/>
 								</Layout>
 							</Layout>
@@ -367,7 +360,11 @@ const HomeScreen = ({ navigation }) => {
 							text={"View History"}
 							backgroundColor={COLORS.primary}
 							onPress={() =>
-								navigation.navigate("FoodHistoryPage", { data: history })
+								navigation.navigate("FoodHistoryPage", {
+									data: history,
+									setHistory,
+									setFood,
+								})
 							}
 						></CustomButton>
 					</Layout>

@@ -3,7 +3,7 @@ import { Layout } from "@ui-kitten/components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import CloseButton from "./CloseButton";
 
-const HistoryComponent = ({ data }) => {
+const HistoryComponent = ({ data, onPressClose }) => {
 	return (
 		<Layout style={styles.container}>
 			<Layout style={styles.timeContainer}>
@@ -17,7 +17,7 @@ const HistoryComponent = ({ data }) => {
 					</Text>
 				</Layout>
 				<Layout style={styles.right}>
-					<CloseButton color={COLORS.primary} />
+					<CloseButton color={COLORS.primary} onPress={onPressClose} />
 				</Layout>
 			</Layout>
 		</Layout>
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 	},
 	timeContainer: {
 		backgroundColor: "#f5f5f5",
-		maxWidth: 100,
+		maxWidth: 80,
 		paddingHorizontal: SIZES.base,
 		paddingVertical: 4,
 		justifyContent: "center",

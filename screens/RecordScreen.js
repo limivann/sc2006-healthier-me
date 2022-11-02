@@ -155,6 +155,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			servingQuantity: modalData.quantity,
 			servingUnit: modalData.unit,
 			time: currentTime,
+			dailyConsumptionId: todayAsStr,
 		});
 
 		// add to daily consumption of user
@@ -530,6 +531,7 @@ const MyPersonalFoodLabelTab = ({
 			servingQuantity: 1,
 			servingUnit: "serving",
 			time: currentTime,
+			dailyConsumptionId: todayAsStr,
 		});
 
 		// add to daily consumption of user

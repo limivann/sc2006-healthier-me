@@ -175,6 +175,7 @@ const App = () => {
 		LogBox.ignoreLogs([
 			"AsyncStorage has been extracted from react-native core and will be removed in a future release.",
 			"Non-serializable values were found in the navigation state",
+			"Sending `onAnimatedValueUpdate` with no listeners registered",
 		]);
 	}, []);
 
