@@ -131,7 +131,7 @@ const HealthyDietRestaurantScreen = ({ navigation }) => {
 						style={{ marginBottom: SIZES.extraLarge }}
 						onPress={() =>
 							navigation.navigate("GetDietPage", {
-								data: dietsData,
+								dietsData,
 								isDietLoading,
 							})
 						}
@@ -151,7 +151,7 @@ const HealthyDietRestaurantScreen = ({ navigation }) => {
 					<TouchableOpacity
 						onPress={() =>
 							navigation.navigate("GetRestaurantsPage", {
-								data: restaurantsData,
+								restaurantsData,
 								isResLoading,
 							})
 						}

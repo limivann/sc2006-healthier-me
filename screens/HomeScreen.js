@@ -93,6 +93,7 @@ const HomeScreen = ({ navigation }) => {
 
 	// user details
 	const [name, setName] = useState("");
+	const [isMale, setIsMale] = useState(true);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -102,6 +103,11 @@ const HomeScreen = ({ navigation }) => {
 				if (docSnap.exists()) {
 					const user = docSnap.data();
 					setName(user.displayName);
+					if (user.gender === "male") {
+						setIsMale(true);
+					} else {
+						setIsMale(false);
+					}
 					let activityLevelInCalories = 0;
 					if (user.activityLevel === "Not Very Active") {
 						activityLevelInCalories = 0;
@@ -229,7 +235,10 @@ const HomeScreen = ({ navigation }) => {
 									{name}
 								</Text>
 							</Layout>
-							<Avatar source={assets.avatar} size="giant" />
+							<Avatar
+								source={isMale ? assets.avatarMale : assets.avatarFemale}
+								size="giant"
+							/>
 						</Layout>
 
 						<Layout style={{ height: 100 }}>

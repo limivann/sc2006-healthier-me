@@ -57,9 +57,9 @@ const SignupScreen3 = ({ navigation, route }) => {
 			userDocRef,
 			{
 				finishedSetup: true,
-				age: age,
-				height: height,
-				weight: weight,
+				age: +age,
+				height: +height,
+				weight: +weight,
 				activityLevel: selectedActivityStr,
 				gender: isMaleToggled ? "male" : "female",
 			},

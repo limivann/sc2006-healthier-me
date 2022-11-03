@@ -1,24 +1,44 @@
 import { Layout, Spinner } from "@ui-kitten/components";
-import { Text, FlatList, StyleSheet } from "react-native";
+import { useState } from "react";
+import {
+	Text,
+	FlatList,
+	StyleSheet,
+	Image,
+	TouchableWithoutFeedback,
+	Keyboard,
+} from "react-native";
 import { FocusedStatusBar, FoodItem, SearchBar } from "../../components";
-import { COLORS, FONTS, SIZES } from "../../constants";
+import { assets, COLORS, FONTS, SIZES } from "../../constants";
 
-const GetDietHeader = () => {
+const GetDietHeader = ({ handleSearch }) => {
 	return (
 		<Layout style={styles.headerContainer}>
 			<Text style={styles.headerText}>What food do you want to eat today?</Text>
 			<Layout style={styles.searchBar}>
-				<SearchBar onSearch={() => {}} placeholder="Search for a food" />
+				<SearchBar onSearch={handleSearch} placeholder="Search for a food" />
 			</Layout>
 		</Layout>
 	);
 };
 
 const GetDietScreen = ({ navigation, route }) => {
-	const { data, isDietLoading } = route.params;
+	const { dietsData, isDietLoading } = route.params;
+	const [displayData, setDisplayData] = useState(dietsData);
 	const handlePress = id => {
-		const filterData = data.filter(item => item.id == id);
+		const filterData = dietsData.filter(item => item.id == id);
 		navigation.navigate("DietDetailsPage", { data: filterData[0] });
+	};
+
+	const handleSearch = value => {
+		if (!value.length) {
+			setDisplayData(dietsData);
+			return;
+		}
+		const filteredData = dietsData.filter(item => {
+			return item.foodName.toLowerCase().includes(value.toLowerCase());
+		});
+		setDisplayData(filteredData);
 	};
 
 	return (
@@ -43,20 +63,41 @@ const GetDietScreen = ({ navigation, route }) => {
 						backgroundColor: COLORS.primary,
 					}}
 				>
-					<GetDietHeader />
+					<GetDietHeader handleSearch={handleSearch} />
 					<Layout style={styles.borders}>
 						<Text style={styles.bordersText}>Healthier diets for you</Text>
 					</Layout>
 					{!isDietLoading ? (
 						<Layout style={styles.contentContainer}>
-							<FlatList
-								numColumns={2}
-								data={data}
-								renderItem={({ item }) => (
-									<FoodItem data={item} onPress={handlePress} />
-								)}
-								keyExtractor={item => item.id}
-							/>
+							{displayData.length > 0 ? (
+								<FlatList
+									numColumns={2}
+									data={displayData}
+									renderItem={({ item }) => (
+										<FoodItem data={item} onPress={handlePress} />
+									)}
+									keyExtractor={item => item.id}
+								/>
+							) : (
+								<TouchableWithoutFeedback
+									onPress={() => {
+										Keyboard.dismiss();
+									}}
+								>
+									<Layout style={styles.content}>
+										<Image source={assets.magnifierIcon} style={styles.image} />
+										<Text
+											style={{
+												fontFamily: FONTS.bold,
+												fontSize: 24,
+												paddingVertical: SIZES.large,
+											}}
+										>
+											No Results Found
+										</Text>
+									</Layout>
+								</TouchableWithoutFeedback>
+							)}
 						</Layout>
 					) : (
 						<Layout style={styles.spinner}>
@@ -104,7 +145,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: "100%",
 		display: "flex",
-		alignItems: "center",
 		paddingTop: 0,
 	},
 	spinner: {
@@ -112,5 +152,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	content: {
+		alignItems: "center",
+		justifyContent: "center",
+		flex: 1,
+		paddingBottom: "50%",
+	},
+	image: {
+		resizeMode: "contain",
+		height: 150,
 	},
 });

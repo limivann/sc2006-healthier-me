@@ -9,7 +9,7 @@ const SearchBar = ({ onSearch, placeholder }) => {
 			<Input
 				style={styles.input}
 				placeholder={placeholder}
-				onChangeText={onSearch}
+				onChangeText={value => onSearch(value)}
 				accessoryLeft={SearchIcon}
 			/>
 		</Layout>
