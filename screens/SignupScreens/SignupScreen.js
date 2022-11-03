@@ -21,6 +21,7 @@ import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../../constants";
 import { createUser } from "../../firebase/auth/emailProvider";
 import { db } from "../../firebase/firebase-config";
 import { setDoc, serverTimestamp, doc } from "firebase/firestore";
+import { validatePassword } from "../../utils";
 
 const SignupScreen = ({ navigation }) => {
 	const [username, setUsername] = useState("");
@@ -70,7 +71,14 @@ const SignupScreen = ({ navigation }) => {
 				setSignupLoading(false);
 				return;
 			}
-			// TODO: check if password has at least one alphabet, at least one number and more than 12
+			// TODO: check if password has at least one alphabet, at least one number and more than 8
+			const { success, errorMessage } = validatePassword(password);
+			if (!success) {
+				setSignupError(errorMessage);
+				clearInputs();
+				setSignupLoading(false);
+				return;
+			}
 
 			// check if password and confirmPassword is the same
 			if (password && password !== confirmPassword) {
