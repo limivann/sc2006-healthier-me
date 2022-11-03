@@ -16,7 +16,7 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 } from "react-native";
-import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
+import { COLORS, FONTS, SIZES, SHADOWS, assets } from "../constants";
 import { CustomButton, EditButton, FocusedStatusBar } from "../components";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
@@ -37,6 +37,7 @@ const ProfileScreen = () => {
 	const [weight, setWeight] = useState("");
 	const [age, setAge] = useState("");
 	const [bmi, setBmi] = useState("");
+	const [isMale, setIsMale] = useState(true);
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -75,6 +76,11 @@ const ProfileScreen = () => {
 				setEmail(user.email);
 				setHeight(+user.height);
 				setWeight(+user.weight);
+				if (user.gender === "male") {
+					setIsMale(true);
+				} else {
+					setIsMale(false);
+				}
 				if (user.activityLevel === "Not Very Active") {
 					setActivityLevelIndex(new IndexPath(0));
 				} else if (user.activityLevel === "Lightly Active") {
@@ -220,7 +226,7 @@ const ProfileScreen = () => {
 						</Layout>
 						<Image
 							style={styles.avatar}
-							source={require("../assets/icons/avatar.png")}
+							source={isMale ? assets.avatarMale : assets.avatarFemale}
 						/>
 						<Layout style={styles.headerContent}>
 							<Text style={styles.name}>{name}</Text>

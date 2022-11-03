@@ -21,6 +21,7 @@ import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../../constants";
 import { createUser } from "../../firebase/auth/emailProvider";
 import { db } from "../../firebase/firebase-config";
 import { setDoc, serverTimestamp, doc } from "firebase/firestore";
+import { validatePassword } from "../../utils";
 
 const SignupScreen = ({ navigation }) => {
 	const [username, setUsername] = useState("");
@@ -28,18 +29,27 @@ const SignupScreen = ({ navigation }) => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [checked, setChecked] = useState(false);
-	const [secureTextEntry, setSecureTextEntry] = useState(true);
+	const [secureTextEntryPassword, setSecureTextEntryPassword] = useState(true);
+	const [secureTextEntryConfirm, setSecureTextEntryConfirm] = useState(true);
 	const [signupError, setSignupError] = useState("");
 
 	const [signupLoading, setSignupLoading] = useState(false);
 
-	const toggleSecureEntry = () => {
-		setSecureTextEntry(!secureTextEntry);
+	const toggleSecureEntryPassword = () => {
+		setSecureTextEntryPassword(!secureTextEntryPassword);
+	};
+	const toggleSecureEntryConfirm = () => {
+		setSecureTextEntryConfirm(!secureTextEntryConfirm);
 	};
 
-	const renderIcon = props => (
-		<TouchableWithoutFeedback onPress={toggleSecureEntry}>
-			<Icon {...props} name={secureTextEntry ? "eye-off" : "eye"} />
+	const renderIconPassword = props => (
+		<TouchableWithoutFeedback onPress={toggleSecureEntryPassword}>
+			<Icon {...props} name={secureTextEntryPassword ? "eye-off" : "eye"} />
+		</TouchableWithoutFeedback>
+	);
+	const renderIconConfirm = props => (
+		<TouchableWithoutFeedback onPress={toggleSecureEntryConfirm}>
+			<Icon {...props} name={secureTextEntryConfirm ? "eye-off" : "eye"} />
 		</TouchableWithoutFeedback>
 	);
 
@@ -70,7 +80,14 @@ const SignupScreen = ({ navigation }) => {
 				setSignupLoading(false);
 				return;
 			}
-			// TODO: check if password has at least one alphabet, at least one number and more than 12
+			// TODO: check if password has at least one alphabet, at least one number and more than 8
+			const { success, errorMessage } = validatePassword(password);
+			if (!success) {
+				setSignupError(errorMessage);
+				clearInputs();
+				setSignupLoading(false);
+				return;
+			}
 
 			// check if password and confirmPassword is the same
 			if (password && password !== confirmPassword) {
@@ -232,8 +249,8 @@ const SignupScreen = ({ navigation }) => {
 									value={password}
 									autoCapitalize={false}
 									onChangeText={nextValue => setPassword(nextValue)}
-									accessoryRight={renderIcon}
-									secureTextEntry={secureTextEntry}
+									accessoryRight={renderIconPassword}
+									secureTextEntry={secureTextEntryPassword}
 									style={{
 										borderRadius: SIZES.base,
 										...SHADOWS.light,
@@ -262,8 +279,8 @@ const SignupScreen = ({ navigation }) => {
 									value={confirmPassword}
 									autoCapitalize={false}
 									onChangeText={nextValue => setConfirmPassword(nextValue)}
-									accessoryRight={renderIcon}
-									secureTextEntry={secureTextEntry}
+									accessoryRight={renderIconConfirm}
+									secureTextEntry={secureTextEntryConfirm}
 									style={{
 										borderRadius: SIZES.base,
 										...SHADOWS.light,

@@ -12,6 +12,7 @@ import {
 	calculateCaloriesNeeded,
 	calculateRemainingCalories,
 	calculateTotalCaloriesConsumed,
+	generateWeek,
 } from "../utils";
 
 const MiddleLabel = ({ caloriesRemaining }) => {
@@ -25,42 +26,6 @@ const MiddleLabel = ({ caloriesRemaining }) => {
 const HomeScreen = ({ navigation }) => {
 	const [isHistoryLoading, setIsHistoryLoading] = useState(true);
 	const [dates, setDates] = useState([
-		{
-			id: 1,
-			dayOfWeek: "Sat",
-			dayOfMonth: "26",
-			isFocused: false,
-		},
-		{
-			id: 2,
-			dayOfWeek: "Sun",
-			dayOfMonth: "27",
-			isFocused: false,
-		},
-		{
-			id: 3,
-			dayOfWeek: "Mon",
-			dayOfMonth: "28",
-			isFocused: false,
-		},
-		{
-			id: 4,
-			dayOfWeek: "Tue",
-			dayOfMonth: "29",
-			isFocused: false,
-		},
-		{
-			id: 5,
-			dayOfWeek: "Wed",
-			dayOfMonth: "30",
-			isFocused: false,
-		},
-		{
-			id: 6,
-			dayOfWeek: "Wed",
-			dayOfMonth: "30",
-			isFocused: false,
-		},
 		{
 			id: 7,
 			dayOfWeek: "Wed",
@@ -93,6 +58,7 @@ const HomeScreen = ({ navigation }) => {
 
 	// user details
 	const [name, setName] = useState("");
+	const [isMale, setIsMale] = useState(true);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -102,6 +68,11 @@ const HomeScreen = ({ navigation }) => {
 				if (docSnap.exists()) {
 					const user = docSnap.data();
 					setName(user.displayName);
+					if (user.gender === "male") {
+						setIsMale(true);
+					} else {
+						setIsMale(false);
+					}
 					let activityLevelInCalories = 0;
 					if (user.activityLevel === "Not Very Active") {
 						activityLevelInCalories = 0;
@@ -133,10 +104,12 @@ const HomeScreen = ({ navigation }) => {
 		}) => {
 			try {
 				const today = new Date();
-				const day = today.getDay();
+				const date = today.getDate();
 				const month = today.getMonth();
 				const year = today.getFullYear();
-				const todayAsStr = day + "_" + month + "_" + year;
+				generateWeek(today);
+				setDates(generateWeek(today));
+				const todayAsStr = date + "_" + month + "_" + year;
 				const userDailyConsumptionRef = doc(
 					db,
 					"users",
@@ -229,7 +202,10 @@ const HomeScreen = ({ navigation }) => {
 									{name}
 								</Text>
 							</Layout>
-							<Avatar source={assets.avatar} size="giant" />
+							<Avatar
+								source={isMale ? assets.avatarMale : assets.avatarFemale}
+								size="giant"
+							/>
 						</Layout>
 
 						<Layout style={{ height: 100 }}>

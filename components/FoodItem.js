@@ -1,6 +1,6 @@
 import { Layout } from "@ui-kitten/components";
 import { StyleSheet, Text, Image, TouchableOpacity } from "react-native";
-import { COLORS, FONTS, SIZES } from "../constants";
+import { FONTS, SIZES } from "../constants";
 
 const FoodItem = ({ data, onPress }) => {
 	return (
