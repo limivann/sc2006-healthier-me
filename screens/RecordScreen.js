@@ -128,7 +128,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		setIsAddLoading(true);
 		// record into user daily consumption collection
 		const today = new Date();
-		const day = today.getDay();
+		const day = today.getDate();
 		const month = today.getMonth();
 		const year = today.getFullYear();
 		const todayAsStr = day + "_" + month + "_" + year;

@@ -35,6 +35,12 @@ const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 				setCreateLoading(false);
 				return;
 			}
+			// check if calories is numeric
+			if (isNaN(calories)) {
+				setErrorText("Calories must be a number");
+				setCreateLoading(false);
+				return;
+			}
 
 			// check if calories > 0 and < 10000
 			if (!(calories > 0 && calories < 10000)) {
@@ -135,8 +141,8 @@ const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 									style={styles.input}
 									placeholder="500"
 									keyboardType="numeric"
-									value={calories.toString()}
-									onChangeText={nextValue => setCalories(+nextValue)}
+									value={calories}
+									onChangeText={nextValue => setCalories(nextValue)}
 								/>
 							</Layout>
 							{errorText && (
