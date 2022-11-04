@@ -36,13 +36,35 @@ const SignupScreen3 = ({ navigation, route }) => {
 			return;
 		}
 		// check age
+		// check age is numeric and integer
+		if (isNaN(age) || !Number.isInteger(+age)) {
+			setInputError("Age must be an integer");
+			setIsSignupLoading(false);
+			return;
+		}
 		if (age < 12 || age > 99) {
 			setInputError("Age must be within the range of 12 and 99");
 			setIsSignupLoading(false);
 			return;
 		}
+
+		// check height
+		// check height is numeric
+		if (isNaN(height)) {
+			setInputError("Height must be a number");
+			setIsSignupLoading(false);
+			return;
+		}
 		if (height < 140 || height > 210) {
 			setInputError("Height must be within the range of 140 cm to 210 cm");
+			setIsSignupLoading(false);
+			return;
+		}
+
+		// check weight
+		// check weight is numeric
+		if (isNaN(weight)) {
+			setInputError("Weight must be a number");
 			setIsSignupLoading(false);
 			return;
 		}
@@ -172,7 +194,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 									}}
 									placeholder="E.g. 21"
 									value={age}
-									onChangeText={nextValue => setAge(+nextValue)}
+									onChangeText={nextValue => setAge(nextValue)}
 									keyboardType="numeric"
 								/>
 							</Layout>
@@ -219,7 +241,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 										maxWidth: 100,
 									}}
 									value={height}
-									onChangeText={nextValue => setHeight(+nextValue)}
+									onChangeText={nextValue => setHeight(nextValue)}
 									placeholder="E.g. 173"
 									keyboardType="numeric"
 								/>
@@ -277,7 +299,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 										maxWidth: 100,
 									}}
 									value={weight}
-									onChangeText={nextValue => setWeight(+nextValue)}
+									onChangeText={nextValue => setWeight(nextValue)}
 									placeholder="E.g. 65"
 									keyboardType="numeric"
 								/>

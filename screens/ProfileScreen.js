@@ -128,24 +128,48 @@ const ProfileScreen = () => {
 			setIsEditing(false);
 			return;
 		}
+		// check height is numeric
+		if (isNaN(editingHeight)) {
+			setErrorText("Height must be a number");
+			setIsEditingLoading(false);
+			return;
+		}
+
 		// check height
 		if (!(editingHeight >= 140 && editingHeight <= 210)) {
 			setErrorText("Height must be within the range of 140 cm to 210 cm");
 			setIsEditingLoading(false);
 			return;
 		}
+
+		// check weight is numeric
+		if (isNaN(editingWeight)) {
+			setErrorText("Weight must be a number");
+			setIsEditingLoading(false);
+			return;
+		}
+
 		// check weight
 		if (!(editingWeight >= 40 && editingWeight <= 130)) {
 			setErrorText("Weight must be within the range of 40kg to 130kg");
 			setIsEditingLoading(false);
 			return;
 		}
+
+		// check age is numeric and integer
+		if (isNaN(editingAge) || !Number.isInteger(+editingAge)) {
+			setErrorText("Age must be an integer");
+			setIsEditingLoading(false);
+			return;
+		}
+
 		// check age
 		if (!(editingAge >= 12 && editingAge <= 99)) {
 			setErrorText("Age must be within the range of 12 and 99");
 			setIsEditingLoading(false);
 			return;
 		}
+
 		// update
 		const userDocRef = doc(db, "users", auth.currentUser.uid);
 		await setDoc(
@@ -247,7 +271,7 @@ const ProfileScreen = () => {
 											value={editingHeight.toString()}
 											textStyle={{ color: "black" }}
 											keyboardType="numeric"
-											onChangeText={nextValue => setEditingHeight(+nextValue)}
+											onChangeText={nextValue => setEditingHeight(nextValue)}
 										/>
 									) : (
 										<Input
@@ -272,7 +296,7 @@ const ProfileScreen = () => {
 											value={editingWeight.toString()}
 											textStyle={{ color: "black" }}
 											keyboardType="numeric"
-											onChangeText={nextValue => setEditingWeight(+nextValue)}
+											onChangeText={nextValue => setEditingWeight(nextValue)}
 										/>
 									) : (
 										<Input
@@ -299,7 +323,7 @@ const ProfileScreen = () => {
 											value={editingAge.toString()}
 											textStyle={{ color: "black" }}
 											keyboardType="numeric"
-											onChangeText={nextValue => setEditingAge(+nextValue)}
+											onChangeText={nextValue => setEditingAge(nextValue)}
 										/>
 									) : (
 										<Input
