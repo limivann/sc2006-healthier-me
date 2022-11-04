@@ -11,7 +11,7 @@ const DietDetails = ({ navigation, route }) => {
 			distance: 1.0,
 			imageUrl: restaurant.imageUrl,
 			isDineInAvail: true,
-			isTakewayAvail: true,
+			isTakeawayAvail: true,
 			locationUrl: restaurant.locationUrl,
 			longDesc: restaurant.longDescription,
 			shortDesc: restaurant.shortDescription,
