@@ -6,7 +6,7 @@ import * as Linking from "expo-linking";
 
 const RestaurantDetailsScreen = ({ navigation, route }) => {
 	const { data } = route?.params;
-
+	console.log(data);
 	const handlePress = () => {
 		Linking.openURL(data.locationUrl);
 	};
@@ -30,7 +30,7 @@ const RestaurantDetailsScreen = ({ navigation, route }) => {
 			<ScrollView contentContainerStyle={styles.contentContainer}>
 				<Layout style={styles.titleAndDist}>
 					<Text style={styles.title}>{data.title}</Text>
-					<Text style={styles.distance}>{data.distance} km</Text>
+					{/* <Text style={styles.distance}>{data.rating} km</Text> */}
 				</Layout>
 				<Text style={styles.shortDescription}>{data.shortDesc}</Text>
 				<Text style={styles.longDescription}>{data.longDesc}</Text>
@@ -160,10 +160,8 @@ const styles = StyleSheet.create({
 		fontSize: SIZES.large,
 	},
 	contentContainer: {
-		width: "100%",
 		alignItems: "center",
 		paddingHorizontal: "4%",
-		flex: 1,
 		backgroundColor: "white",
 	},
 	statusContainer: {
@@ -193,6 +191,6 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		width: "92%",
-		marginTop: "auto",
+		marginTop: SIZES.extraLarge,
 	},
 });

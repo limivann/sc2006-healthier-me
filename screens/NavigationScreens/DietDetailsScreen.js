@@ -5,6 +5,23 @@ import { COLORS, FONTS, SIZES } from "../../constants";
 
 const DietDetails = ({ navigation, route }) => {
 	const { data } = route?.params;
+	const handleFindRestaurants = () => {
+		const restaurant = data.restaurants[0];
+		const formattedRestaurant = {
+			distance: 1.0,
+			imageUrl: restaurant.imageUrl,
+			isDineInAvail: true,
+			isTakewayAvail: true,
+			locationUrl: restaurant.locationUrl,
+			longDesc: restaurant.longDescription,
+			shortDesc: restaurant.shortDescription,
+			openingTime: "7.00 am ~ 9.00 pm",
+			rating: restaurant.rating,
+			status: true,
+			title: restaurant.name,
+		};
+		navigation.navigate("RestaurantDetailsPage", { data: formattedRestaurant });
+	};
 	return (
 		<Layout style={{ flex: 1 }}>
 			<FocusedStatusBar backgroundColor="transparent" barStyle="dark-content" />
@@ -31,6 +48,7 @@ const DietDetails = ({ navigation, route }) => {
 					<CustomButton
 						text={"Find Restaurants"}
 						backgroundColor={COLORS.primary}
+						onPress={() => handleFindRestaurants()}
 					>
 						<Icon
 							fill="white"

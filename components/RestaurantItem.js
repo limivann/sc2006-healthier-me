@@ -20,7 +20,7 @@ const RestaurantItem = ({ data, onPress }) => {
 					<Layout style={styles.restaurantDesc}>
 						<Layout style={styles.titleAndDistance}>
 							<Text style={styles.title}>{data.title}</Text>
-							<Text style={styles.distance}>{data.distance} km</Text>
+							{/* <Text style={styles.distance}>{data.rating}/5</Text> */}
 						</Layout>
 						<Layout style={styles.descriptionContainer}>
 							<Icon
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		alignItems: "center",
+		paddingRight: 28,
 		marginBottom: 2,
 	},
 	descriptionIcon: {
