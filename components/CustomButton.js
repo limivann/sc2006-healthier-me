@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { FONTS, SIZES } from "../constants";
 
 const CustomButton = ({
@@ -9,31 +9,28 @@ const CustomButton = ({
 	...props
 }) => {
 	return (
-		<TouchableOpacity
-			style={{
-				display: "flex",
-				justifyContent: "center",
-				flexDirection: "row",
-				alignItems: "center",
-				marginBottom: SIZES.medium,
-				borderRadius: SIZES.font,
-				paddingVertical: 12,
-				...props,
-			}}
-			onPress={onPress}
-		>
+		<TouchableOpacity style={{ ...styles.button, ...props }} onPress={onPress}>
 			{children}
-			<Text
-				style={{
-					fontFamily: FONTS.bold,
-					fontSize: SIZES.font,
-					color: fontColor,
-				}}
-			>
-				{text}
-			</Text>
+			<Text style={styles.buttonText}>{text}</Text>
 		</TouchableOpacity>
 	);
 };
 
 export default CustomButton;
+
+const styles = StyleSheet.create({
+	button: {
+		display: "flex",
+		justifyContent: "center",
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: SIZES.medium,
+		borderRadius: SIZES.font,
+		paddingVertical: 12,
+	},
+	buttonText: {
+		fontFamily: FONTS.bold,
+		fontSize: SIZES.font,
+		color: fontColor,
+	},
+});
