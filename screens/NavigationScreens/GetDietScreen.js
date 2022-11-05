@@ -155,9 +155,8 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		alignItems: "center",
-		justifyContent: "center",
 		flex: 1,
-		paddingBottom: "50%",
+		paddingTop: 75,
 	},
 	image: {
 		resizeMode: "contain",
