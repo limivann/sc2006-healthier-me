@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent",
 		flexDirection: "row",
 		justifyContent: "space-between",
+		alignItems: "center",
 	},
 	foodLabelLeft: {
 		backgroundColor: "transparent",

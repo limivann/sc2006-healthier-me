@@ -1,10 +1,4 @@
-import {
-	FlatList,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
-} from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text } from "react-native";
 import { Layout, Card, Modal, Divider, Spinner } from "@ui-kitten/components";
 import {
 	BackButton,
@@ -13,82 +7,12 @@ import {
 	HistoryComponent,
 } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
-import { useRef, useState } from "react";
-import DateComponent from "../components/DateComponent";
-import {
-	arrayRemove,
-	collection,
-	doc,
-	getDocs,
-	query,
-	updateDoc,
-	where,
-} from "firebase/firestore";
-import { auth, db } from "../firebase/firebase-config";
+import { useState } from "react";
+import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
 
 const FoodHistoryScreen = ({ navigation, route }) => {
 	const { data, setHistory, setFood } = route?.params;
-	const [dates, setDates] = useState([
-		{
-			id: 1,
-			dayOfWeek: "Sat",
-			dayOfMonth: "26",
-			isFocused: false,
-		},
-		{
-			id: 2,
-			dayOfWeek: "Sun",
-			dayOfMonth: "27",
-			isFocused: false,
-		},
-		{
-			id: 3,
-			dayOfWeek: "Mon",
-			dayOfMonth: "28",
-			isFocused: false,
-		},
-		{
-			id: 4,
-			dayOfWeek: "Tue",
-			dayOfMonth: "29",
-			isFocused: false,
-		},
-		{
-			id: 5,
-			dayOfWeek: "Wed",
-			dayOfMonth: "30",
-			isFocused: false,
-		},
-		{
-			id: 6,
-			dayOfWeek: "Wed",
-			dayOfMonth: "30",
-			isFocused: false,
-		},
-		{
-			id: 7,
-			dayOfWeek: "Wed",
-			dayOfMonth: "30",
-			isFocused: true,
-		},
-	]);
 
-	const focusDate = id => {
-		const temp = [];
-		dates.forEach(d => {
-			if (d.id === id) {
-				temp.push({ ...d, isFocused: true });
-			} else {
-				temp.push({ ...d, isFocused: false });
-			}
-		});
-		setDates(temp);
-	};
-
-	// for scroll view
-	const scrollViewRef = useRef();
-
-	// remove daily consumption
 	const [modalData, setModalData] = useState({
 		foodName: "",
 		time: "",
@@ -123,62 +47,43 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 			return;
 		}
 		setIsDeleteLoading(true);
-		try {
-			// delete user daily consumption first
-			const userConsumptionRef = doc(
-				db,
-				"users",
-				auth.currentUser.uid,
-				"userConsumption",
-				modalData.docId
+		const { success, error } =
+			await DailyConsumptionController.removeDailyConsumption(
+				modalData.docId,
+				modalData.dailyConsumptionId,
+				modalData.meal
 			);
-			const userDailyConsumptionRef = doc(
-				db,
-				"users",
-				auth.currentUser.uid,
-				"userDailyConsumption",
-				modalData.dailyConsumptionId
-			);
-			if (modalData.meal === "Breakfast") {
-				await updateDoc(userDailyConsumptionRef, {
-					breakfast: arrayRemove(userConsumptionRef),
-				});
-				setHistory(prev => {
-					prev.breakfast = prev.breakfast.filter(
-						data => data.id !== modalData.docId
-					);
-					return prev;
-				});
-				setFood(prev => Math.round(prev - modalData.calories));
-			} else if (modalData.meal === "Lunch") {
-				await updateDoc(userDailyConsumptionRef, {
-					lunch: arrayRemove(userConsumptionRef),
-				});
-				setHistory(prev => {
-					prev.lunch = prev.lunch.filter(data => data.id !== modalData.docId);
-					return prev;
-				});
-				setFood(prev => Math.round(prev - modalData.calories));
-			} else {
-				await updateDoc(userDailyConsumptionRef, {
-					dinner: arrayRemove(userConsumptionRef),
-				});
-				setHistory(prev => {
-					prev.dinner = prev.dinner.filter(data => data.id !== modalData.docId);
-					return prev;
-				});
-				setFood(prev => Math.round(prev - modalData.calories));
-			}
-			setIsSuccessTextVisible(true);
-			setTimeout(() => {
-				setIsSuccessTextVisible(false);
-				setIsDeleteLoading(false);
-				setModalPanelVisible(false);
-			}, 1000);
-		} catch (error) {
+		if (!success) {
 			setIsDeleteLoading(false);
-			console.log(error);
+			return;
 		}
+		if (modalData.meal === "Breakfast") {
+			setHistory(prev => {
+				prev.breakfast = prev.breakfast.filter(
+					data => data.id !== modalData.docId
+				);
+				return prev;
+			});
+			setFood(prev => Math.round(prev - modalData.calories));
+		} else if (modalData.meal === "Lunch") {
+			setHistory(prev => {
+				prev.lunch = prev.lunch.filter(data => data.id !== modalData.docId);
+				return prev;
+			});
+			setFood(prev => Math.round(prev - modalData.calories));
+		} else {
+			setHistory(prev => {
+				prev.dinner = prev.dinner.filter(data => data.id !== modalData.docId);
+				return prev;
+			});
+			setFood(prev => Math.round(prev - modalData.calories));
+		}
+		setIsSuccessTextVisible(true);
+		setTimeout(() => {
+			setIsSuccessTextVisible(false);
+			setIsDeleteLoading(false);
+			setModalPanelVisible(false);
+		}, 1000);
 	};
 
 	return (

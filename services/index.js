@@ -19,7 +19,7 @@ export const searchFood = async query => {
 			? { data: formmated, error: false }
 			: { data: [], error: true };
 	} catch (error) {
-		console.log(error); //idk why
+		console.log(error); //idk why must include this line for android to work
 		console.log("Not found");
 		return { data: [], error: false };
 	}

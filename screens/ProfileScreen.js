@@ -18,9 +18,8 @@ import {
 } from "react-native";
 import { COLORS, FONTS, SIZES, SHADOWS, assets } from "../constants";
 import { CustomButton, EditButton, FocusedStatusBar } from "../components";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase/firebase-config";
 import { calculateBmi } from "../utils";
+import { UserController } from "../firebase/firestore/UserController";
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
 const activityLevelSelection = [
@@ -67,33 +66,29 @@ const ProfileScreen = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const userDocRef = doc(db, "users", auth.currentUser.uid);
-			const docSnap = await getDoc(userDocRef);
-			if (docSnap.exists()) {
-				const user = docSnap.data();
-				setName(user.displayName);
-				setAge(+user.age);
-				setEmail(user.email);
-				setHeight(+user.height);
-				setWeight(+user.weight);
-				if (user.gender === "male") {
-					setIsMale(true);
-				} else {
-					setIsMale(false);
-				}
-				if (user.activityLevel === "Not Very Active") {
-					setActivityLevelIndex(new IndexPath(0));
-				} else if (user.activityLevel === "Lightly Active") {
-					setActivityLevelIndex(new IndexPath(1));
-				} else if (user.activityLevel === "Active") {
-					setActivityLevelIndex(new IndexPath(2));
-				} else {
-					setActivityLevelIndex(new IndexPath(3));
-				}
-				const tempBmi = calculateBmi(user.weight, user.height);
-				setBmi(tempBmi);
-				setIsLoading(false);
+			const temp = await UserController.fetchData();
+			setName(temp.displayName);
+			setAge(+temp.age);
+			setEmail(temp.email);
+			setHeight(+temp.height);
+			setWeight(+temp.weight);
+			if (temp.gender === "male") {
+				setIsMale(true);
+			} else {
+				setIsMale(false);
 			}
+			if (temp.activityLevel === "Not Very Active") {
+				setActivityLevelIndex(new IndexPath(0));
+			} else if (temp.activityLevel === "Lightly Active") {
+				setActivityLevelIndex(new IndexPath(1));
+			} else if (temp.activityLevel === "Active") {
+				setActivityLevelIndex(new IndexPath(2));
+			} else {
+				setActivityLevelIndex(new IndexPath(3));
+			}
+			const tempBmi = calculateBmi(temp.weight, temp.height);
+			setBmi(tempBmi);
+			setIsLoading(false);
 		};
 		setIsLoading(true);
 		fetchData();
@@ -171,17 +166,18 @@ const ProfileScreen = () => {
 		}
 
 		// update
-		const userDocRef = doc(db, "users", auth.currentUser.uid);
-		await setDoc(
-			userDocRef,
-			{
-				age: +editingAge,
-				height: +editingHeight,
-				weight: +editingWeight,
-				activityLevel: displayValueEditing,
-			},
-			{ merge: true }
-		);
+		const newData = {
+			age: +editingAge,
+			height: +editingHeight,
+			weight: +editingWeight,
+			activityLevel: displayValueEditing,
+		};
+		const { success } = await UserController.updateData(newData);
+		if (!success) {
+			setErrorText("Something went wrong");
+			setIsEditingLoading(false);
+			return;
+		}
 		setHeight(editingHeight);
 		setWeight(editingWeight);
 		setAge(editingAge);
