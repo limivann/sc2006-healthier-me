@@ -5,7 +5,6 @@ import { COLORS, FONTS, SIZES } from "../../constants";
 
 const DietDetails = ({ navigation, route }) => {
 	const { data } = route?.params;
-	console.log(data);
 	const handleFindRestaurants = () => {
 		const restaurant = data.restaurants[0];
 		const formattedRestaurant = {
