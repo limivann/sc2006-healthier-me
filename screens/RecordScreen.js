@@ -31,21 +31,10 @@ import {
 	ResultsFoodLabel,
 } from "../components";
 import { COLORS, FONTS, SIZES, assets, SHADOWS } from "../constants";
-import {
-	addDoc,
-	arrayUnion,
-	collection,
-	doc,
-	getDoc,
-	getDocs,
-	query,
-	setDoc,
-	updateDoc,
-} from "firebase/firestore";
-import { auth, db } from "../firebase/firebase-config";
 import { searchFood } from "../services";
 import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
 import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
+import { PersonalFoodLabelController } from "../firebase/firestore/PersonalFoodLabelController";
 
 const suggestions = FOODSUGGESTIONS;
 const showEvent = Platform.select({
@@ -660,30 +649,14 @@ const RecordScreen = ({ navigation }) => {
 	useEffect(() => {
 		const fetchFoodLabelData = async () => {
 			setIsLoading(true);
-			try {
-				const personalFoodLabelRef = collection(
-					db,
-					"users",
-					auth.currentUser.uid,
-					"personalFoodLabel"
-				);
-				const q = query(personalFoodLabelRef);
-				const querySnapshot = await getDocs(q);
-				const tempData = [];
-				querySnapshot.forEach(doc => {
-					const formattedData = {
-						id: doc.id,
-						name: doc.data().name,
-						calories: doc.data().calories,
-					};
-					tempData.push(formattedData);
-				});
-				setPersonalFoodLabelData(tempData);
+			const { success, data } =
+				await PersonalFoodLabelController.getFoodLabels();
+			if (!success) {
 				setIsLoading(false);
-			} catch (error) {
-				console.log(error);
-				setIsLoading(false);
+				return;
 			}
+			setPersonalFoodLabelData(data);
+			setIsLoading(false);
 		};
 		fetchFoodLabelData();
 	}, []);

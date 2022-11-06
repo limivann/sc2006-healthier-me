@@ -1,5 +1,4 @@
 import { Layout, Text, Input, Spinner } from "@ui-kitten/components";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { useState } from "react";
 import {
 	Keyboard,
@@ -10,7 +9,7 @@ import {
 } from "react-native";
 import { FocusedStatusBar, CustomButton, BackButton } from "../components";
 import { COLORS, FONTS, SIZES, SHADOWS } from "../constants";
-import { auth, db } from "../firebase/firebase-config";
+import { PersonalFoodLabelController } from "../firebase/firestore/PersonalFoodLabelController";
 
 const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 	const [errorText, setErrorText] = useState("");
@@ -23,69 +22,33 @@ const CreatePersonalFoodLabelScreen = ({ navigation, route }) => {
 	const handleCreate = async () => {
 		try {
 			setCreateLoading(true);
-			// check required fields
-			if (labelName === "" || calories == null) {
-				setErrorText("Please fill in all fields");
-				setCreateLoading(false);
-				return;
-			}
-			// check length of name >=3 and <= 30
-			if (!(labelName.length >= 3 && labelName.length <= 30)) {
-				setErrorText("Length of name must be within 3 to 30");
-				setCreateLoading(false);
-				return;
-			}
-			// check if calories is numeric
-			if (isNaN(calories)) {
-				setErrorText("Calories must be a number");
-				setCreateLoading(false);
-				return;
-			}
-
-			// check if calories > 0 and < 10000
-			if (!(calories > 0 && calories < 10000)) {
-				setErrorText("Calories must be greater than 0 and less than 10000");
-				setCreateLoading(false);
-				return;
-			}
-			// check if the food label already exists
-			const personalFoodLabelRef = collection(
-				db,
-				"users",
-				auth.currentUser.uid,
-				"personalFoodLabel"
-			);
-			const q = query(personalFoodLabelRef, where("name", "==", labelName));
-			const querySnapshot = await getDocs(q);
-			if (querySnapshot.size > 0) {
-				setErrorText("Food name already taken");
-				setCreateLoading(false);
-				return;
-			}
 			const newData = {
 				name: labelName,
 				calories: +calories,
 			};
-			const docRef = await addDoc(personalFoodLabelRef, newData);
+			const { success, docId, error } =
+				await PersonalFoodLabelController.createFoodLabel(newData);
+			if (!success) {
+				setErrorText(error);
+				setCreateLoading(false);
+				return;
+			}
 			setPersonalFoodLabelData(prev => [
 				{
-					name: labelName,
-					calories: +calories,
-					id: docRef.id,
+					...newData,
+					id: docId,
 				},
 				...prev,
 			]);
-			Promise.all([docRef]).then(() => {
-				setErrorText("");
-				setCreateLoading(false);
-				// clear inputs
-				setLabelName("");
-				setCalories("");
-				setSuccessMessageVisible(true);
-				setTimeout(() => {
-					setSuccessMessageVisible(false);
-				}, 1000);
-			});
+			setErrorText("");
+			setCreateLoading(false);
+			// clear inputs
+			setLabelName("");
+			setCalories("");
+			setSuccessMessageVisible(true);
+			setTimeout(() => {
+				setSuccessMessageVisible(false);
+			}, 1000);
 		} catch (error) {
 			console.log(error);
 			setCreateLoading(false);
