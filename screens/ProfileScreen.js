@@ -18,8 +18,6 @@ import {
 } from "react-native";
 import { COLORS, FONTS, SIZES, SHADOWS, assets } from "../constants";
 import { CustomButton, EditButton, FocusedStatusBar } from "../components";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase/firebase-config";
 import { calculateBmi } from "../utils";
 import { UserController } from "../firebase/firestore/UserController";
 const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
@@ -69,7 +67,6 @@ const ProfileScreen = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const temp = await UserController.fetchData();
-			console.log(temp);
 			setName(temp.displayName);
 			setAge(+temp.age);
 			setEmail(temp.email);

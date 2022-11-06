@@ -45,6 +45,7 @@ import {
 import { auth, db } from "../firebase/firebase-config";
 import { searchFood } from "../services";
 import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
+import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
 
 const suggestions = FOODSUGGESTIONS;
 const showEvent = Platform.select({
@@ -141,54 +142,23 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			minute.toString().padStart(2, "0") +
 			":" +
 			second.toString().padStart(2, "0");
-		// create user consumption reference first
-		const userConsumptionRef = collection(
-			db,
-			"users",
-			auth.currentUser.uid,
-			"userConsumption"
-		);
 
-		const docRef = await addDoc(userConsumptionRef, {
+		const newConsumption = {
 			foodName: modalData.foodName,
 			totalCalories: modalData.calories,
 			servingQuantity: modalData.quantity,
 			servingUnit: modalData.unit,
 			time: currentTime,
 			dailyConsumptionId: todayAsStr,
-		});
+		};
 
-		// add to daily consumption of user
-		const userDailyConsumptionRef = doc(
-			db,
-			"users",
-			auth.currentUser.uid,
-			"userDailyConsumption",
-			todayAsStr
+		const { success } = await DailyConsumptionController.addDailyConsumption(
+			newConsumption,
+			todayAsStr,
+			meal[mealIndex.row]
 		);
-		let docSnap;
-		try {
-			docSnap = await getDoc(userDailyConsumptionRef);
-			if (!docSnap.exists()) {
-				await setDoc(userDailyConsumptionRef, {
-					breakfast: [],
-					lunch: [],
-					dinner: [],
-				});
-			}
-			if (meal[mealIndex.row] == "Breakfast") {
-				await updateDoc(userDailyConsumptionRef, {
-					breakfast: arrayUnion(docRef),
-				});
-			} else if (meal[mealIndex.row] == "Lunch") {
-				await updateDoc(userDailyConsumptionRef, {
-					lunch: arrayUnion(docRef),
-				});
-			} else {
-				await updateDoc(userDailyConsumptionRef, {
-					dinner: arrayUnion(docRef),
-				});
-			}
+
+		if (success) {
 			setIsSuccessTextVisible(true);
 			setTimeout(() => {
 				setIsAddLoading(false);
@@ -196,8 +166,6 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 				// close modal
 				setAddConsumptionPanelVisible(false);
 			}, 2000);
-		} catch (error) {
-			console.log(error);
 		}
 	};
 
@@ -324,7 +292,11 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 										<CustomButton
 											text={"Create personal food label"}
 											backgroundColor={COLORS.primary}
-											onPress={() => navigation.navigate("CreateFoodLabelPage")}
+											onPress={() =>
+												navigation.navigate("CreateFoodLabelPage", {
+													setPersonalFoodLabelData,
+												})
+											}
 										/>
 									</Layout>
 									<Modal
@@ -509,62 +481,34 @@ const MyPersonalFoodLabelTab = ({
 		setIsAddLoading(true);
 		// record into user daily consumption collection
 		const today = new Date();
-		const day = today.getDay();
+		const day = today.getDate();
 		const month = today.getMonth();
 		const year = today.getFullYear();
 		const todayAsStr = day + "_" + month + "_" + year;
 		const hour = today.getHours();
 		const minute = today.getMinutes();
 		const second = today.getSeconds();
-		let currentTime = hour + ":" + minute + ":" + second;
-		// create user consumption reference first
-		const userConsumptionRef = collection(
-			db,
-			"users",
-			auth.currentUser.uid,
-			"userConsumption"
-		);
-
-		const docRef = await addDoc(userConsumptionRef, {
+		let currentTime =
+			hour.toString().padStart(2, "0") +
+			":" +
+			minute.toString().padStart(2, "0") +
+			":" +
+			second.toString().padStart(2, "0");
+		const newConsumption = {
 			foodName: modalData.foodName,
 			totalCalories: modalData.calories,
 			servingQuantity: 1,
 			servingUnit: "serving",
 			time: currentTime,
 			dailyConsumptionId: todayAsStr,
-		});
-
-		// add to daily consumption of user
-		const userDailyConsumptionRef = doc(
-			db,
-			"users",
-			auth.currentUser.uid,
-			"userDailyConsumption",
-			todayAsStr
+		};
+		const { success } = await DailyConsumptionController.addDailyConsumption(
+			newConsumption,
+			todayAsStr,
+			meal[mealIndex.row]
 		);
-		let docSnap;
-		try {
-			docSnap = await getDoc(userDailyConsumptionRef);
-			if (!docSnap.exists()) {
-				await setDoc(userDailyConsumptionRef, {
-					breakfast: [],
-					lunch: [],
-					dinner: [],
-				});
-			}
-			if (meal[mealIndex.row] == "Breakfast") {
-				await updateDoc(userDailyConsumptionRef, {
-					breakfast: arrayUnion(docRef),
-				});
-			} else if (meal[mealIndex.row] == "Lunch") {
-				await updateDoc(userDailyConsumptionRef, {
-					lunch: arrayUnion(docRef),
-				});
-			} else {
-				await updateDoc(userDailyConsumptionRef, {
-					dinner: arrayUnion(docRef),
-				});
-			}
+
+		if (success) {
 			setIsSuccessTextVisible(true);
 			setTimeout(() => {
 				setIsAddLoading(false);
@@ -572,8 +516,6 @@ const MyPersonalFoodLabelTab = ({
 				// close modal
 				setAddConsumptionPanelVisible(false);
 			}, 2000);
-		} catch (error) {
-			console.log(error);
 		}
 	};
 

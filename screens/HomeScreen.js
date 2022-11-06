@@ -4,16 +4,15 @@ import { FlatList, SafeAreaView, StyleSheet } from "react-native";
 import { FocusedStatusBar, HomePageIcon, CustomButton } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../constants";
 import { VictoryPie } from "victory-native";
-import { auth, db } from "../firebase/firebase-config";
 import DateComponent from "../components/DateComponent";
-import { doc, getDoc } from "firebase/firestore";
-import { getFoodHistory } from "../firebase/firestore";
 import {
 	calculateCaloriesNeeded,
 	calculateRemainingCalories,
 	calculateTotalCaloriesConsumed,
 	generateWeek,
 } from "../utils";
+import { UserController } from "../firebase/firestore/UserController";
+import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
 
 const MiddleLabel = ({ caloriesRemaining }) => {
 	return (
@@ -63,34 +62,30 @@ const HomeScreen = ({ navigation }) => {
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const userDocRef = doc(db, "users", auth.currentUser.uid);
-				const docSnap = await getDoc(userDocRef);
-				if (docSnap.exists()) {
-					const user = docSnap.data();
-					setName(user.displayName);
-					if (user.gender === "male") {
-						setIsMale(true);
-					} else {
-						setIsMale(false);
-					}
-					let activityLevelInCalories = 0;
-					if (user.activityLevel === "Not Very Active") {
-						activityLevelInCalories = 0;
-					} else if (user.activityLevel === "Lightly Active") {
-						activityLevelInCalories = 200;
-					} else if (user.activityLevel === "Active") {
-						activityLevelInCalories = 400;
-					} else {
-						activityLevelInCalories = 600;
-					}
-					return {
-						isMale: user.gender == "male" ? true : false,
-						weight: user.weight,
-						height: user.height,
-						age: user.age,
-						activityLevel: activityLevelInCalories,
-					};
+				const temp = await UserController.fetchData();
+				setName(temp.displayName);
+				if (temp.gender === "male") {
+					setIsMale(true);
+				} else {
+					setIsMale(false);
 				}
+				let activityLevelInCalories = 0;
+				if (temp.activityLevel === "Not Very Active") {
+					activityLevelInCalories = 0;
+				} else if (temp.activityLevel === "Lightly Active") {
+					activityLevelInCalories = 200;
+				} else if (temp.activityLevel === "Active") {
+					activityLevelInCalories = 400;
+				} else {
+					activityLevelInCalories = 600;
+				}
+				return {
+					isMale: temp.gender == "male" ? true : false,
+					weight: temp.weight,
+					height: temp.height,
+					age: temp.age,
+					activityLevel: activityLevelInCalories,
+				};
 			} catch (error) {
 				console.log(error);
 			}
@@ -110,41 +105,19 @@ const HomeScreen = ({ navigation }) => {
 				generateWeek(today);
 				setDates(generateWeek(today));
 				const todayAsStr = date + "_" + month + "_" + year;
-				const userDailyConsumptionRef = doc(
-					db,
-					"users",
-					auth.currentUser.uid,
-					"userDailyConsumption",
+				const history = await DailyConsumptionController.getDailyConsumption(
 					todayAsStr
 				);
-				const docSnap = await getDoc(userDailyConsumptionRef);
-				let foodConsumed = 0;
-				if (docSnap.exists()) {
-					let breakfastTemp = await getFoodHistory(docSnap.data()?.breakfast);
-					let lunchTemp = await getFoodHistory(docSnap.data()?.lunch);
-					let dinnerTemp = await getFoodHistory(docSnap.data()?.dinner);
-					Promise.all([breakfastTemp, lunchTemp, dinnerTemp]).then(() => {
-						setHistory({
-							breakfast: breakfastTemp,
-							lunch: lunchTemp,
-							dinner: dinnerTemp,
-						});
-
-						foodConsumed = calculateTotalCaloriesConsumed(
-							breakfastTemp,
-							lunchTemp,
-							dinnerTemp
-						);
-					});
-				} else {
-					foodConsumed = 0;
-				}
-				Promise.all([docSnap]).then(() => {
-					setBaseGoal(calculateCaloriesNeeded(isMale, weight, height, age));
-					setFood(foodConsumed);
-					setExercise(activityLevel);
-					setIsHistoryLoading(false);
-				});
+				setHistory(history);
+				let foodConsumed = calculateTotalCaloriesConsumed(
+					history.breakfast,
+					history.lunch,
+					history.dinner
+				);
+				setBaseGoal(calculateCaloriesNeeded(isMale, weight, height, age));
+				setFood(foodConsumed);
+				setExercise(activityLevel);
+				setIsHistoryLoading(false);
 			} catch (error) {
 				console.log(error);
 			}
