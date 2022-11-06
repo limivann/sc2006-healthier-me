@@ -6,7 +6,6 @@ import * as Linking from "expo-linking";
 
 const RestaurantDetailsScreen = ({ navigation, route }) => {
 	const { data } = route?.params;
-	console.log(data);
 	const handlePress = () => {
 		Linking.openURL(data.locationUrl);
 	};
@@ -132,20 +131,20 @@ const styles = StyleSheet.create({
 		paddingVertical: SIZES.font,
 		fontFamily: FONTS.bold,
 		color: COLORS.gray,
-		fontSize: SIZES.extraLarge,
+		fontSize: SIZES.large,
 	},
 	longDescription: {
 		width: "100%",
 		paddingHorizontal: "4%",
 		color: COLORS.gray,
-		fontSize: SIZES.large,
+		fontSize: SIZES.medium,
 		fontFamily: FONTS.regular,
-		marginBottom: SIZES.extraLarge,
+		marginBottom: SIZES.small,
 	},
 	optionsContainer: {
 		flexDirection: "row",
 		width: "100%",
-		marginBottom: SIZES.font,
+		marginBottom: SIZES.small,
 	},
 	optionsInnerContainer: {
 		flex: 1,
@@ -157,11 +156,13 @@ const styles = StyleSheet.create({
 		paddingLeft: SIZES.base,
 		fontFamily: FONTS.semiBold,
 		color: COLORS.gray,
-		fontSize: SIZES.large,
+		fontSize: SIZES.medium,
 	},
 	contentContainer: {
+		width: "100%",
 		alignItems: "center",
 		paddingHorizontal: "4%",
+		flex: 1,
 		backgroundColor: "white",
 	},
 	statusContainer: {
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: "4%",
 	},
 	statusText: {
-		fontSize: SIZES.extraLarge,
+		fontSize: SIZES.large,
 		fontFamily: FONTS.bold,
 		color: COLORS.primary,
 		letterSpacing: 1,
@@ -181,8 +182,8 @@ const styles = StyleSheet.create({
 		color: COLORS.gray,
 	},
 	icon: {
-		width: 34,
-		height: 34,
+		width: 26,
+		height: 26,
 	},
 	navigateIcon: {
 		width: 26,
@@ -191,6 +192,6 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		width: "92%",
-		marginTop: SIZES.extraLarge,
+		marginTop: "auto",
 	},
 });

@@ -55,9 +55,9 @@ const HealthyDietRestaurantScreen = ({ navigation }) => {
 				const formattedDiet = {
 					id: doc.id,
 					foodName: doc.data().name,
-					calories: doc.data().calories,
+					dietType: doc.data().dietType,
 					foodImg: doc.data().imageUrl,
-					description: doc.data().longDescription,
+					description: doc.data().description,
 					restaurants: [...results],
 				};
 				tempDiets.push(formattedDiet);
