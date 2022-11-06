@@ -5,6 +5,7 @@ import { COLORS, FONTS, SIZES } from "../../constants";
 
 const DietDetails = ({ navigation, route }) => {
 	const { data } = route?.params;
+	console.log(data);
 	const handleFindRestaurants = () => {
 		const restaurant = data.restaurants[0];
 		const formattedRestaurant = {
@@ -42,7 +43,7 @@ const DietDetails = ({ navigation, route }) => {
 				<Layout style={styles.titleContainer}>
 					<Text style={styles.title}>{data.foodName}</Text>
 				</Layout>
-				<Text style={styles.shortDescription}>{`${data.calories} kcal`}</Text>
+				<Text style={styles.shortDescription}>{data.dietType}</Text>
 				<Text style={styles.longDescription}>{data.description}</Text>
 				<Layout style={styles.button}>
 					<CustomButton
@@ -109,13 +110,13 @@ const styles = StyleSheet.create({
 		paddingVertical: SIZES.font,
 		fontFamily: FONTS.bold,
 		color: COLORS.gray,
-		fontSize: SIZES.extraLarge,
+		fontSize: SIZES.large,
 	},
 	longDescription: {
 		width: "100%",
 		paddingHorizontal: "4%",
 		color: COLORS.gray,
-		fontSize: SIZES.large,
+		fontSize: SIZES.medium,
 		fontFamily: FONTS.regular,
 		marginBottom: SIZES.extraLarge,
 	},
