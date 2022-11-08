@@ -4,7 +4,7 @@ export const searchFood = async query => {
 		const data = await searchFoodQuery(query);
 		let exceedLimit = false;
 		const formmated = data.map((result, index) => {
-			if (!(result?.serving_qty > 0 && result?.serving_qty < 100)) {
+			if (!(result?.serving_qty > 0)) {
 				exceedLimit = true;
 			}
 			return {

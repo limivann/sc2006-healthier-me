@@ -36,7 +36,6 @@ import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
 import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
 import { PersonalFoodLabelController } from "../firebase/firestore/PersonalFoodLabelController";
 
-const suggestions = FOODSUGGESTIONS;
 const showEvent = Platform.select({
 	android: "keyboardDidShow",
 	default: "keyboardWillShow",
@@ -53,6 +52,7 @@ const filter = (item, query) =>
 const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	// autocomplete
 	const [value, setValue] = useState("");
+	const [suggestions, setSuggestions] = useState(FOODSUGGESTIONS);
 	const [data, setData] = useState(suggestions);
 	const [placement, setPlacement] = useState("bottom");
 
@@ -185,7 +185,8 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 
 	const onChangeText = query => {
 		setValue(query);
-		setData(suggestions.filter(item => filter(item, query)));
+		setSuggestions(FOODSUGGESTIONS.filter(item => filter(item, query)));
+		setData(FOODSUGGESTIONS.filter(item => filter(item, query)));
 	};
 
 	const renderOption = (item, index) => (
@@ -227,7 +228,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 					</Autocomplete>
 					{hasError && (
 						<Text style={styles.errorText}>
-							Serving quantity must be greater than 0 and less than 100
+							Serving quantity must be greater than 0
 						</Text>
 					)}
 					<Layout style={styles.examplesContainer}>
