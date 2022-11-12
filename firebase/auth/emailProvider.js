@@ -52,7 +52,7 @@ export const signInUser = async (email, password) => {
 	} catch (error) {
 		const errorCode = error.code;
 		let errorMessage;
-		switch (error) {
+		switch (errorCode) {
 			case "auth/wrong-password":
 				errorMessage = "Wrong password";
 				break;
@@ -63,7 +63,7 @@ export const signInUser = async (email, password) => {
 				errorMessage = "Something went wrong";
 				break;
 		}
-		return { error: errorCode };
+		return { error: errorMessage };
 	}
 };
 
