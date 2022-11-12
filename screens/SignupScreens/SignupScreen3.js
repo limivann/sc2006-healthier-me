@@ -12,7 +12,6 @@ import {
 	TouchableWithoutFeedback,
 	KeyboardAvoidingView,
 	Platform,
-	DevSettings,
 } from "react-native";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebase-config";
@@ -22,7 +21,8 @@ const SignupScreen3 = ({ navigation, route }) => {
 	const [height, setHeight] = useState(null);
 	const [weight, setWeight] = useState(null);
 	const [isMaleToggled, setIsMaleToggled] = useState(true);
-	const { selectedActivityStr } = route?.params;
+	console.log(route.params);
+	const { selectedActivityStr, setIsSetupComplete } = route?.params;
 	const [inputError, setInputError] = useState("");
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
 
@@ -87,7 +87,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 			},
 			{ merge: true }
 		);
-		DevSettings.reload();
+		setIsSetupComplete(true);
 		setIsSignupLoading(false);
 	};
 

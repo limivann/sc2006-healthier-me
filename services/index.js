@@ -47,7 +47,7 @@ const searchFoodQuery = async query => {
 			"https://trackapi.nutritionix.com/v2/natural/nutrients",
 			requestOptions
 		);
-		console.log(requestOptions);
+		// console.log(requestOptions);
 		const data = await response.json();
 		return data.foods;
 	} catch (error) {
