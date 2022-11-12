@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 	},
 	timeContainer: {
 		backgroundColor: "#f5f5f5",
-		maxWidth: 80,
+		maxWidth: 85,
 		paddingHorizontal: SIZES.base,
 		paddingVertical: 4,
 		justifyContent: "center",
