@@ -244,6 +244,11 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 							- 2 slices of peanut butter bread and 1 glass of ice coffee
 						</Text>
 						<Text style={styles.examplesText}>- 1.5 glass of milk</Text>
+						<Text style={styles.examplesText}>- 22 fl oz of cappuccino</Text>
+						<Text style={styles.examplesText}>- 3 pieces of grilled chicken</Text>
+						<Text style={styles.examplesText}>- 2.5 fillet of seabass</Text>
+						<Text style={styles.examplesText}>- half serving of lasagna</Text>
+						<Text style={styles.examplesText}>- 2 slices of french toast, 4 dumplings and 1 cup of soya milk</Text>
 					</Layout>
 				</Layout>
 			) : (
