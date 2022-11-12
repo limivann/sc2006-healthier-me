@@ -1,12 +1,18 @@
 export const FOODSUGGESTIONS = [
 	{
-		title: "Bak chor mee",
+		title: "Appam",
+	},
+	{
+		title: "Bak kut teh",
 	},
 	{
 		title: "Ban mian",
 	},
 	{
-		title: "Barbecued stingray",
+		title: "Bean curd",
+	},
+	{
+		title: "Carrot cake",
 	},
 	{
 		title: "Cendol",
@@ -15,48 +21,45 @@ export const FOODSUGGESTIONS = [
 		title: "Char kway teow",
 	},
 	{
-		title: "Char siew meat",
-	},
-	{
 		title: "Chicken rice",
 	},
 	{
-		title: "Chilli crab",
+		title: "Chicken satay",
 	},
 	{
-		title: "Curry fish head",
+		title: "Chwee kueh",
 	},
 	{
-		title: "Hokkien prawn mee",
+		title: "Claypot rice",
 	},
 	{
-		title: "Ice kachang",
+		title: "Congee",
+	},
+	{
+		title: "Curry puff",
 	},
 	{
 		title: "Kaya toast",
 	},
 	{
-		title: "Kopi",
-	},
-	{
-		title: "Kway chap",
+		title: "Laksa",
 	},
 	{
 		title: "Mee goreng",
 	},
 	{
-		title: "Nasi goreng",
+		title: "Murtabak",
 	},
 	{
-		title: "Popiah",
+		title: "Nasi lemak",
 	},
 	{
-		title: "Rojak",
+		title: "Oyster omelette",
+	},
+	{
+		title: "Roti Prata",
 	},
 	{
 		title: "Salad",
-	},
-	{
-		title: "Teh tarik",
 	},
 ];
