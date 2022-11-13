@@ -1,9 +1,9 @@
 {
 	"expo": {
-		"name": "Healthier Me",
+		"name": "Healthier Me Preview",
 		"slug": "healtier-me",
 		"description": "Full stack mobile app for SC2006 Project",
-		"owner": "limivann",
+		"privacy": "public",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
